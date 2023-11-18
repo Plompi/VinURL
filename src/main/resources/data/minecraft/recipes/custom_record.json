@@ -1,0 +1,42 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GCB",
+    "YJP",
+    "ORM"
+  ],
+  "key": {
+    "G": {
+      "tag": "minecraft:green_wool"
+    },
+    "C": {
+      "tag": "minecraft:cyan_wool"
+    },
+    "B": {
+      "tag": "minecraft:blue_wool"
+    },
+    "Y": {
+      "tag": "minecraft:yellow_wool"
+    },
+    "P": {
+      "tag": "minecraft:purple_wool"
+    },
+    "O": {
+      "tag": "minecraft:orange_wool"
+    },
+    "R": {
+      "tag": "minecraft:red_wool"
+    },
+    "M": {
+      "tag": "minecraft:magenta_wool"
+    },
+    "J": {
+      "item": "minecraft:jukebox"
+    }
+  },
+  "result": {
+    "item": "urlmusicdiscs:custom_record",
+    "count": 1
+  }
+}
+

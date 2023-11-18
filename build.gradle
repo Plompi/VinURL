@@ -31,6 +31,20 @@ loom {
 }
 
 dependencies {
+	include(implementation 'net.lingala.zip4j:zip4j:2.11.5')
+
+//	include(implementation('ws.schild:jave-nativebin-linux64:3.4.0'))
+//	include(implementation('ws.schild:jave-nativebin-linux32:3.4.0'))
+//	include(implementation('ws.schild:jave-nativebin-linux-arm64:3.4.0'))
+//	include(implementation('ws.schild:jave-nativebin-linux-arm32:3.4.0'))
+//	include(implementation('ws.schild:jave-nativebin-win32:3.4.0'))
+//	include(implementation('ws.schild:jave-nativebin-win64:3.4.0'))
+//	include(implementation('ws.schild:jave-core:3.3.1'))
+	//include(modImplementation('ws.schild:jave-all-deps:3.3.1'))
+
+
+
+
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -39,7 +53,8 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	implementation group: "ws.schild", name: "jave-all-deps", version: "3.4.0"
+	//include implementation("ws.schild:jave-all-deps:3.4.0")
+
 	// Uncomment the following line to enable the deprecated Fabric API modules. 
 	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
 

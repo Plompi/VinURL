@@ -54,7 +54,7 @@ public class MusicDiscScreen extends Screen {
         this.nameField.setEditableColor(-1);
         this.nameField.setUneditableColor(-1);
         this.nameField.setDrawsBackground(false);
-        this.nameField.setMaxLength(100);
+        this.nameField.setMaxLength(200);
         this.nameField.setChangedListener(this::onRenamed);
         this.nameField.setText(this.inputDefaultText);
         this.addSelectableChild(this.nameField);

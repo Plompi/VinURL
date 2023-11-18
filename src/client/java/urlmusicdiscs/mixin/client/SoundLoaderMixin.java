@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import urlmusicdiscs.AudioHandlerClient;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,10 +32,18 @@ public class SoundLoaderMixin {
 		String[] splitNamespace = id.getPath().split("/");
 		splitNamespace = Arrays.copyOfRange(splitNamespace, 2, splitNamespace.length);
 		String fileUrl = String.join("/", splitNamespace);
+		fileUrl = fileUrl.substring(0, fileUrl.length() - 4);
 
+		String finalFileUrl = fileUrl;
 		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
 			try {
-				InputStream inputStream = new URL(fileUrl).openStream();
+				AudioHandlerClient audioHandler = new AudioHandlerClient();
+				InputStream inputStream = audioHandler.getAudioInputStream(finalFileUrl); //new URL(fileUrl).openStream();
+
+				if (inputStream == null) {
+					return null;
+				}
+
 				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);

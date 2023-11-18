@@ -12,12 +12,12 @@ import net.minecraft.util.math.floatprovider.FloatSupplier;
 import org.jetbrains.annotations.Nullable;
 
 public class FileSound implements SoundInstance {
-    public String youtubeId;
+    public String fileUrl;
     public Vec3d position;
 
     @Override
     public Identifier getId() {
-        return new Identifier(URLMusicDiscs.MOD_ID, "customsound/" + youtubeId);
+        return new Identifier(URLMusicDiscs.MOD_ID, "customsound/" + fileUrl);
     }
 
     @Nullable
@@ -28,7 +28,7 @@ public class FileSound implements SoundInstance {
 
     @Override
     public Sound getSound() {
-        return new Sound(getId().toString(), ConstantFloatProvider.create((float) getVolume()), ConstantFloatProvider.create((float) getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 16);
+        return new Sound(getId().toString(), ConstantFloatProvider.create((float) getVolume()), ConstantFloatProvider.create((float) getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
     }
 
     @Override

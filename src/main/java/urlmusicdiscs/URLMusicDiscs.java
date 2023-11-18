@@ -21,11 +21,13 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import urlmusicdiscs.items.URLDiscItem;
-import ws.schild.jave.EncoderException;
+//import ws.schild.jave.EncoderException;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class URLMusicDiscs implements ModInitializer {
 	public static final String MOD_ID = "urlmusicdiscs";
@@ -53,7 +55,7 @@ public class URLMusicDiscs implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		ServerPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_SET_URL, (server, player, handler, buf, responseSender) -> {
+		ServerPlayNetworking.registerGlobalReceiver(CUSTOM_RECORD_SET_URL, (server, player, handler, buf, responseSender) -> {
 			ItemStack currentItem = player.getStackInHand(player.getActiveHand());
 
 			if (currentItem.getItem() != CUSTOM_RECORD) {
@@ -62,14 +64,14 @@ public class URLMusicDiscs implements ModInitializer {
 
 			String urlName = buf.readString();
 
-			if (urlName.length() >= 100) {
+			if (urlName.length() >= 200) {
 				return;
 			}
 
 			player.sendMessage(Text.literal("Writing song to Music Disc, please wait. . ."));
 
 			AudioHandler newAudio = new AudioHandler();
-			String hashedName = org.apache.commons.codec.digest.DigestUtils.sha256Hex(urlName);
+			String hashedName = Hashing.Sha256(urlName);
 
 			try {
 
@@ -80,27 +82,14 @@ public class URLMusicDiscs implements ModInitializer {
 				player.sendMessage(Text.literal("Music Disc Written!"));
 			} catch (MalformedURLException e) {
 				player.sendMessage(Text.literal("Invalid URL Provided!"));
-			} catch (EncoderException e) {
-				player.sendMessage(Text.literal("Failed to encode provided audio!"));
+			} //catch (EncoderException e) {
+			catch (IOException e) {
+				player.sendMessage(Text.literal("Invalid URL Provided!"));
 			}
+//				player.sendMessage(Text.literal("Failed to encode provided audio!"));
+//				System.out.println(e);
+//			}
 
-			// Temporary
-
-			try {
-				PacketByteBuf bufInfo = PacketByteBufs.create();
-
-				FileInputStream fileInput = new FileInputStream(new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/downloads/" + hashedName + ".ogg").toString()));
-				int fileLength = (int) fileInput.getChannel().size();
-
-				bufInfo.writeString(hashedName);
-				bufInfo.writeInt(fileLength);
-				bufInfo.writeBytes(fileInput, fileLength);
-				ServerPlayNetworking.send(player, URLMusicDiscs.CUSTOM_RECORD_GET_AUDIO, bufInfo);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-
-			//
 
 			NbtCompound currentNbt = currentItem.getNbt();
 
@@ -112,5 +101,65 @@ public class URLMusicDiscs implements ModInitializer {
 
 			currentItem.setNbt(currentNbt);
 		});
+
+		ServerPlayNetworking.registerGlobalReceiver(CUSTOM_RECORD_GET_AUDIO, (server, player, handler, buf, responseSender) -> {
+			String url = buf.readString();
+			String hashedName = Hashing.Sha256(url);
+
+			try {
+
+				FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/downloads/" + hashedName + ".ogg").toFile().getParentFile().mkdirs();
+				FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/downloads/" + hashedName + ".ogg").toFile().createNewFile();
+
+				FileInputStream fileInput = new FileInputStream(new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/downloads/" + hashedName + ".ogg").toString()));
+				byte[] fileBytes = fileInput.readAllBytes();
+				int fileLength = (int) fileInput.getChannel().size();
+
+				byte[][] splitFileBytes = splitArray(fileBytes, 10_000);
+
+				for (int x = 0; x < splitFileBytes.length; x++) {
+					PacketByteBuf bufInfo = PacketByteBufs.create();
+					bufInfo.writeBoolean(false);
+					bufInfo.writeString(url);
+					bufInfo.writeInt(splitFileBytes[x].length);
+					bufInfo.writeBytes(splitFileBytes[x]);
+					//bufInfo.writeBlockPos(buf.readBlockPos());
+
+					responseSender.sendPacket(CUSTOM_RECORD_GET_AUDIO, bufInfo);
+				}
+
+				PacketByteBuf bufInfo = PacketByteBufs.create();
+				bufInfo.writeBoolean(true);
+				bufInfo.writeString(url);
+				bufInfo.writeBlockPos(buf.readBlockPos());
+				responseSender.sendPacket(CUSTOM_RECORD_GET_AUDIO, bufInfo);
+
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		});
+
+		try {
+			FFmpeg.checkForExecutable();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// http://www.java2s.com/example/java-utility-method/array-split/splitarray-byte-src-int-size-759c6.html
+	public static final byte[][] splitArray(byte[] src, int size) {
+		int index = 0;
+		ArrayList<byte[]> split = new ArrayList<byte[]>();
+		while (index < src.length) {
+			if (index + size <= src.length) {
+				split.add(Arrays.copyOfRange(src, index, index + size));
+				index += size;
+			} else {
+				split.add(Arrays.copyOfRange(src, index, src.length));
+				index = src.length;
+			}
+		}
+		return split.toArray(new byte[split.size()][size]);
 	}
 }
+
