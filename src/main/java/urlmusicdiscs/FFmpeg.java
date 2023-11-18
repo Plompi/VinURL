@@ -26,40 +26,38 @@ public class FFmpeg {
         System.out.println(FFmpegDirectory.toString());
 
         if (!FFmpegDirectory.toPath().resolve(fileName).toFile().exists()) {
-            System.out.println("Installing FFmpeg!");
+            //System.out.println("Installing FFmpeg!");
 
-            File zipFile = null;
+            File zipFile = FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile();
 
             if (SystemUtils.IS_OS_LINUX) {
-                System.out.println("Linux");
+                //System.out.println("Linux");
 
                 if (!FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile().exists()) {
                     InputStream in = new URL("https://cdn.discordapp.com/attachments/1067144249612714036/1175188765711552592/ffmpeg.zip").openStream();
                     Files.copy(in, FFmpegDirectory.toPath().resolve("ffmpeg.zip"), StandardCopyOption.REPLACE_EXISTING);
                 }
-
-                zipFile = FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile();;
             } else if (SystemUtils.IS_OS_MAC) {
-                System.out.println("Mac");
+                //System.out.println("Mac");
 
-                // TODO
+                if (!FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile().exists()) {
+                    InputStream in = new URL("https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip").openStream();
+                    Files.copy(in, FFmpegDirectory.toPath().resolve("ffmpeg.zip"), StandardCopyOption.REPLACE_EXISTING);
+                }
             } else if (SystemUtils.IS_OS_WINDOWS) {
-                System.out.println("Windows");
+                //System.out.println("Windows");
 
                 if (!FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile().exists()) {
                     InputStream in = new URL("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip").openStream();
                     Files.copy(in, FFmpegDirectory.toPath().resolve("ffmpeg.zip"), StandardCopyOption.REPLACE_EXISTING);
                 }
-
-                zipFile = FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile();;
             } else {
-                System.out.println("Unknown Operating System");
+                //System.out.println("Unknown Operating System");
             }
 
-            if (zipFile == null || !zipFile.exists()) {
+            if (!zipFile.exists()) {
                 return;
             }
-
 
             ZipInputStream zipInput = new ZipInputStream(new FileInputStream(zipFile));
 
@@ -92,7 +90,7 @@ public class FFmpeg {
         }
 
         Process resultProcess = Runtime.getRuntime().exec(FFmpeg + " " + arguments);
-        InputStream resultStream = resultProcess.getInputStream();
+//        InputStream resultStream = resultProcess.getInputStream();
 
 //        BufferedReader stdInput = new BufferedReader(new
 //                InputStreamReader(resultProcess.getInputStream()));
