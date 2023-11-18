@@ -37,7 +37,6 @@ public class URLMusicDiscs implements ModInitializer {
 	public static final Identifier CUSTOM_RECORD_GUI = new Identifier(MOD_ID, "record_gui");
 	public static final Identifier CUSTOM_RECORD_SET_URL = new Identifier(MOD_ID, "record_set_url");
 	public static final Identifier CUSTOM_RECORD_GET_AUDIO = new Identifier(MOD_ID, "record_get_audio_stream");
-	//public static final Identifier CUSTOM_RECORD_RECEIVE_AUDIO = new Identifier(MOD_ID, "record_receive");
 
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = new Identifier(MOD_ID, "placeholder_sound");
 	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(

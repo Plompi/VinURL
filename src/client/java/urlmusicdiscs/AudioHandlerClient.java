@@ -24,8 +24,6 @@ public class AudioHandlerClient {
         String hashedName = Hashing.Sha256(urlName);
         File audio = new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/client_downloads/" + hashedName + ".ogg").toString());
 
-        System.out.println(hashedName);
-
         InputStream fileStream;
         try {
             fileStream = new FileInputStream(audio);

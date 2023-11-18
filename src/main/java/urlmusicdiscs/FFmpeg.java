@@ -86,47 +86,35 @@ public class FFmpeg {
 
         // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
 
-        System.out.println("Running FFmpeg!");
-
         if (SystemUtils.IS_OS_LINUX) {
-            Process resultProcess0 = Runtime.getRuntime().exec("chmod +x \"" + FFmpeg + "\"");
+            Process resultProcess0 = Runtime.getRuntime().exec("chmod +x " + FFmpeg);
             InputStream resultStream0 = resultProcess0.getInputStream();
-            Scanner s0 = new Scanner(resultStream0).useDelimiter("\\A");
-
-            resultProcess0.waitFor();
-
-            System.out.println(resultProcess0.exitValue() + " " + (s0.hasNext() ? s0.next() : null));
         }
-
-        System.out.println(FFmpeg + " " + arguments);
 
         Process resultProcess = Runtime.getRuntime().exec(FFmpeg + " " + arguments);
         InputStream resultStream = resultProcess.getInputStream();
 
-        BufferedReader stdInput = new BufferedReader(new
-                InputStreamReader(resultProcess.getInputStream()));
+//        BufferedReader stdInput = new BufferedReader(new
+//                InputStreamReader(resultProcess.getInputStream()));
+//
+//        BufferedReader stdError = new BufferedReader(new
+//                InputStreamReader(resultProcess.getErrorStream()));
 
-        BufferedReader stdError = new BufferedReader(new
-                InputStreamReader(resultProcess.getErrorStream()));
-
-// Read the output from the command
-        System.out.println("Here is the standard output of the command:\n");
-        String s = null;
-        while ((s = stdInput.readLine()) != null) {
-            System.out.println(s);
-        }
-
-// Read any errors from the attempted command
-        System.out.println("Here is the standard error of the command (if any):\n");
-        while ((s = stdError.readLine()) != null) {
-            System.out.println(s);
-        }
+//        // Read the output from the command
+//        String s = null;
+//        while ((s = stdInput.readLine()) != null) {
+//            System.out.println(s);
+//        }
+//
+//        // Read any errors from the attempted command
+//        while ((s = stdError.readLine()) != null) {
+//            System.out.println(s);
+//        }
 
 
         resultProcess.waitFor();
 
-        System.out.println(resultProcess.exitValue());
 
-        return "";
+        return String.valueOf(resultProcess.exitValue());
     }
 }

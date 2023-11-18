@@ -25,8 +25,6 @@ import urlmusicdiscs.URLMusicDiscs;
 public class JukeboxMixin {
 	@Inject(at = @At("TAIL"), method = "dropRecord", cancellable = true)
 	public void dropRecord(CallbackInfo ci) {
-		System.out.println("Dropping!");
-
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity)(Object)this;
 
 		PacketByteBuf bufInfo = PacketByteBufs.create();
