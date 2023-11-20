@@ -8,7 +8,6 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
-import net.minecraft.util.math.floatprovider.FloatSupplier;
 import org.jetbrains.annotations.Nullable;
 
 public class FileSound implements SoundInstance {

@@ -6,30 +6,18 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.screen.AnvilScreenHandler;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-import java.io.InputStream;
-
-import static com.mojang.blaze3d.platform.GlStateManager.Viewport.getHeight;
-import static com.mojang.blaze3d.platform.GlStateManager.Viewport.getWidth;
-
 public class MusicDiscScreen extends Screen {
-    //private static final Identifier TEXTURE = new Identifier("minecraft", "textures/gui/container/dispenser.png");
     private static final Identifier TEXTURE = new Identifier(URLMusicDiscs.MOD_ID, "textures/gui/record_input.png");
     private static final Identifier TEXT_FIELD_TEXTURE = new Identifier("minecraft", "container/anvil/text_field");
-    private static final Identifier TEXT_FIELD_DISABLED_TEXTURE = new Identifier("minecraft", "container/anvil/text_field_disabled");
     private TextFieldWidget nameField;
 
     int backgroundWidth = 176;
@@ -74,10 +62,12 @@ public class MusicDiscScreen extends Screen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-            PacketByteBuf bufInfo = PacketByteBufs.create();
-            bufInfo.writeString(this.nameField.getText());
+            if (!this.nameField.getText().equals(this.inputDefaultText)) {
+                PacketByteBuf bufInfo = PacketByteBufs.create();
+                bufInfo.writeString(this.nameField.getText());
 
-            ClientPlayNetworking.send(URLMusicDiscs.CUSTOM_RECORD_SET_URL, bufInfo);
+                ClientPlayNetworking.send(URLMusicDiscs.CUSTOM_RECORD_SET_URL, bufInfo);
+            }
 
             this.client.player.closeHandledScreen();
         }
