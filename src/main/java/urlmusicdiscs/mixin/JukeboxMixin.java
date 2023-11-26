@@ -23,7 +23,7 @@ import urlmusicdiscs.URLMusicDiscs;
 
 @Mixin(JukeboxBlockEntity.class)
 public class JukeboxMixin {
-	@Inject(at = @At("TAIL"), method = "dropRecord", cancellable = true)
+	@Inject(at = @At("TAIL"), method = "clear", cancellable = true)
 	public void dropRecord(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity)(Object)this;
 
