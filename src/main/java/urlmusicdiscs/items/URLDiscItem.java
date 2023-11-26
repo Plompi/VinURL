@@ -2,6 +2,7 @@ package urlmusicdiscs.items;
 
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.JukeboxBlock;
@@ -56,7 +57,8 @@ public class URLDiscItem extends MusicDiscItem {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof JukeboxBlockEntity) {
                 JukeboxBlockEntity jukeboxBlockEntity = (JukeboxBlockEntity)blockEntity;
-                jukeboxBlockEntity.setStack(itemStack.copy());
+                jukeboxBlockEntity.setRecord(itemStack.copy());
+                world.setBlockState(blockPos, blockState.with(JukeboxBlock.HAS_RECORD, true), Block.NOTIFY_LISTENERS);
                 world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, blockState));
             }
             itemStack.decrement(1);

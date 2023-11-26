@@ -4,10 +4,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -81,19 +81,22 @@ public class MusicDiscScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        renderBackground(matrices);
+
+        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
-        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);;
-        context.drawGuiTexture(TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
+        this.drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight);;
+        RenderSystem.setShaderTexture(0, TEXT_FIELD_TEXTURE);
+        this.drawTexture(matrices, x + 59, y + 14, 0, 0, 110, 16);
 
         if (this.nameField == null) {
             updateTextPosition();
         }
 
-        this.nameField.render(context, mouseX, mouseY, delta);
+        this.nameField.render(matrices, mouseX, mouseY, delta);
     }
 }
