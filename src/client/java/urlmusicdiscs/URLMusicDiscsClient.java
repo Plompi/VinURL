@@ -26,11 +26,11 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 		// Client Music Played Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
-			BlockPos blockPos = buf.readBlockPos();
-			Vec3d blockPosition = new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-			String fileUrl = buf.readString();
-
 			client.execute(() -> {
+				BlockPos blockPos = buf.readBlockPos();
+				Vec3d blockPosition = new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+				String fileUrl = buf.readString();
+
 				FileSound currentSound = playingSounds.get(blockPosition);
 
 				if (currentSound != null) {

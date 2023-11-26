@@ -57,7 +57,7 @@ public class URLDiscItem extends MusicDiscItem {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof JukeboxBlockEntity) {
                 JukeboxBlockEntity jukeboxBlockEntity = (JukeboxBlockEntity)blockEntity;
-                jukeboxBlockEntity.setRecord(itemStack.copy());
+                jukeboxBlockEntity.setDisc(itemStack.copy());
                 world.setBlockState(blockPos, blockState.with(JukeboxBlock.HAS_RECORD, true), Block.NOTIFY_LISTENERS);
                 world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, blockState));
             }
