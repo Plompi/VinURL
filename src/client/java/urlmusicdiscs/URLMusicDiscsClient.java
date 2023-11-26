@@ -26,11 +26,11 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 		// Client Music Played Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
-			client.execute(() -> {
-				BlockPos blockPos = buf.readBlockPos();
-				Vec3d blockPosition = new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
-				String fileUrl = buf.readString();
+			BlockPos blockPos = buf.readBlockPos();
+			Vec3d blockPosition = new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			String fileUrl = buf.readString();
 
+			client.execute(() -> {
 				FileSound currentSound = playingSounds.get(blockPosition);
 
 				if (currentSound != null) {
@@ -80,9 +80,9 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 		// Client Open Record UI Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_GUI, (client, handler, buf, responseSender) -> {
-			client.execute(() -> {
-				ItemStack item = buf.readItemStack();
+			ItemStack item = buf.readItemStack();
 
+			client.execute(() -> {
 				NbtCompound itemNbt = item.getNbt();
 
 				if (itemNbt == null) {
