@@ -5,16 +5,18 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 //import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 //import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 //import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 //import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 //import net.minecraft.network.PacketByteBuf;
-//import net.minecraft.registry.Registries;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 //import net.minecraft.server.MinecraftServer;
 //import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -42,21 +44,26 @@ public class URLMusicDiscs implements ModInitializer {
 	public static final Identifier CUSTOM_RECORD_SET_URL = new Identifier(MOD_ID, "record_set_url");
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = new Identifier(MOD_ID, "placeholder_sound");
 	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
-			Registry.SOUND_EVENT,
+			Registries.SOUND_EVENT,
 			PLACEHOLDER_SOUND_IDENTIFIER,
-			new SoundEvent(PLACEHOLDER_SOUND_IDENTIFIER)
+			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
 	);
 	public static final Item CUSTOM_RECORD = Registry.register(
-			Registry.ITEM,
+			Registries.ITEM,
 			new Identifier(MOD_ID, "custom_record"),
 			new URLDiscItem(
-17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1).group(ItemGroup.MISC), 1
+17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 1
 			)
 	);
 
 
 	@Override
 	public void onInitialize() {
+		// Register the Custom Record to the Tools Item Group
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> {
+			content.add(CUSTOM_RECORD);
+		});
+
 		// Server event handler for setting the URL on the Custom Record
 		ServerPlayNetworking.registerGlobalReceiver(CUSTOM_RECORD_SET_URL, (server, player, handler, buf, responseSender) -> {
 			ItemStack currentItem = player.getStackInHand(player.getActiveHand());
