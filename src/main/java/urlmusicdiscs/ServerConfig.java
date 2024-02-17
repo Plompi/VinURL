@@ -15,7 +15,7 @@ public class ServerConfig {
 
     public ServerConfig() {
         Path path = FabricLoader.getInstance().getConfigDir();
-        File configFile = new File(path.resolve("urlmusicdiscs.json").toUri());
+        File configFile = new File(path.resolve("urlmusicdiscs/urlmusicdiscs.json").toUri());
         FileReader file;
 
         try {
@@ -41,7 +41,7 @@ public class ServerConfig {
 
     public class ConfigData {
         String whitelistedUrls[] = {
-                "https://www.youtube.com"
+                "https://www.example.com"
         };
     }
 }
