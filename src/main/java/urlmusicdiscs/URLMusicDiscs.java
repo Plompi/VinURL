@@ -28,6 +28,7 @@ import urlmusicdiscs.items.URLDiscItem;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -53,6 +54,8 @@ public class URLMusicDiscs implements ModInitializer {
 			)
 	);
 
+	public static final ServerConfig CONFIG = new ServerConfig();
+
 
 	@Override
 	public void onInitialize() {
@@ -71,14 +74,45 @@ public class URLMusicDiscs implements ModInitializer {
 
 			String urlName = buf.readString();
 
-			if (urlName.length() >= 200) {
+			try {
+				new URL(urlName).toURI();
+			} catch (Exception e) {
+				player.sendMessage(Text.literal("Song URL is invalid!"));
+				return;
+			}
+
+			if (urlName.length() >= 400) {
 				player.sendMessage(Text.literal("Song URL is too long!"));
 				return;
 			}
 
-			if (!urlName.startsWith("https://youtu.be") && !urlName.startsWith("https://www.youtube.com") && !urlName.startsWith("https://youtube.com")  && !urlName.startsWith("https://cdn.discordapp.com")) {
-				player.sendMessage(Text.literal("Song URL must be a Youtube or a Discord CDN URL!"));
-				return;
+			if (!urlName.startsWith("https://youtu.be")
+					&& !urlName.startsWith("https://www.youtube.com")
+					&& !urlName.startsWith("https://youtube.com")
+					&& !urlName.startsWith("https://cdn.discordapp.com")
+					&& !urlName.startsWith("https://www.dropbox.com/scl")
+					&& !urlName.startsWith("https://dropbox.com/scl")
+					&& !urlName.startsWith("https://drive.google.com/uc")
+			) {
+				// Check for config-specified overrides.
+
+
+				boolean allowed = false;
+				String[] urls = URLMusicDiscs.CONFIG.currentData.whitelistedUrls;
+
+				for (int i = 0; i < urls.length; i++) {
+					String url = urls[i];
+
+					if (urlName.startsWith(url)) {
+						allowed = true;
+						break;
+					}
+				}
+
+				if (!allowed) {
+					player.sendMessage(Text.literal("Song URL must be a Youtube, Discord CDN, Dropbox, or Google Drive URL!"));
+					return;
+				}
 			}
 
 			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
