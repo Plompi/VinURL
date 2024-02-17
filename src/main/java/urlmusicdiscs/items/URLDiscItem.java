@@ -43,49 +43,6 @@ public class URLDiscItem extends MusicDiscItem {
     }
 
     @Override
-    public ActionResult useOnBlock(ItemUsageContext context) {
-        BlockPos blockPos;
-        World world = context.getWorld();
-        BlockState blockState = world.getBlockState(blockPos = context.getBlockPos());
-
-        if (!blockState.isOf(Blocks.JUKEBOX) || blockState.get(JukeboxBlock.HAS_RECORD)) {
-            return ActionResult.PASS;
-        }
-
-        ItemStack itemStack = context.getStack();
-
-        if (!world.isClient) {
-            PlayerEntity playerEntity = context.getPlayer();
-            BlockEntity blockEntity = world.getBlockEntity(blockPos);
-            if (blockEntity instanceof JukeboxBlockEntity jukeboxBlockEntity) {
-                jukeboxBlockEntity.setStack(itemStack.copy());
-                world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, blockState));
-            }
-            itemStack.decrement(1);
-            if (playerEntity != null) {
-                playerEntity.incrementStat(Stats.PLAY_RECORD);
-            }
-
-            NbtCompound nbtInfo = context.getStack().getNbt();
-
-            if (nbtInfo == null) {
-                nbtInfo = new NbtCompound();
-            }
-
-            String musicUrl = nbtInfo.getString("music_url");
-
-            if (musicUrl != null && !musicUrl.equals("")) {
-                PacketByteBuf bufInfo = PacketByteBufs.create();
-                bufInfo.writeBlockPos(blockPos);
-                bufInfo.writeString(musicUrl);
-
-                world.getPlayers().forEach(playerEntity1 -> ServerPlayNetworking.send((ServerPlayerEntity) playerEntity1, URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, bufInfo));
-            }
-        }
-        return ActionResult.success(world.isClient);
-    }
-
-    @Override
     public int getSongLengthInTicks() {
         return 0;
     }
