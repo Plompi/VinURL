@@ -8,7 +8,6 @@ import net.minecraft.block.JukeboxBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.item.MusicDiscItem;
@@ -18,14 +17,29 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.stat.Stats;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import urlmusicdiscs.URLMusicDiscs;
+import net.minecraft.util.Hand;
 
 public class URLDiscItem extends MusicDiscItem {
     public URLDiscItem(int comparatorOutput, SoundEvent sound, Settings settings, int lengthInSeconds) {
         super(comparatorOutput, sound, settings, lengthInSeconds);
+    }
+
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+        ItemStack stackInHand = player.getStackInHand(hand);
+        if (!world.isClient) {
+            PacketByteBuf bufInfo = PacketByteBufs.create();
+            bufInfo.writeItemStack(stackInHand);
+
+            ServerPlayNetworking.send((ServerPlayerEntity) player, URLMusicDiscs.CUSTOM_RECORD_GUI, bufInfo);
+        }
+
+        return TypedActionResult.success(stackInHand);
     }
 
     @Override
@@ -34,18 +48,7 @@ public class URLDiscItem extends MusicDiscItem {
         World world = context.getWorld();
         BlockState blockState = world.getBlockState(blockPos = context.getBlockPos());
 
-        if (!blockState.isOf(Blocks.JUKEBOX)) {
-            if (!world.isClient) {
-                PacketByteBuf bufInfo = PacketByteBufs.create();
-                bufInfo.writeItemStack(context.getStack());
-
-                ServerPlayNetworking.send((ServerPlayerEntity) context.getPlayer(), URLMusicDiscs.CUSTOM_RECORD_GUI, bufInfo);
-            }
-
-            return ActionResult.PASS;
-        }
-
-        if (blockState.get(JukeboxBlock.HAS_RECORD).booleanValue()) {
+        if (!blockState.isOf(Blocks.JUKEBOX) || blockState.get(JukeboxBlock.HAS_RECORD)) {
             return ActionResult.PASS;
         }
 
@@ -54,8 +57,7 @@ public class URLDiscItem extends MusicDiscItem {
         if (!world.isClient) {
             PlayerEntity playerEntity = context.getPlayer();
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
-            if (blockEntity instanceof JukeboxBlockEntity) {
-                JukeboxBlockEntity jukeboxBlockEntity = (JukeboxBlockEntity)blockEntity;
+            if (blockEntity instanceof JukeboxBlockEntity jukeboxBlockEntity) {
                 jukeboxBlockEntity.setStack(itemStack.copy());
                 world.emitGameEvent(GameEvent.BLOCK_CHANGE, blockPos, GameEvent.Emitter.of(playerEntity, blockState));
             }
@@ -77,9 +79,7 @@ public class URLDiscItem extends MusicDiscItem {
                 bufInfo.writeBlockPos(blockPos);
                 bufInfo.writeString(musicUrl);
 
-                world.getPlayers().forEach(playerEntity1 -> {
-                    ServerPlayNetworking.send((ServerPlayerEntity) playerEntity1, URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, bufInfo);
-                });
+                world.getPlayers().forEach(playerEntity1 -> ServerPlayNetworking.send((ServerPlayerEntity) playerEntity1, URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, bufInfo));
             }
         }
         return ActionResult.success(world.isClient);
