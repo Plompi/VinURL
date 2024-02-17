@@ -54,6 +54,8 @@ public class URLMusicDiscs implements ModInitializer {
 			)
 	);
 
+	public static final ServerConfig CONFIG = new ServerConfig();
+
 
 	@Override
 	public void onInitialize() {
@@ -92,8 +94,25 @@ public class URLMusicDiscs implements ModInitializer {
 					&& !urlName.startsWith("https://dropbox.com/scl")
 					&& !urlName.startsWith("https://drive.google.com/uc")
 			) {
-				player.sendMessage(Text.literal("Song URL must be a Youtube, Discord CDN, Dropbox, or Google Drive URL!"));
-				return;
+				// Check for config-specified overrides.
+
+
+				boolean allowed = false;
+				String[] urls = URLMusicDiscs.CONFIG.currentData.whitelistedUrls;
+
+				for (int i = 0; i < urls.length; i++) {
+					String url = urls[i];
+
+					if (urlName.startsWith(url)) {
+						allowed = true;
+						break;
+					}
+				}
+
+				if (!allowed) {
+					player.sendMessage(Text.literal("Song URL must be a Youtube, Discord CDN, Dropbox, or Google Drive URL!"));
+					return;
+				}
 			}
 
 			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
