@@ -16,6 +16,7 @@ public class ServerConfig {
     public ServerConfig() {
         Path path = FabricLoader.getInstance().getConfigDir();
         File configFile = new File(path.resolve("urlmusicdiscs/urlmusicdiscs.json").toUri());
+        FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs").toFile().mkdirs();
         Gson gsonConverter = new GsonBuilder().setPrettyPrinting().create();
 
         try (FileReader file = new FileReader(configFile)) {
