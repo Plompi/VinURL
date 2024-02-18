@@ -4,14 +4,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 public class YoutubeDL {
     static void checkForExecutable() throws IOException {
@@ -22,18 +19,22 @@ public class YoutubeDL {
         String fileName = SystemUtils.IS_OS_WINDOWS ? "yt-dlp.exe" : "yt-dlp";
 
         if (!YoutubeDLDirectory.toPath().resolve(fileName).toFile().exists()) {
-            InputStream fileStream = null;
 
-            if (SystemUtils.IS_OS_LINUX) {
-                fileStream = new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux").openStream();
-            } else if (SystemUtils.IS_OS_MAC) {
-                fileStream = new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos").openStream();
-            } else if (SystemUtils.IS_OS_WINDOWS) {
-                fileStream = new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe").openStream();
+            try (InputStream in = getDownloadInputStream()) {
+                Files.copy(in, YoutubeDLDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
             }
-
-            Files.copy(fileStream, YoutubeDLDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
         }
+    }
+
+    private static InputStream getDownloadInputStream() throws IOException {
+        if (SystemUtils.IS_OS_LINUX) {
+            return new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux").openStream();
+        } else if (SystemUtils.IS_OS_MAC) {
+            return new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos").openStream();
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            return new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe").openStream();
+        }
+        throw new UnsupportedOperationException("Unsupported operating system.");
     }
 
     static String executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {

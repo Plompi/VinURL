@@ -12,46 +12,42 @@ import java.util.zip.ZipInputStream;
 
 public class FFmpeg {
     static void checkForExecutable() throws IOException {
-        File FFmpegDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/ffmpeg/").toAbsolutePath().toFile();
-
+        File FFmpegDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/ffmpeg").toFile();
         FFmpegDirectory.mkdirs();
 
         String fileName = SystemUtils.IS_OS_WINDOWS ? "ffmpeg.exe" : "ffmpeg";
 
-        if (!FFmpegDirectory.toPath().resolve(fileName).toFile().exists()) {
-            File zipFile = FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile();
-
-            InputStream in = null;
-
-            if (!FFmpegDirectory.toPath().resolve("ffmpeg.zip").toFile().exists()) {
-                if (SystemUtils.IS_OS_LINUX) {
-                    in = new URL("https://cdn.discordapp.com/attachments/1067144249612714036/1175188765711552592/ffmpeg.zip").openStream();
-                } else if (SystemUtils.IS_OS_MAC) {
-                    in = new URL("https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip").openStream();
-                } else if (SystemUtils.IS_OS_WINDOWS) {
-                    in = new URL("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip").openStream();
-                }
-            }
-
-            Files.copy(in, FFmpegDirectory.toPath().resolve("ffmpeg.zip"), StandardCopyOption.REPLACE_EXISTING);
+        if (!new File(FFmpegDirectory, fileName).exists()) {
+            File zipFile = new File(FFmpegDirectory, "ffmpeg.zip");
 
             if (!zipFile.exists()) {
-                return;
-            }
-
-            ZipInputStream zipInput = new ZipInputStream(new FileInputStream(zipFile));
-
-            ZipEntry zipEntry = zipInput.getNextEntry();
-
-            while (zipEntry != null) {
-                if (zipEntry.getName().endsWith("ffmpeg.exe") || zipEntry.getName().endsWith("ffmpeg")) {
-                    Files.copy(zipInput, FFmpegDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+                try (InputStream in = getDownloadInputStream()) {
+                    Files.copy(in, zipFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 }
-                zipEntry = zipInput.getNextEntry();
             }
 
+            try (ZipInputStream zipInput = new ZipInputStream(new FileInputStream(zipFile))) {
+                ZipEntry zipEntry;
+                while ((zipEntry = zipInput.getNextEntry()) != null) {
+                    if (zipEntry.getName().endsWith(fileName)) {
+                        Files.copy(zipInput, FFmpegDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+                        break;
+                    }
+                }
+            }
             zipFile.delete();
         }
+    }
+
+    private static InputStream getDownloadInputStream() throws IOException {
+        if (SystemUtils.IS_OS_LINUX) {
+            return new URL("https://cdn.discordapp.com/attachments/1067144249612714036/1175188765711552592/ffmpeg.zip").openStream();
+        } else if (SystemUtils.IS_OS_MAC) {
+            return new URL("https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip").openStream();
+        } else if (SystemUtils.IS_OS_WINDOWS) {
+            return new URL("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip").openStream();
+        }
+        throw new UnsupportedOperationException("Unsupported operating system.");
     }
 
     static String executeFFmpegCommand(String arguments) throws IOException, InterruptedException {
