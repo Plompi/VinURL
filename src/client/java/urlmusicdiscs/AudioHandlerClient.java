@@ -12,7 +12,7 @@ public class AudioHandlerClient {
     public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) throws IOException, InterruptedException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                YoutubeDL.executeYoutubeDLCommand(String.format("\"%s\" -q -x --no-playlist --audio-format vorbis --audio-quality 7 --postprocessor-args \"-ac 1\" --ffmpeg-location %s -o \"%s\"",urlName, ConfigPath.resolve("urlmusicdiscs/ffmpeg"), urlToFile(urlName, false).getAbsolutePath()));
+                YoutubeDL.executeYoutubeDLCommand(String.format("\"%s\" -q -x --no-playlist --audio-format vorbis --audio-quality 64 --embed-metadata --postprocessor-args \"-ac 1\" --ffmpeg-location %s -o \"%s\"",urlName, ConfigPath.resolve("urlmusicdiscs/ffmpeg"), urlToFile(urlName, false).getAbsolutePath()));
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

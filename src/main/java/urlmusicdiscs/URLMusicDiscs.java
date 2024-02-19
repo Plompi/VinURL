@@ -4,18 +4,13 @@ import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -24,9 +19,8 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import urlmusicdiscs.items.URLDiscItem;
-//import ws.schild.jave.EncoderException;
 
-import java.net.URL;
+import java.net.URI;
 
 public class URLMusicDiscs implements ModInitializer {
 	public static final String MOD_ID = "urlmusicdiscs";
@@ -70,7 +64,7 @@ public class URLMusicDiscs implements ModInitializer {
 			String urlName = buf.readString();
 
 			try {
-				new URL(urlName).toURI();
+				new URI(urlName).toURL();
 			} catch (Exception e) {
 				player.sendMessage(Text.literal("Song URL is invalid!"));
 				return;

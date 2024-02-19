@@ -6,15 +6,18 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class YoutubeDL {
-    static void checkForExecutable() throws IOException {
+    static void checkForExecutable() throws IOException, URISyntaxException {
         File YoutubeDLDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/youtubedl/").toAbsolutePath().toFile();
 
-        YoutubeDLDirectory.mkdirs();
+        if(!YoutubeDLDirectory.exists() && !YoutubeDLDirectory.mkdirs()) {
+            throw new IOException();
+        }
 
         String fileName = SystemUtils.IS_OS_WINDOWS ? "yt-dlp.exe" : "yt-dlp";
 
@@ -26,13 +29,13 @@ public class YoutubeDL {
         }
     }
 
-    private static InputStream getDownloadInputStream() throws IOException {
+    private static InputStream getDownloadInputStream() throws IOException, URISyntaxException {
         if (SystemUtils.IS_OS_LINUX) {
-            return new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux").openStream();
+            return new URI("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux").toURL().openStream();
         } else if (SystemUtils.IS_OS_MAC) {
-            return new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos").openStream();
+            return new URI("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos").toURL().openStream();
         } else if (SystemUtils.IS_OS_WINDOWS) {
-            return new URL("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe").openStream();
+            return new URI("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe").toURL().openStream();
         }
         throw new UnsupportedOperationException("Unsupported operating system.");
     }

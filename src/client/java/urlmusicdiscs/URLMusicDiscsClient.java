@@ -9,6 +9,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public class URLMusicDiscsClient implements ClientModInitializer {
@@ -20,7 +21,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 		try {
 			FFmpeg.checkForExecutable();
 			YoutubeDL.checkForExecutable();
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 

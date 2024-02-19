@@ -4,16 +4,20 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class FFmpeg {
-    static void checkForExecutable() throws IOException {
+    static void checkForExecutable() throws IOException, URISyntaxException {
         File FFmpegDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/ffmpeg").toFile();
-        FFmpegDirectory.mkdirs();
+
+        if(!FFmpegDirectory.exists() && !FFmpegDirectory.mkdirs()) {
+            throw new IOException();
+        }
 
         String fileName = SystemUtils.IS_OS_WINDOWS ? "ffmpeg.exe" : "ffmpeg";
 
@@ -35,17 +39,18 @@ public class FFmpeg {
                     }
                 }
             }
-            zipFile.delete();
+            if (!zipFile.delete()){throw new IOException();}
+
         }
     }
 
-    private static InputStream getDownloadInputStream() throws IOException {
+    private static InputStream getDownloadInputStream() throws IOException, URISyntaxException {
         if (SystemUtils.IS_OS_LINUX) {
-            return new URL("https://cdn.discordapp.com/attachments/1067144249612714036/1175188765711552592/ffmpeg.zip").openStream();
+            return new URI("https://cdn.discordapp.com/attachments/1067144249612714036/1175188765711552592/ffmpeg.zip").toURL().openStream();
         } else if (SystemUtils.IS_OS_MAC) {
-            return new URL("https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip").openStream();
+            return new URI("https://evermeet.cx/ffmpeg/ffmpeg-6.1.zip").toURL().openStream();
         } else if (SystemUtils.IS_OS_WINDOWS) {
-            return new URL("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip").openStream();
+            return new URI("https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip").toURL().openStream();
         }
         throw new UnsupportedOperationException("Unsupported operating system.");
     }

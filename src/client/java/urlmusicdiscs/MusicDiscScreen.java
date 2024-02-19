@@ -15,6 +15,8 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.Objects;
+
 public class MusicDiscScreen extends Screen {
     private static final Identifier TEXTURE = new Identifier(URLMusicDiscs.MOD_ID, "textures/gui/record_input.png");
     private static final Identifier TEXT_FIELD_TEXTURE = new Identifier("minecraft", "container/anvil/text_field");
@@ -68,8 +70,7 @@ public class MusicDiscScreen extends Screen {
 
                 ClientPlayNetworking.send(URLMusicDiscs.CUSTOM_RECORD_SET_URL, bufInfo);
             }
-
-            this.client.player.closeHandledScreen();
+            Objects.requireNonNull(Objects.requireNonNull(this.client).player).closeHandledScreen();
         }
         if (this.nameField.keyPressed(keyCode, scanCode, modifiers) || this.nameField.isActive()) {
             return true;
