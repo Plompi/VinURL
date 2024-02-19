@@ -22,7 +22,7 @@ public class MusicDiscScreen extends Screen {
 
     int backgroundWidth = 176;
     int backgroundHeight = 44;
-    String inputDefaultText =  "URL";
+    String inputDefaultText;
 
     protected MusicDiscScreen(Text title, PlayerEntity player, ItemStack item, String inputDefaultText) {
         super(title);
@@ -37,7 +37,7 @@ public class MusicDiscScreen extends Screen {
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
 
-        this.nameField = new TextFieldWidget(textRenderer, x + 62, y + 18, 103, 12, (Text)Text.translatable((String)"container.repair"));
+        this.nameField = new TextFieldWidget(textRenderer, x + 62, y + 18, 103, 12, Text.translatable("container.repair"));
         this.nameField.setFocusUnlocked(false);
         this.nameField.setEditableColor(-1);
         this.nameField.setUneditableColor(-1);
@@ -87,7 +87,7 @@ public class MusicDiscScreen extends Screen {
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
-        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);;
+        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
         context.drawGuiTexture(TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
 
         if (this.nameField == null) {

@@ -49,24 +49,4 @@ public class FFmpeg {
         }
         throw new UnsupportedOperationException("Unsupported operating system.");
     }
-
-    static String executeFFmpegCommand(String arguments) throws IOException, InterruptedException {
-        File FFmpegDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/ffmpeg/").toAbsolutePath().toFile();
-
-        String fileName = SystemUtils.IS_OS_WINDOWS ? "ffmpeg.exe" : "ffmpeg";
-
-        String FFmpeg = FFmpegDirectory.toPath().resolve(fileName).toAbsolutePath().toString();
-
-        // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
-
-        if (SystemUtils.IS_OS_LINUX) {
-            Runtime.getRuntime().exec("chmod +x " + FFmpeg);
-        }
-
-        Process resultProcess = Runtime.getRuntime().exec(FFmpeg + " " + arguments);
-
-        resultProcess.waitFor();
-
-        return "";
-    }
 }

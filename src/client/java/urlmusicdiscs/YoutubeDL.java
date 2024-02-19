@@ -37,7 +37,7 @@ public class YoutubeDL {
         throw new UnsupportedOperationException("Unsupported operating system.");
     }
 
-    static String executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
+    static void executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
         File YoutubeDLDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/youtubedl/").toAbsolutePath().toFile();
 
         String fileName = SystemUtils.IS_OS_WINDOWS ? "yt-dlp.exe" : "yt-dlp";
@@ -47,13 +47,11 @@ public class YoutubeDL {
         // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
 
         if (SystemUtils.IS_OS_LINUX) {
-            Runtime.getRuntime().exec("chmod +x " + YoutubeDL);
+            Runtime.getRuntime().exec(new String[]{"chmod +x", YoutubeDL});
         }
 
-        Process resultProcess = Runtime.getRuntime().exec(YoutubeDL + " " + arguments);
+        Process resultProcess = Runtime.getRuntime().exec(new String[]{YoutubeDL, arguments});
 
         resultProcess.waitFor();
-
-        return "";
     }
 }

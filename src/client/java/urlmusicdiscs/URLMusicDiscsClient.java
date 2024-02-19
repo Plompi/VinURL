@@ -43,7 +43,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 				AudioHandlerClient audioHandler = new AudioHandlerClient();
 
-				if (!audioHandler.checkForAudioFile(fileUrl)) {
+				if (audioHandler.getAudioInputStream(fileUrl) == null && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
 					try {
@@ -60,9 +60,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 							return null;
 						});
-					} catch (IOException e) {
-						client.player.sendMessage(Text.literal("Failed to download music!"));
-					} catch (InterruptedException e) {
+					} catch (IOException | InterruptedException e) {
 						client.player.sendMessage(Text.literal("Failed to download music!"));
 					}
 					return;
@@ -91,7 +89,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 				String currentUrl = itemNbt.getString("music_url");
 
-				client.setScreen(new MusicDiscScreen(Text.translatable("test"), client.player, item, currentUrl != "" ? currentUrl : "URL"));
+				client.setScreen(new MusicDiscScreen(Text.translatable("test"), client.player, item, !currentUrl.equals("") ? currentUrl : "URL"));
 			});
 		});
 	}
