@@ -7,12 +7,12 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public class AudioHandlerClient {
-    final static Path ConfigPath = FabricLoader.getInstance().getConfigDir();
+    final public static Path ConfigPath = FabricLoader.getInstance().getConfigDir();
 
     public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) throws IOException, InterruptedException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                YoutubeDL.executeYoutubeDLCommand(String.format("\"%s\" -q -x --audio-format --audio-quality 10 vorbis --postprocessor-args \"-ac 1\" --ffmpeg-location %s -o \"%s\"",urlName, ConfigPath.resolve("urlmusicdiscs/ffmpeg"), urlToFile(urlName).getAbsolutePath()));
+                YoutubeDL.executeYoutubeDLCommand(String.format("\"%s\" -q -x --no-playlist --audio-format vorbis --audio-quality 7 --postprocessor-args \"-ac 1\" --ffmpeg-location %s -o \"%s\"",urlName, ConfigPath.resolve("urlmusicdiscs/ffmpeg"), urlToFile(urlName, false).getAbsolutePath()));
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -22,14 +22,14 @@ public class AudioHandlerClient {
 
     public InputStream getAudioInputStream(String urlName) {
         try {
-            return new FileInputStream(urlToFile(urlName));
+            return new FileInputStream(urlToFile(urlName, true));
         } catch (FileNotFoundException e) {
             return null;
         }
     }
 
-    public File urlToFile(String urlName){
+    public File urlToFile(String urlName, boolean fileEnding){
         String hashedName = Hashing.Sha256(urlName);
-        return new File(ConfigPath.resolve("urlmusicdiscs/client_downloads/" + hashedName).toString());
+        return new File(ConfigPath.resolve("urlmusicdiscs/client_downloads/" + hashedName + (fileEnding? ".ogg": "")).toString());
     }
 }
