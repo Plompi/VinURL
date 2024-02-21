@@ -9,27 +9,39 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class YoutubeDL {
+    private static final File Directory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/youtubedl").toAbsolutePath().toFile();
+    private static final Path FilePath = Directory.toPath().resolve(SystemUtils.IS_OS_WINDOWS ? "yt-dlp.exe" : "yt-dlp");
     static void checkForExecutable() throws IOException, URISyntaxException {
-        File YoutubeDLDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/youtubedl/").toAbsolutePath().toFile();
 
-        if(!YoutubeDLDirectory.exists() && !YoutubeDLDirectory.mkdirs()) {
+        if(!Directory.exists() && !Directory.mkdirs()) {
             throw new IOException();
         }
 
-        String fileName = SystemUtils.IS_OS_WINDOWS ? "yt-dlp.exe" : "yt-dlp";
-
-        if (!YoutubeDLDirectory.toPath().resolve(fileName).toFile().exists()) {
+        if (!FilePath.toFile().exists()) {
 
             try (InputStream in = getDownloadInputStream()) {
-                Files.copy(in, YoutubeDLDirectory.toPath().resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+                Files.copy(in, FilePath, StandardCopyOption.REPLACE_EXISTING);
+
+                if (SystemUtils.IS_OS_UNIX) {
+                    Runtime.getRuntime().exec(new String[]{"chmod", "+x", FilePath.toString()});
+                }
             }
         }
     }
 
+    static void executeYoutubeDLCommand(String ... arguments) throws IOException, InterruptedException {
+        // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
+        Runtime.getRuntime().exec(Stream.concat(Stream.of(FilePath.toString()),Arrays.stream(arguments)).toArray(String[]::new)).waitFor();
+    }
+
     private static InputStream getDownloadInputStream() throws IOException, URISyntaxException {
+
         if (SystemUtils.IS_OS_LINUX) {
             return new URI("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_linux").toURL().openStream();
         } else if (SystemUtils.IS_OS_MAC) {
@@ -38,23 +50,5 @@ public class YoutubeDL {
             return new URI("https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe").toURL().openStream();
         }
         throw new UnsupportedOperationException("Unsupported operating system.");
-    }
-
-    static void executeYoutubeDLCommand(String arguments) throws IOException, InterruptedException {
-        File YoutubeDLDirectory = FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/youtubedl/").toAbsolutePath().toFile();
-
-        String fileName = SystemUtils.IS_OS_WINDOWS ? "yt-dlp.exe" : "yt-dlp";
-
-        String YoutubeDL = YoutubeDLDirectory.toPath().resolve(fileName).toAbsolutePath().toString();
-
-        // https://stackoverflow.com/questions/5711084/java-runtime-getruntime-getting-output-from-executing-a-command-line-program
-
-        if (SystemUtils.IS_OS_LINUX) {
-            Runtime.getRuntime().exec(new String[]{"chmod +x", YoutubeDL});
-        }
-
-        Process resultProcess = Runtime.getRuntime().exec(new String[]{YoutubeDL, arguments});
-
-        resultProcess.waitFor();
     }
 }

@@ -8,8 +8,6 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -26,8 +24,9 @@ public class MusicDiscScreen extends Screen {
     int backgroundHeight = 44;
     String inputDefaultText;
 
-    protected MusicDiscScreen(Text title, PlayerEntity player, ItemStack item, String inputDefaultText) {
-        super(title);
+
+    protected MusicDiscScreen(String inputDefaultText) {
+        super(Text.literal("Enter Music URL"));
         this.inputDefaultText = inputDefaultText;
     }
 

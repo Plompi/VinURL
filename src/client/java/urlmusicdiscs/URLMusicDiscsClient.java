@@ -38,7 +38,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 					client.getSoundManager().stop(currentSound);
 				}
 
-				if (fileUrl.equals("")) {
+				if (fileUrl.isEmpty()) {
 					return;
 				}
 
@@ -51,9 +51,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 						audioHandler.downloadVideoAsOgg(fileUrl).thenApply((in) -> {
 							client.player.sendMessage(Text.literal("Downloading complete!"));
 
-							FileSound fileSound = new FileSound();
-							fileSound.position = blockPosition;
-							fileSound.fileUrl = fileUrl;
+							FileSound fileSound = new FileSound(fileUrl,blockPosition);
 
 							playingSounds.put(blockPosition, fileSound);
 
@@ -67,9 +65,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 					return;
 				}
 
-				FileSound fileSound = new FileSound();
-				fileSound.position = blockPosition;
-				fileSound.fileUrl = fileUrl;
+				FileSound fileSound = new FileSound(fileUrl, blockPosition);
 
 				playingSounds.put(blockPosition, fileSound);
 
@@ -90,7 +86,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 				String currentUrl = itemNbt.getString("music_url");
 
-				client.setScreen(new MusicDiscScreen(Text.translatable("test"), client.player, item, !currentUrl.equals("") ? currentUrl : "URL"));
+				client.setScreen(new MusicDiscScreen(!currentUrl.isEmpty() ? currentUrl : "URL"));
 			});
 		});
 	}

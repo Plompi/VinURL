@@ -11,8 +11,13 @@ import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import org.jetbrains.annotations.Nullable;
 
 public class FileSound implements SoundInstance {
-    public String fileUrl;
-    public Vec3d position;
+    private final String fileUrl;
+    private final Vec3d position;
+
+    public FileSound(String fileUrl, Vec3d position) {
+        this.fileUrl = fileUrl;
+        this.position = position;
+    }
 
     @Override
     public Identifier getId() {
