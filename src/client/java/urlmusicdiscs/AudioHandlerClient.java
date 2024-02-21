@@ -1,6 +1,7 @@
 package urlmusicdiscs;
 
 import net.fabricmc.loader.api.FabricLoader;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -29,7 +30,7 @@ public class AudioHandlerClient {
     }
 
     public File urlToFile(String urlName, boolean fileEnding){
-        String hashedName = Hashing.Sha256(urlName);
+        String hashedName = DigestUtils.sha256Hex(urlName);
         return new File(ConfigPath.resolve("urlmusicdiscs/client_downloads/" + hashedName + (fileEnding? ".ogg": "")).toString());
     }
 }
