@@ -5,7 +5,6 @@ import com.google.gson.stream.JsonReader;
 import net.fabricmc.loader.api.FabricLoader;
 import com.google.gson.GsonBuilder;
 import java.io.*;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,8 +13,7 @@ public class ServerConfig {
     public ConfigData currentData;
 
     public ServerConfig() {
-        Path path = FabricLoader.getInstance().getConfigDir();
-        File configFile = new File(path.resolve("urlmusicdiscs/urlmusicdiscs.json").toUri());
+        File configFile = new File(URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/urlmusicdiscs.json").toUri());
         FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs").toFile().mkdirs();
         Gson gsonConverter = new GsonBuilder().setPrettyPrinting().create();
 

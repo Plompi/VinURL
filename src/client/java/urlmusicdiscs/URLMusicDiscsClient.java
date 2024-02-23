@@ -48,7 +48,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
 					try {
-						audioHandler.downloadVideoAsOgg(fileUrl).thenApply((in) -> {
+						audioHandler.downloadAudio(fileUrl).thenApply((in) -> {
 							client.player.sendMessage(Text.literal("Downloading complete!"));
 
 							FileSound fileSound = new FileSound(fileUrl,blockPosition);

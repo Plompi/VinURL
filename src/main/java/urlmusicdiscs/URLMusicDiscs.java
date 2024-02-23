@@ -5,6 +5,7 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
@@ -21,10 +22,13 @@ import org.slf4j.LoggerFactory;
 import urlmusicdiscs.items.URLDiscItem;
 
 import java.net.URI;
+import java.nio.file.Path;
 
 public class URLMusicDiscs implements ModInitializer {
 	public static final String MOD_ID = "urlmusicdiscs";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static final Path CONFIGPATH = FabricLoader.getInstance().getConfigDir();
 
 	public static final Identifier CUSTOM_RECORD_PACKET_ID = new Identifier(MOD_ID, "play_sound");
 	public static final Identifier CUSTOM_RECORD_GUI = new Identifier(MOD_ID, "record_gui");
