@@ -5,7 +5,8 @@
 	"name": "URL Music Discs",
 	"description": "Adds a writeable music disc, allowing you to customize the music that plays from any youtube link.",
 	"authors": [
-		"Hoofer"
+		"Hoofer",
+		"Plompii"
 	],
 	"contact": {
 		"homepage": "https://github.com/HooferDevelops",

@@ -9,7 +9,7 @@ public class AudioHandlerClient {
     public CompletableFuture<Boolean> downloadAudio(String urlName) throws IOException, InterruptedException {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                YoutubeDL.executeYoutubeDLCommand(urlName,"-q","-x","--no-playlist","--audio-format","vorbis","--audio-quality","64","--postprocessor-args","-ac 1","--ffmpeg-location",URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/ffmpeg").toString(),"-o",urlToFile(urlName, false).toString());
+                YoutubeDL.executeCommand(urlName,"-x","--no-progress","--no-playlist","--audio-format","vorbis","--audio-quality","64","--postprocessor-args","-ac 1","--ffmpeg-location",URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/ffmpeg").toString(),"-o",urlToFile(urlName, false).toString());
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }

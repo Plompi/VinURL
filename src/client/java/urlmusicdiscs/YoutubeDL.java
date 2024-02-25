@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.stream.Stream;
 
 public class YoutubeDL {
     private static final String FileName = "yt-dlp" + (SystemUtils.IS_OS_WINDOWS ? ".exe": "");
@@ -19,7 +17,7 @@ public class YoutubeDL {
         Executable.checkForExecutable(DownloadURL, FileName, Directory, FilePath);
     }
 
-    static void executeYoutubeDLCommand(String ... arguments) throws IOException, InterruptedException {
-        Runtime.getRuntime().exec(Stream.concat(Stream.of(FilePath.toString()),Arrays.stream(arguments)).toArray(String[]::new)).waitFor();
+    static void executeCommand(String ... arguments) throws IOException, InterruptedException {
+        Executable.executeCommand(FilePath.toString(), arguments);
     }
 }

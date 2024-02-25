@@ -2,14 +2,14 @@ package urlmusicdiscs;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -23,36 +23,40 @@ public class Executable {
         if (!FilePath.toFile().exists()) {downloadExecutable(DownloadURL, FileName,FilePath);}
     }
 
-    static void downloadExecutable(String DownloadURL,String FileName, Path FilePath) throws IOException, URISyntaxException {
-        if (DownloadURL.endsWith(".zip")){
-            try (ZipInputStream zipInput = new ZipInputStream(getDownloadInputStream(DownloadURL))) {
-
-                ZipEntry zipEntry = zipInput.getNextEntry();
-                while (zipEntry != null) {
-                    if (zipEntry.getName().endsWith(FileName)) {
-                        Files.copy(zipInput, FilePath, StandardCopyOption.REPLACE_EXISTING);
-                        break;
+    static void downloadExecutable(String DownloadURL, String FileName, Path FilePath) throws IOException, URISyntaxException {
+        try (InputStream inputStream = getDownloadInputStream(DownloadURL)) {
+            if (DownloadURL.endsWith(".zip")) {
+                try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
+                    ZipEntry zipEntry = zipInput.getNextEntry();
+                    while (zipEntry != null) {
+                        if (zipEntry.getName().endsWith(FileName)) {
+                            Files.copy(zipInput, FilePath, StandardCopyOption.REPLACE_EXISTING);
+                            break;
+                        }
+                        zipEntry = zipInput.getNextEntry();
                     }
-                    zipEntry = zipInput.getNextEntry();
-                }
-
-                if (SystemUtils.IS_OS_UNIX) {
-                    Runtime.getRuntime().exec(new String[]{"chmod", "+x", FilePath.toString()});
                 }
             }
-        }
-        else{
-            try (InputStream in = getDownloadInputStream(DownloadURL)) {
-                Files.copy(in, FilePath, StandardCopyOption.REPLACE_EXISTING);
-
-                if (SystemUtils.IS_OS_UNIX) {
-                    Runtime.getRuntime().exec(new String[]{"chmod", "+x", FilePath.toString()});
-                }
+            else {
+                Files.copy(inputStream, FilePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+            if (SystemUtils.IS_OS_UNIX) {
+                Runtime.getRuntime().exec(new String[]{"chmod", "+x", FilePath.toString()});
             }
         }
     }
 
     private static InputStream getDownloadInputStream(String DownloadURL) throws IOException, URISyntaxException {
         return new URI(DownloadURL).toURL().openStream();
+    }
+
+    static void executeCommand(String executable, String ... arguments) throws IOException, InterruptedException {
+
+        Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(executable),Arrays.stream(arguments)).toArray(String[]::new));
+        String line;
+        while ((line = new BufferedReader(new InputStreamReader(process.getInputStream())).readLine()) != null){
+            URLMusicDiscs.LOGGER.info(line);
+        }
+        URLMusicDiscs.LOGGER.info("Exit-Code: " + process.waitFor());
     }
 }
