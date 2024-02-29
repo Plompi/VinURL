@@ -47,21 +47,19 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 				if (audioHandler.getAudioInputStream(fileUrl) == null && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
-					try {
-						audioHandler.downloadAudio(fileUrl).thenApply((in) -> {
-							client.player.sendMessage(Text.literal("Downloading complete!"));
 
-							FileSound fileSound = new FileSound(fileUrl,blockPosition);
+						audioHandler.downloadAudio(fileUrl).thenAccept((result) -> {
+							if (result){
+								client.player.sendMessage(Text.literal("Downloading complete!"));
 
-							playingSounds.put(blockPosition, fileSound);
+								FileSound fileSound = new FileSound(fileUrl,blockPosition);
 
-							client.getSoundManager().play(fileSound);
+								playingSounds.put(blockPosition, fileSound);
 
-							return null;
+								client.getSoundManager().play(fileSound);
+							}
+							else{client.player.sendMessage(Text.literal("Failed to download music!"));}
 						});
-					} catch (IOException | InterruptedException e) {
-						client.player.sendMessage(Text.literal("Failed to download music!"));
-					}
 					return;
 				}
 

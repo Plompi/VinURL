@@ -95,10 +95,7 @@ public class URLMusicDiscs implements ModInitializer {
 					}
 				}
 			}
-			// Probably need to format console message differently (too many Link Sources lead to crappy/long message)
-			String error_message = String.format("Song URL must be a %s URL!", String.join(", ", URLMusicDiscs.CONFIG.currentData.whitelistedUrls.keySet()));
-
-			player.sendMessage(Text.literal(error_message));
+			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", URLMusicDiscs.CONFIG.currentData.whitelistedUrls.keySet()))));
 		});
 	}
 }

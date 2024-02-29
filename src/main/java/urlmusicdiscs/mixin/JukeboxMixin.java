@@ -48,7 +48,7 @@ public class JukeboxMixin {
 
 			String musicUrl = nbtInfo.getString("music_url");
 
-			if (musicUrl != null && !musicUrl.equals("")) {
+			if (musicUrl != null && !musicUrl.isEmpty()) {
 				PacketByteBuf bufInfo = PacketByteBufs.create();
 				bufInfo.writeBlockPos(jukebox.getPos());
 				bufInfo.writeString(musicUrl);

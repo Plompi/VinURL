@@ -54,9 +54,9 @@ public class Executable {
 
         Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(executable),Arrays.stream(arguments)).toArray(String[]::new));
         String line;
-        while ((line = new BufferedReader(new InputStreamReader(process.getInputStream())).readLine()) != null){
+        while ((line = new BufferedReader(new InputStreamReader(process.getErrorStream())).readLine()) != null){
             URLMusicDiscs.LOGGER.info(line);
         }
-        URLMusicDiscs.LOGGER.info("Exit-Code: " + process.waitFor());
+        if (process.waitFor() != 0){throw new IOException();}
     }
 }
