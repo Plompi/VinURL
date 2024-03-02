@@ -8,6 +8,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.jetbrains.annotations.Nullable;
 
 public class FileSound implements SoundInstance {
@@ -21,7 +22,7 @@ public class FileSound implements SoundInstance {
 
     @Override
     public Identifier getId() {
-        return new Identifier(URLMusicDiscs.MOD_ID, "customsound/" + fileUrl);
+        return new Identifier(URLMusicDiscs.MOD_ID, "customsound/" + DigestUtils.sha256Hex(fileUrl));
     }
 
     @Nullable

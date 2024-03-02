@@ -5,7 +5,6 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +18,7 @@ import java.util.Objects;
 
 @Mixin(JukeboxBlockEntity.class)
 public class JukeboxMixin {
-	@Inject(at = @At("TAIL"), method = "dropRecord", cancellable = true)
+	@Inject(at = @At("TAIL"), method = "dropRecord")
 	public void dropRecord(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity)(Object)this;
 
@@ -32,7 +31,7 @@ public class JukeboxMixin {
 		});
 	}
 
-	@Inject(at = @At("HEAD"), method = "startPlaying", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "startPlaying")
 	public void startPlaying(CallbackInfo ci) {
 		JukeboxBlockEntity jukebox = (JukeboxBlockEntity)(Object)this;
 
@@ -40,13 +39,7 @@ public class JukeboxMixin {
 		Item item = stack.getItem();
 
 		if (item instanceof URLDiscItem && !Objects.requireNonNull(jukebox.getWorld()).isClient()) {
-			NbtCompound nbtInfo = stack.getNbt();
-
-			if (nbtInfo == null) {
-				nbtInfo = new NbtCompound();
-			}
-
-			String musicUrl = nbtInfo.getString("music_url");
+			String musicUrl = stack.getOrCreateNbt().getString("music_url");
 
 			if (musicUrl != null && !musicUrl.isEmpty()) {
 				PacketByteBuf bufInfo = PacketByteBufs.create();

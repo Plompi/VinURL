@@ -3,10 +3,10 @@ package urlmusicdiscs;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -44,7 +44,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 				AudioHandlerClient audioHandler = new AudioHandlerClient();
 
-				if (audioHandler.getAudioInputStream(fileUrl) == null && client.player != null) {
+				if (!audioHandler.urlToFile(DigestUtils.sha256Hex(fileUrl) + ".ogg").exists() && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
 
@@ -76,13 +76,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 			client.execute(() -> {
 				ItemStack item = buf.readItemStack();
 
-				NbtCompound itemNbt = item.getNbt();
-
-				if (itemNbt == null) {
-					itemNbt = new NbtCompound();
-				}
-
-				String currentUrl = itemNbt.getString("music_url");
+				String currentUrl = item.getOrCreateNbt().getString("music_url");
 
 				client.setScreen(new MusicDiscScreen(!currentUrl.isEmpty() ? currentUrl : "URL"));
 			});

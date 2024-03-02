@@ -20,8 +20,8 @@ public class MusicDiscScreen extends Screen {
     private static final Identifier TEXT_FIELD_TEXTURE = new Identifier("minecraft", "container/anvil/text_field");
     private TextFieldWidget nameField;
 
-    int backgroundWidth = 176;
-    int backgroundHeight = 44;
+    private final static int backgroundWidth = 176;
+    private final static int backgroundHeight = 44;
     String inputDefaultText;
 
 

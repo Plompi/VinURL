@@ -14,7 +14,6 @@ import urlmusicdiscs.AudioHandlerClient;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
@@ -22,28 +21,14 @@ import java.util.concurrent.CompletionException;
 public class SoundLoaderMixin {
 	@Inject(at = @At("HEAD"), method = "loadStreamed", cancellable = true)
 	public void loadStreamed(Identifier id, boolean repeatInstantly, CallbackInfoReturnable<CompletableFuture<AudioStream>> cir) {
-		if (!id.getNamespace().equals("urlmusicdiscs"))
+		if (!id.getNamespace().equals("urlmusicdiscs") || id.getPath().contains("placeholder_sound.ogg"))
 			return;
 
-		if (id.getPath().contains("placeholder_sound.ogg"))
-			return;
-
-		String[] splitNamespace = id.getPath().split("/");
-		splitNamespace = Arrays.copyOfRange(splitNamespace, 2, splitNamespace.length);
-		String fileUrl = String.join("/", splitNamespace);
-		fileUrl = fileUrl.substring(0, fileUrl.length() - 4);
-
-		String finalFileUrl = fileUrl;
 		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
 			try {
-				AudioHandlerClient audioHandler = new AudioHandlerClient();
-				InputStream inputStream = audioHandler.getAudioInputStream(finalFileUrl); //new URL(fileUrl).openStream();
-
-				if (inputStream == null) {
-					return null;
-				}
-
-				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
+				//directly strips out sounds/customsounds (19 chars)
+				InputStream inputStream = new AudioHandlerClient().getAudioInputStream(id.getPath().substring(19));
+				return inputStream == null ? null : repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);
 			}

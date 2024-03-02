@@ -2,7 +2,6 @@ package urlmusicdiscs;
 
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
-import net.fabricmc.loader.api.FabricLoader;
 import com.google.gson.GsonBuilder;
 import java.io.*;
 import java.util.HashMap;
@@ -10,20 +9,19 @@ import java.util.Map;
 
 
 public class ServerConfig {
-    public ConfigData currentData;
+    public static ConfigData currentData;
 
-    public ServerConfig() {
+    static {
         File configFile = new File(URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/urlmusicdiscs.json").toUri());
-        FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs").toFile().mkdirs();
+        URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs").toFile().mkdirs();
         Gson gsonConverter = new GsonBuilder().setPrettyPrinting().create();
 
         try (FileReader file = new FileReader(configFile)) {
             currentData = gsonConverter.fromJson(new JsonReader(file), ConfigData.class);
         } catch (FileNotFoundException e) {
             currentData = new ConfigData();
-            String result = gsonConverter.toJson(currentData);
             try (FileWriter fileOut = new FileWriter(configFile)) {
-                fileOut.write(result);
+                fileOut.write(gsonConverter.toJson(currentData));
             } catch (IOException ignored) {}
         } catch (IOException ignored) {}
     }

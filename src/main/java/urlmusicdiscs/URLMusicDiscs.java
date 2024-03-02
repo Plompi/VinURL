@@ -47,9 +47,6 @@ public class URLMusicDiscs implements ModInitializer {
 			)
 	);
 
-	public static final ServerConfig CONFIG = new ServerConfig();
-
-
 	@Override
 	public void onInitialize() {
 		// Register the Custom Record to the Tools Item Group
@@ -79,23 +76,20 @@ public class URLMusicDiscs implements ModInitializer {
 				return;
 			}
 
-			for (String[] urls: URLMusicDiscs.CONFIG.currentData.whitelistedUrls.values()
+			for (String[] urls: ServerConfig.currentData.whitelistedUrls.values()
 				 ) {
 				for (String url: urls
 					 ) {
 					if (urlName.startsWith(url)){
 						player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
-						NbtCompound currentNbt = currentItem.getNbt();
-						if (currentNbt == null) {
-							currentNbt = new NbtCompound();
-						}
+						NbtCompound currentNbt = currentItem.getOrCreateNbt();
 						currentNbt.putString("music_url", urlName);
 						currentItem.setNbt(currentNbt);
 						return;
 					}
 				}
 			}
-			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", URLMusicDiscs.CONFIG.currentData.whitelistedUrls.keySet()))));
+			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", ServerConfig.currentData.whitelistedUrls.keySet()))));
 		});
 	}
 }
