@@ -43,9 +43,11 @@ public class URLMusicDiscs implements ModInitializer {
 			Registries.ITEM,
 			new Identifier(MOD_ID, "custom_record"),
 			new URLDiscItem(
-17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 1
+17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 0
 			)
 	);
+
+	public static final ServerConfig CONFIG = new ServerConfig();
 
 	@Override
 	public void onInitialize() {
@@ -76,7 +78,7 @@ public class URLMusicDiscs implements ModInitializer {
 				return;
 			}
 
-			for (String[] urls: ServerConfig.currentData.whitelistedUrls.values()
+			for (String[] urls: CONFIG.currentData.whitelistedUrls.values()
 				 ) {
 				for (String url: urls
 					 ) {
@@ -89,7 +91,7 @@ public class URLMusicDiscs implements ModInitializer {
 					}
 				}
 			}
-			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", ServerConfig.currentData.whitelistedUrls.keySet()))));
+			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", CONFIG.currentData.whitelistedUrls.keySet()))));
 		});
 	}
 }

@@ -27,7 +27,7 @@ public class SoundLoaderMixin {
 		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
 			try {
 				//directly strips out sounds/customsounds (19 chars)
-				InputStream inputStream = new AudioHandlerClient().getAudioInputStream(id.getPath().substring(19));
+				InputStream inputStream = AudioHandlerClient.getAudioInputStream(id.getPath().substring(19));
 				return inputStream == null ? null : repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);

@@ -15,12 +15,12 @@ import java.util.zip.ZipInputStream;
 
 public class Executable {
 
-    static void checkForExecutable(String DownloadURL, String FileName ,File Directory, Path FilePath) throws IOException, URISyntaxException {
+    static void checkForExecutable(String DownloadURL, String FileName, File Directory, Path FilePath) throws IOException, URISyntaxException {
 
         if(!Directory.exists() && !Directory.mkdirs()) {
             throw new IOException();
         }
-        if (!FilePath.toFile().exists()) {downloadExecutable(DownloadURL, FileName,FilePath);}
+        if (!FilePath.toFile().exists()) {downloadExecutable(DownloadURL, FileName, FilePath);}
     }
 
     static void downloadExecutable(String DownloadURL, String FileName, Path FilePath) throws IOException, URISyntaxException {

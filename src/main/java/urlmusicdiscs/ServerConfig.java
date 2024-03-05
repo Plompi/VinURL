@@ -4,26 +4,32 @@ import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.GsonBuilder;
 import java.io.*;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 
 public class ServerConfig {
-    public static ConfigData currentData;
+    public ConfigData currentData;
 
-    static {
-        File configFile = new File(URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/urlmusicdiscs.json").toUri());
-        URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs").toFile().mkdirs();
+    public ServerConfig() {
+        File configFile = URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/urlmusicdiscs.json").toFile();
         Gson gsonConverter = new GsonBuilder().setPrettyPrinting().create();
 
-        try (FileReader file = new FileReader(configFile)) {
-            currentData = gsonConverter.fromJson(new JsonReader(file), ConfigData.class);
-        } catch (FileNotFoundException e) {
-            currentData = new ConfigData();
-            try (FileWriter fileOut = new FileWriter(configFile)) {
-                fileOut.write(gsonConverter.toJson(currentData));
-            } catch (IOException ignored) {}
-        } catch (IOException ignored) {}
+        try {
+            if (configFile.getParentFile().mkdirs() || !configFile.exists()) {
+                currentData = new ConfigData();
+                try (FileWriter fileOut = new FileWriter(configFile)) {
+                    gsonConverter.toJson(currentData, fileOut);
+                }
+            } else {
+                try (FileReader file = new FileReader(configFile)) {
+                    currentData = gsonConverter.fromJson(new JsonReader(file), ConfigData.class);
+                }
+            }
+        } catch (IOException e) {
+            URLMusicDiscs.LOGGER.error("Error while initializing configuration", e);
+        }
     }
 
     public static class ConfigData {

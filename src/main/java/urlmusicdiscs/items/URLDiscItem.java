@@ -18,21 +18,13 @@ public class URLDiscItem extends MusicDiscItem {
         super(comparatorOutput, sound, settings, lengthInSeconds);
     }
 
-    @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
         ItemStack stackInHand = player.getStackInHand(hand);
         if (!world.isClient) {
             PacketByteBuf bufInfo = PacketByteBufs.create();
             bufInfo.writeItemStack(stackInHand);
-
             ServerPlayNetworking.send((ServerPlayerEntity) player, URLMusicDiscs.CUSTOM_RECORD_GUI, bufInfo);
         }
-
         return TypedActionResult.success(stackInHand);
-    }
-
-    @Override
-    public int getSongLengthInTicks() {
-        return 0;
     }
 }

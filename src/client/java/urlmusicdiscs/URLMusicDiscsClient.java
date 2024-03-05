@@ -2,9 +2,7 @@ package urlmusicdiscs;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -28,9 +26,9 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 		// Client Music Played Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
 			client.execute(() -> {
-				BlockPos blockPos = buf.readBlockPos();
-				Vec3d blockPosition = blockPos.toCenterPos();
+				Vec3d blockPosition = buf.readBlockPos().toCenterPos();
 				String fileUrl = buf.readString();
+				String fileName = DigestUtils.sha256Hex(fileUrl);
 
 				FileSound currentSound = playingSounds.get(blockPosition);
 
@@ -42,42 +40,33 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 					return;
 				}
 
-				AudioHandlerClient audioHandler = new AudioHandlerClient();
-
-				if (!audioHandler.urlToFile(DigestUtils.sha256Hex(fileUrl) + ".ogg").exists() && client.player != null) {
+				if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
 
-						audioHandler.downloadAudio(fileUrl).thenAccept((result) -> {
-							if (result){
-								client.player.sendMessage(Text.literal("Downloading complete!"));
+					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
+						if (result){
+							client.player.sendMessage(Text.literal("Downloading complete!"));
 
-								FileSound fileSound = new FileSound(fileUrl,blockPosition);
-
-								playingSounds.put(blockPosition, fileSound);
-
-								client.getSoundManager().play(fileSound);
-							}
-							else{client.player.sendMessage(Text.literal("Failed to download music!"));}
-						});
-					return;
+							FileSound fileSound = new FileSound(fileName,blockPosition);
+							playingSounds.put(blockPosition, fileSound);
+							client.getSoundManager().play(fileSound);
+						}
+						else{client.player.sendMessage(Text.literal("Failed to download music!"));}
+					});
 				}
-
-				FileSound fileSound = new FileSound(fileUrl, blockPosition);
-
-				playingSounds.put(blockPosition, fileSound);
-
-				client.getSoundManager().play(fileSound);
+				else{
+					FileSound fileSound = new FileSound(fileName, blockPosition);
+					playingSounds.put(blockPosition, fileSound);
+					client.getSoundManager().play(fileSound);
+				}
 			});
 		});
 
 		// Client Open Record UI Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_GUI, (client, handler, buf, responseSender) -> {
 			client.execute(() -> {
-				ItemStack item = buf.readItemStack();
-
-				String currentUrl = item.getOrCreateNbt().getString("music_url");
-
+				String currentUrl = buf.readItemStack().getOrCreateNbt().getString("music_url");
 				client.setScreen(new MusicDiscScreen(!currentUrl.isEmpty() ? currentUrl : "URL"));
 			});
 		});
