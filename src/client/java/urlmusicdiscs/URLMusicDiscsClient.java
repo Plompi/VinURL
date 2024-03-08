@@ -25,10 +25,10 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 		// Client Music Played Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
+			Vec3d blockPosition = buf.readBlockPos().toCenterPos();
+			String fileUrl = buf.readString();
+			String fileName = DigestUtils.sha256Hex(fileUrl);
 			client.execute(() -> {
-				Vec3d blockPosition = buf.readBlockPos().toCenterPos();
-				String fileUrl = buf.readString();
-				String fileName = DigestUtils.sha256Hex(fileUrl);
 
 				FileSound currentSound = playingSounds.get(blockPosition);
 
@@ -65,8 +65,8 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 		// Client Open Record UI Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_GUI, (client, handler, buf, responseSender) -> {
+			String currentUrl = buf.readItemStack().getOrCreateNbt().getString("music_url");
 			client.execute(() -> {
-				String currentUrl = buf.readItemStack().getOrCreateNbt().getString("music_url");
 				client.setScreen(new MusicDiscScreen(!currentUrl.isEmpty() ? currentUrl : "URL"));
 			});
 		});

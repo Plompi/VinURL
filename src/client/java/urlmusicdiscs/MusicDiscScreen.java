@@ -87,8 +87,8 @@ public class MusicDiscScreen extends Screen {
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
-        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-        context.drawGuiTexture(TEXT_FIELD_TEXTURE, x + 59, y + 14, 110, 16);
+        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);;
+        context.drawTexture(TEXT_FIELD_TEXTURE, x + 59, y + 14, 0, 0, 110, 16);
 
         if (this.nameField == null) {
             updateTextPosition();
