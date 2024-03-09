@@ -3,7 +3,6 @@
 	"package": "urlmusicdiscs.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"IdentifierMixin",
 		"JukeboxMixin"
 	],
 	"injectors": {

@@ -2,13 +2,12 @@ package urlmusicdiscs;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public class URLMusicDiscsClient implements ClientModInitializer {
@@ -20,78 +19,55 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 		try {
 			FFmpeg.checkForExecutable();
 			YoutubeDL.checkForExecutable();
-		} catch (IOException e) {
+		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 
 		// Client Music Played Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
-			BlockPos blockPos = buf.readBlockPos();
-			Vec3d blockPosition = new Vec3d(blockPos.getX(), blockPos.getY(), blockPos.getZ());
+			Vec3d blockPosition = buf.readBlockPos().toCenterPos();
 			String fileUrl = buf.readString();
-
+			String fileName = DigestUtils.sha256Hex(fileUrl);
 			client.execute(() -> {
+
 				FileSound currentSound = playingSounds.get(blockPosition);
 
 				if (currentSound != null) {
 					client.getSoundManager().stop(currentSound);
 				}
 
-				if (fileUrl.equals("")) {
+				if (fileUrl.isEmpty()) {
 					return;
 				}
 
-				AudioHandlerClient audioHandler = new AudioHandlerClient();
-
-				if (!audioHandler.checkForAudioFile(fileUrl)) {
+				if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
-					try {
-						audioHandler.downloadVideoAsOgg(fileUrl).thenApply((in) -> {
+
+					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
+						if (result){
 							client.player.sendMessage(Text.literal("Downloading complete!"));
 
-							FileSound fileSound = new FileSound();
-							fileSound.position = blockPosition;
-							fileSound.fileUrl = fileUrl;
-
+							FileSound fileSound = new FileSound(fileName,blockPosition);
 							playingSounds.put(blockPosition, fileSound);
-
 							client.getSoundManager().play(fileSound);
-
-							return null;
-						});
-					} catch (IOException e) {
-						client.player.sendMessage(Text.literal("Failed to download music!"));
-					} catch (InterruptedException e) {
-						client.player.sendMessage(Text.literal("Failed to download music!"));
-					}
-					return;
+						}
+						else{client.player.sendMessage(Text.literal("Failed to download music!"));}
+					});
 				}
-
-				FileSound fileSound = new FileSound();
-				fileSound.position = blockPosition;
-				fileSound.fileUrl = fileUrl;
-
-				playingSounds.put(blockPosition, fileSound);
-
-				client.getSoundManager().play(fileSound);
+				else{
+					FileSound fileSound = new FileSound(fileName, blockPosition);
+					playingSounds.put(blockPosition, fileSound);
+					client.getSoundManager().play(fileSound);
+				}
 			});
 		});
 
 		// Client Open Record UI Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_GUI, (client, handler, buf, responseSender) -> {
-			ItemStack item = buf.readItemStack();
-
+			String currentUrl = buf.readItemStack().getOrCreateNbt().getString("music_url");
 			client.execute(() -> {
-				NbtCompound itemNbt = item.getNbt();
-
-				if (itemNbt == null) {
-					itemNbt = new NbtCompound();
-				}
-
-				String currentUrl = itemNbt.getString("music_url");
-
-				client.setScreen(new MusicDiscScreen(Text.translatable("test"), client.player, item, currentUrl != "" ? currentUrl : "URL"));
+				client.setScreen(new MusicDiscScreen(!currentUrl.isEmpty() ? currentUrl : "URL"));
 			});
 		});
 	}

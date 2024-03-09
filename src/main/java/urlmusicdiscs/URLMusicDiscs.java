@@ -3,22 +3,15 @@ package urlmusicdiscs;
 import net.fabricmc.api.ModInitializer;
 
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-//import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-//import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-//import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.item.Item;
-//import net.minecraft.item.ItemGroups;
-import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-//import net.minecraft.network.PacketByteBuf;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-//import net.minecraft.server.MinecraftServer;
-//import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -27,17 +20,15 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import urlmusicdiscs.items.URLDiscItem;
-//import ws.schild.jave.EncoderException;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.net.URI;
+import java.nio.file.Path;
 
 public class URLMusicDiscs implements ModInitializer {
 	public static final String MOD_ID = "urlmusicdiscs";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+	public static final Path CONFIGPATH = FabricLoader.getInstance().getConfigDir();
 
 	public static final Identifier CUSTOM_RECORD_PACKET_ID = new Identifier(MOD_ID, "play_sound");
 	public static final Identifier CUSTOM_RECORD_GUI = new Identifier(MOD_ID, "record_gui");
@@ -52,10 +43,11 @@ public class URLMusicDiscs implements ModInitializer {
 			Registries.ITEM,
 			new Identifier(MOD_ID, "custom_record"),
 			new URLDiscItem(
-17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 1
+					17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 0
 			)
 	);
 
+	public static final ServerConfig CONFIG = new ServerConfig();
 
 	@Override
 	public void onInitialize() {
@@ -74,27 +66,32 @@ public class URLMusicDiscs implements ModInitializer {
 
 			String urlName = buf.readString();
 
-			if (urlName.length() >= 200) {
+			try {
+				new URI(urlName).toURL();
+			} catch (Exception e) {
+				player.sendMessage(Text.literal("Song URL is invalid!"));
+				return;
+			}
+
+			if (urlName.length() >= 400) {
 				player.sendMessage(Text.literal("Song URL is too long!"));
 				return;
 			}
 
-			if (!urlName.startsWith("https://youtu.be") && !urlName.startsWith("https://www.youtube.com") && !urlName.startsWith("https://youtube.com")  && !urlName.startsWith("https://cdn.discordapp.com")) {
-				player.sendMessage(Text.literal("Song URL must be a Youtube or a Discord CDN URL!"));
-				return;
+			for (String[] urls: CONFIG.currentData.whitelistedUrls.values()
+			) {
+				for (String url: urls
+				) {
+					if (urlName.startsWith(url)){
+						player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+						NbtCompound currentNbt = currentItem.getOrCreateNbt();
+						currentNbt.putString("music_url", urlName);
+						currentItem.setNbt(currentNbt);
+						return;
+					}
+				}
 			}
-
-			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
-
-			NbtCompound currentNbt = currentItem.getNbt();
-
-			if (currentNbt == null) {
-				currentNbt = new NbtCompound();
-			}
-
-			currentNbt.putString("music_url", urlName);
-
-			currentItem.setNbt(currentNbt);
+			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", CONFIG.currentData.whitelistedUrls.keySet()))));
 		});
 	}
 }

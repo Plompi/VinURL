@@ -1,58 +1,29 @@
 package urlmusicdiscs;
 
-import net.fabricmc.loader.api.FabricLoader;
-
 import java.io.*;
 import java.util.concurrent.CompletableFuture;
 
 public class AudioHandlerClient {
-    public boolean checkForAudioFile(String urlName) {
-        String hashedName = Hashing.Sha256(urlName);
-
-        File audio = new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/client_downloads/" + hashedName + ".ogg").toString());
-
-        return audio.exists();
-    }
-
-    public CompletableFuture<Boolean> downloadVideoAsOgg(String urlName) throws IOException, InterruptedException {
+    public static CompletableFuture<Boolean> downloadAudio(String url, String fileName) {
         return CompletableFuture.supplyAsync(() -> {
-            String hashedName = Hashing.Sha256(urlName);
-            File audioIn = new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/client_downloads/" + hashedName + ".raw").toString());
-            File audioOut = new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/client_downloads/" + hashedName + ".ogg").toString());
-
             try {
-                YoutubeDL.executeYoutubeDLCommand(String.format("--quiet -S res:144 -o \"%s\" %s", audioIn.getAbsolutePath().toString(), urlName));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                YoutubeDL.executeCommand(url,"-x","--no-progress","--no-playlist","--audio-format","vorbis","--audio-quality","64","--postprocessor-args","ffmpeg:-ac 1","--ffmpeg-location",URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/ffmpeg").toString(),"-o", fileNameToFile(fileName).toString());
+                return true;
+            } catch (IOException | InterruptedException e) {
+                return false;
             }
-
-            try {
-                FFmpeg.executeFFmpegCommand(String.format("-i \"%s\" -c:a libvorbis -ac 1 -b:a 64k -vn -y -nostdin -nostats -loglevel 0 \"%s\"", audioIn.getAbsolutePath().toString(), audioOut.getAbsolutePath().toString()));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-
-            return true;
         });
-
-
     }
 
-    public InputStream getAudioInputStream(String urlName) {
-        String hashedName = Hashing.Sha256(urlName);
-        File audio = new File(FabricLoader.getInstance().getConfigDir().resolve("urlmusicdiscs/client_downloads/" + hashedName + ".ogg").toString());
-
-        InputStream fileStream;
+    public static InputStream getAudioInputStream(String fileName) {
         try {
-            fileStream = new FileInputStream(audio);
+            return new FileInputStream(fileNameToFile(fileName));
         } catch (FileNotFoundException e) {
             return null;
         }
+    }
 
-        return fileStream;
+    public static File fileNameToFile(String fileName){
+        return new File(URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/client_downloads/" + fileName).toString());
     }
 }
