@@ -53,7 +53,10 @@ public class MusicDiscScreen extends Screen {
     @Override
     public void resize(MinecraftClient client, int width, int height) {
         super.resize(client, width, height);
+
+        String string = this.nameField.getText();
         updateTextPosition();
+        this.nameField.setText(string);
     }
 
     @Override
@@ -84,7 +87,6 @@ public class MusicDiscScreen extends Screen {
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
         drawTexture(matrices, x, y, 0, 0, backgroundWidth, backgroundHeight);
-        RenderSystem.setShaderTexture(0, TEXTURE);
         drawTexture(matrices, x + 59, y + 14, 0, backgroundHeight, 110, 16);
 
         if (this.nameField == null) {
