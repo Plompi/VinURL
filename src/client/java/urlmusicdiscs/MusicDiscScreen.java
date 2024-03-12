@@ -17,7 +17,6 @@ import java.util.Objects;
 
 public class MusicDiscScreen extends Screen {
     private static final Identifier TEXTURE = new Identifier(URLMusicDiscs.MOD_ID, "textures/gui/record_input.png");
-    private static final Identifier TEXT_FIELD_TEXTURE = new Identifier("minecraft", "container/anvil/text_field");
     private TextFieldWidget nameField;
 
     private final static int backgroundWidth = 176;
@@ -87,8 +86,8 @@ public class MusicDiscScreen extends Screen {
         RenderSystem.setShaderTexture(0, TEXTURE);
         int x = (width - backgroundWidth) / 2;
         int y = (height - backgroundHeight) / 2;
-        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);;
-        context.drawTexture(TEXT_FIELD_TEXTURE, x + 59, y + 14, 0, 0, 110, 16);
+        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
+        context.drawTexture(TEXTURE, x + 59, y + 14, 0, backgroundHeight, 110, 16);
 
         if (this.nameField == null) {
             updateTextPosition();
