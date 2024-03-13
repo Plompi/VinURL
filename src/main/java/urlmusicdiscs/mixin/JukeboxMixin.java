@@ -26,8 +26,8 @@ public class JukeboxMixin {
 		bufInfo.writeBlockPos(jukebox.getPos());
 		bufInfo.writeString("");
 
-		Objects.requireNonNull(jukebox.getWorld()).getPlayers().forEach(playerEntity1 -> {
-			ServerPlayNetworking.send((ServerPlayerEntity) playerEntity1, URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, bufInfo);
+		Objects.requireNonNull(jukebox.getWorld()).getPlayers().forEach(playerEntity -> {
+			ServerPlayNetworking.send((ServerPlayerEntity) playerEntity, URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, bufInfo);
 		});
 	}
 
@@ -47,8 +47,8 @@ public class JukeboxMixin {
 				bufInfo.writeString(musicUrl);
 
 				jukebox.getWorld().getPlayers().forEach(
-						playerEntity1 -> ServerPlayNetworking.send(
-								(ServerPlayerEntity) playerEntity1,
+						playerEntity -> ServerPlayNetworking.send(
+								(ServerPlayerEntity) playerEntity,
 								URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, bufInfo
 						)
 				);
