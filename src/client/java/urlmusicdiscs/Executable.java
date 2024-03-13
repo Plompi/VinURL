@@ -53,10 +53,13 @@ public class Executable {
     static void executeCommand(String executable, String ... arguments) throws IOException, InterruptedException {
 
         Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(executable),Arrays.stream(arguments)).toArray(String[]::new));
-        String line;
-        while ((line = new BufferedReader(new InputStreamReader(process.getErrorStream())).readLine()) != null){
-            URLMusicDiscs.LOGGER.info(line);
+
+        try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))){
+            for (String line; (line = errorReader.readLine()) != null;) {
+                URLMusicDiscs.LOGGER.info(line);
+            }
         }
+
         if (process.waitFor() != 0){throw new IOException();}
     }
 }
