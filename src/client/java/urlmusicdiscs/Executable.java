@@ -12,20 +12,30 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.kohsuke.github.GitHub;
 
 public class Executable {
 
-    static void checkForExecutable(String DownloadURL, String FileName, File Directory, Path FilePath) throws IOException, URISyntaxException {
-
+    static void checkForExecutable(String FileName, File Directory, Path FilePath, String RepositoryFile, String RepositoryName) throws IOException, URISyntaxException {
         if(!Directory.exists() && !Directory.mkdirs()) {
             throw new IOException();
         }
-        if (!FilePath.toFile().exists()) {downloadExecutable(DownloadURL, FileName, FilePath);}
+        if (!FilePath.toFile().exists()) {downloadExecutable(FileName, FilePath, RepositoryFile, RepositoryName);}
+        else{
+            checkForUpdates(FileName, FilePath, RepositoryFile, RepositoryName);
+        }
     }
 
-    static void downloadExecutable(String DownloadURL, String FileName, Path FilePath) throws IOException, URISyntaxException {
-        try (InputStream inputStream = getDownloadInputStream(DownloadURL)) {
-            if (DownloadURL.endsWith(".zip")) {
+    static void checkForUpdates(String FileName, Path FilePath, String RepositoryFile, String RepositoryName) throws IOException, URISyntaxException {
+        if (!currentVersion(FilePath).equals(latestVersion(RepositoryName))){
+            Files.deleteIfExists(FilePath);
+            downloadExecutable(FileName, FilePath, RepositoryFile, RepositoryName);
+        }
+    }
+
+    static void downloadExecutable(String FileName, Path FilePath, String RepositoryFile, String RepositoryName) throws IOException, URISyntaxException {
+        try (InputStream inputStream = getDownloadInputStream(RepositoryFile,RepositoryName)) {
+            if (RepositoryFile.endsWith(".zip")) {
                 try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
                     ZipEntry zipEntry = zipInput.getNextEntry();
                     while (zipEntry != null) {
@@ -43,23 +53,41 @@ public class Executable {
             if (SystemUtils.IS_OS_UNIX) {
                 Runtime.getRuntime().exec(new String[]{"chmod", "+x", FilePath.toString()});
             }
+            createVersionFile(latestVersion(RepositoryName), FilePath.getParent().resolve("version.txt"));
         }
     }
 
-    private static InputStream getDownloadInputStream(String DownloadURL) throws IOException, URISyntaxException {
-        return new URI(DownloadURL).toURL().openStream();
+    static void createVersionFile(String version, Path versionFilePath) throws IOException {
+        try (FileWriter writer = new FileWriter(versionFilePath.toFile())) {
+            writer.write(version);
+        }
+    }
+
+    static String currentVersion(Path FilePath) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new FileReader(FilePath.toFile()))) {
+            return reader.readLine().trim();
+        }
+    }
+
+    static String latestVersion(String RepositoryName){
+        try {
+            return GitHub.connectAnonymously().getRepository(RepositoryName).getLatestRelease().getTagName();
+        } catch (IOException e) {
+            return "";
+        }
+    }
+
+    private static InputStream getDownloadInputStream(String RepositoryFile, String RepositoryName) throws IOException, URISyntaxException {
+        return new URI(String.format("https://github.com/%s/releases/latest/download/%s",RepositoryName,RepositoryFile)).toURL().openStream();
     }
 
     static void executeCommand(String executable, String ... arguments) throws IOException, InterruptedException {
-
         Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(executable),Arrays.stream(arguments)).toArray(String[]::new));
-
         try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))){
             for (String line; (line = errorReader.readLine()) != null;) {
                 URLMusicDiscs.LOGGER.info(line);
             }
         }
-
         if (process.waitFor() != 0){throw new IOException();}
     }
 }

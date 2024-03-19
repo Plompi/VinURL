@@ -15,7 +15,7 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		// Download FFmpeg and YoutubeDL if they are not already downloaded.
+		// Download FFmpeg and YoutubeDL if they are not already downloaded and checks for updates.
 		try {
 			FFmpeg.checkForExecutable();
 			YoutubeDL.checkForExecutable();
