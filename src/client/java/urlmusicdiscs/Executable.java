@@ -27,7 +27,7 @@ public class Executable {
     }
 
     static void checkForUpdates(String FileName, Path FilePath, String RepositoryFile, String RepositoryName) throws IOException, URISyntaxException {
-        if (!currentVersion(FilePath).equals(latestVersion(RepositoryName))){
+        if (!currentVersion(FilePath.getParent().resolve("version.txt")).equals(latestVersion(RepositoryName))){
             Files.deleteIfExists(FilePath);
             downloadExecutable(FileName, FilePath, RepositoryFile, RepositoryName);
         }
