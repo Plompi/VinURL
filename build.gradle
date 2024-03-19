@@ -33,6 +33,7 @@ loom {
 dependencies {
 	implementation 'net.lingala.zip4j:zip4j:2.11.5'
 	implementation 'com.google.code.gson:gson:2.10.1'
+	implementation 'org.kohsuke:github-api:1.319'
 
 
 	// To change the versions see the gradle.properties file
