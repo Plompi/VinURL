@@ -25,7 +25,7 @@ import java.nio.file.Path;
 
 public class URLMusicDiscs implements ModInitializer {
 	public static final String MOD_ID = "urlmusicdiscs";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final Path CONFIGPATH = FabricLoader.getInstance().getConfigDir();
 
@@ -42,7 +42,7 @@ public class URLMusicDiscs implements ModInitializer {
 			Registries.ITEM,
 			new Identifier(MOD_ID, "custom_record"),
 			new URLDiscItem(
-17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 0
+					17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 0
 			)
 	);
 
@@ -71,9 +71,9 @@ public class URLMusicDiscs implements ModInitializer {
 			}
 
 			for (String[] urls: CONFIG.currentData.whitelistedUrls.values()
-				 ) {
+			) {
 				for (String url: urls
-					 ) {
+				) {
 					if (urlName.startsWith(url)){
 						player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 						NbtCompound currentNbt = currentItem.getOrCreateNbt();
