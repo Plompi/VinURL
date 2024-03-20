@@ -39,5 +39,7 @@ public class ServerConfig {
             put("GDrive", new String[]{"https://drive.google.com/uc"});
         }};
         Boolean UpdateCheckingOnStartup = true;
+        Integer MaxAudioLengthInSeconds = 3600;
+        Integer AudioBitrate = 64;
     }
 }

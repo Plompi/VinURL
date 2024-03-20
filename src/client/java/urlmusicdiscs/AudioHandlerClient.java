@@ -7,7 +7,7 @@ public class AudioHandlerClient {
     public static CompletableFuture<Boolean> downloadAudio(String url, String fileName) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                YoutubeDL.executeCommand(url,"-x","--no-progress","--no-playlist","--audio-format","vorbis","--audio-quality","64","--postprocessor-args","ffmpeg:-ac 1","--ffmpeg-location",URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/ffmpeg").toString(),"-o", fileNameToFile(fileName).toString());
+                YoutubeDL.executeCommand(url,"-x","--no-progress","--no-playlist","--audio-format","vorbis","--audio-quality",URLMusicDiscs.CONFIG.currentData.AudioBitrate.toString(),"--postprocessor-args",String.format("ffmpeg:-ac 1 -t %s",URLMusicDiscs.CONFIG.currentData.MaxAudioLengthInSeconds+1),"--ffmpeg-location",URLMusicDiscs.CONFIGPATH.resolve("urlmusicdiscs/ffmpeg").toString(),"-o", fileNameToFile(fileName).toString());
                 return true;
             } catch (IOException | InterruptedException e) {
                 return false;
