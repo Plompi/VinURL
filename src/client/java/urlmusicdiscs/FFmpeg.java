@@ -17,4 +17,8 @@ public class FFmpeg{
     static void checkForExecutable() throws IOException, URISyntaxException {
         Executable.checkForExecutable(FileName, Directory, FilePath, RepositoryFile, RepositoryName);
     }
+
+    static boolean checkForUpdates(){
+        return Executable.checkForUpdates(FileName, FilePath, RepositoryFile, RepositoryName);
+    }
 }

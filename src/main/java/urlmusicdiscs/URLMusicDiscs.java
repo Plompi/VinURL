@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import urlmusicdiscs.items.URLDiscItem;
 
+import java.net.URL;
 import java.nio.file.Path;
 
 public class URLMusicDiscs implements ModInitializer {
@@ -64,6 +65,13 @@ public class URLMusicDiscs implements ModInitializer {
 			}
 
 			String urlName = buf.readString();
+
+			try {
+				new URL(urlName).toURI();
+			} catch (Exception e) {
+				player.sendMessage(Text.literal("Song URL is invalid!"));
+				return;
+			}
 
 			if (urlName.length() >= 400) {
 				player.sendMessage(Text.literal("Song URL is too long!"));

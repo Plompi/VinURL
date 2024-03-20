@@ -18,6 +18,10 @@ public class YoutubeDL {
         Executable.checkForExecutable(FileName, Directory, FilePath, RepositoryFile, RepositoryName);
     }
 
+    static boolean checkForUpdates(){
+        return Executable.checkForUpdates(FileName, FilePath, RepositoryFile, RepositoryName);
+    }
+
     static void executeCommand(String ... arguments) throws IOException, InterruptedException {
         Executable.executeCommand(FilePath.toString(), arguments);
     }

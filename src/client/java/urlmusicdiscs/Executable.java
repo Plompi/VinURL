@@ -21,15 +21,22 @@ public class Executable {
             throw new IOException();
         }
         if (!FilePath.toFile().exists()) {downloadExecutable(FileName, FilePath, RepositoryFile, RepositoryName);}
-        else{
+        else if (URLMusicDiscs.CONFIG.currentData.UpdateCheckingOnStartup){
             checkForUpdates(FileName, FilePath, RepositoryFile, RepositoryName);
         }
     }
 
-    static void checkForUpdates(String FileName, Path FilePath, String RepositoryFile, String RepositoryName) throws IOException, URISyntaxException {
-        if (!currentVersion(FilePath.getParent().resolve("version.txt")).equals(latestVersion(RepositoryName))){
-            Files.deleteIfExists(FilePath);
-            downloadExecutable(FileName, FilePath, RepositoryFile, RepositoryName);
+    static boolean checkForUpdates(String FileName, Path FilePath, String RepositoryFile, String RepositoryName) {
+        try{
+            if (!currentVersion(FilePath.getParent().resolve("version.txt")).equals(latestVersion(RepositoryName))){
+                Files.deleteIfExists(FilePath);
+                downloadExecutable(FileName, FilePath, RepositoryFile, RepositoryName);
+                return true;
+            }
+            return false;
+        }
+        catch (Exception ignored){
+            return false;
         }
     }
 

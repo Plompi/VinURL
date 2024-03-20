@@ -23,6 +23,8 @@ public class URLMusicDiscsClient implements ClientModInitializer {
 			throw new RuntimeException(e);
 		}
 
+		Commands.register();
+
 		// Client Music Played Event
 		ClientPlayNetworking.registerGlobalReceiver(URLMusicDiscs.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
 			Vec3d blockPosition = buf.readBlockPos().toCenterPos();

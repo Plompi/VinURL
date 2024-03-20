@@ -38,5 +38,6 @@ public class ServerConfig {
             put("Dropbox", new String[]{"https://www.dropbox.com/scl","https://dropbox.com/scl"});
             put("GDrive", new String[]{"https://drive.google.com/uc"});
         }};
+        Boolean UpdateCheckingOnStartup = true;
     }
 }
