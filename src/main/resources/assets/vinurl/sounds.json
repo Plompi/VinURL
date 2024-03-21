@@ -1,0 +1,10 @@
+{
+  "placeholder_sound": {
+    "sounds": [
+      {
+        "name": "vinurl:placeholder_sound",
+        "stream": true
+      }
+    ]
+  }
+}

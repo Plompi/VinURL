@@ -1,32 +1,32 @@
 {
 	"schemaVersion": 1,
-	"id": "urlmusicdiscs",
+	"id": "vinurl",
 	"version": "${version}",
-	"name": "URL Music Discs",
+	"name": "VinURL",
 	"description": "Adds a writeable music disc, allowing you to customize the music that plays from any youtube link.",
 	"authors": [
-		"Hoofer",
-		"Plompii"
+		"Plompii",
+		"Hoofer"
 	],
 	"contact": {
-		"homepage": "https://github.com/HooferDevelops",
-		"sources": "https://github.com/HooferDevelops/url-music-discs"
+		"homepage": "https://plompi.github.io/",
+		"sources": "https://github.com/Plompi/VinURL"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/urlmusicdiscs/icon.png",
+	"icon": "assets/vinurl/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"urlmusicdiscs.URLMusicDiscs"
+			"com.vinurl.VinURL"
 		],
 		"client": [
-			"urlmusicdiscs.URLMusicDiscsClient"
+			"com.vinurl.VinURLClient"
 		]
 	},
 	"mixins": [
-		"urlmusicdiscs.mixins.json",
+		"vinurl.mixins.json",
 		{
-			"config": "urlmusicdiscs.client.mixins.json",
+			"config": "vinurl.client.mixins.json",
 			"environment": "client"
 		}
 	],
