@@ -1,4 +1,3 @@
-<div style="text-align: center;">
-
-![logo](readme-assets/Description.png)
-</div>
+<p align="center">
+  <img src="readme-assets/Description.png">
+</p>
