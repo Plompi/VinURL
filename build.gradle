@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.5.7'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -22,7 +22,7 @@ loom {
     splitEnvironmentSourceSets()
 
 	mods {
-		"urlmusicdiscs" {
+		"vinurl" {
 			sourceSet sourceSets.main
 			sourceSet sourceSets.client
 		}
@@ -33,7 +33,6 @@ loom {
 dependencies {
 	implementation 'net.lingala.zip4j:zip4j:2.11.5'
 	implementation 'com.google.code.gson:gson:2.10.1'
-
 
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
