@@ -70,4 +70,3 @@ public class MusicDiscScreen extends Screen {
         textField.render(context, mouseX, mouseY, delta);
     }
 }
-

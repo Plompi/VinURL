@@ -7,7 +7,6 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class ServerConfig {
     public ConfigData currentData;
 

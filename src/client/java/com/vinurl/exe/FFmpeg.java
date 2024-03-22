@@ -2,7 +2,6 @@ package com.vinurl.exe;
 
 import com.vinurl.VinURL;
 import org.apache.commons.lang3.SystemUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.vinurl.VinURL;
 import com.vinurl.items.VinURLDiscItem;
-
 import java.util.Objects;
 
 @Mixin(JukeboxBlockEntity.class)

@@ -13,7 +13,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import org.apache.commons.io.FileUtils;
-
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
