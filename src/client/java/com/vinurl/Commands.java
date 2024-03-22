@@ -24,7 +24,7 @@ public class Commands {
             .then(ClientCommandManager.literal("delete")
                 .executes(context -> {
                     try {
-                        FileUtils.deleteDirectory(VinURL.CONFIGPATH.resolve("vinurl/client_downloads").toFile());
+                        FileUtils.deleteDirectory(VinURL.CONFIGPATH.resolve("client_downloads").toFile());
                         context.getSource().sendFeedback(Text.literal("Deleted all Audio Files"));
                         return 1;
                     } catch (IOException e) {

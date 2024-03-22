@@ -12,7 +12,7 @@ public class ServerConfig {
     public ConfigData currentData;
 
     public ServerConfig() {
-        File configFile = VinURL.CONFIGPATH.resolve("vinurl/VinURLConfig.json").toFile();
+        File configFile = VinURL.CONFIGPATH.resolve("VinURLConfig.json").toFile();
         Gson gsonConverter = new GsonBuilder().setPrettyPrinting().create();
 
         try {

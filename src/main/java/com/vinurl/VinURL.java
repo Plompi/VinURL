@@ -28,7 +28,7 @@ public class VinURL implements ModInitializer {
 	public static final String MOD_ID = "vinurl";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-	public static final Path CONFIGPATH = FabricLoader.getInstance().getConfigDir();
+	public static final Path CONFIGPATH = FabricLoader.getInstance().getConfigDir().resolve(MOD_ID);
 
 	public static final Identifier CUSTOM_RECORD_PACKET_ID = new Identifier(MOD_ID, "play_sound");
 	public static final Identifier CUSTOM_RECORD_GUI = new Identifier(MOD_ID, "record_gui");

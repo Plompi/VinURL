@@ -9,7 +9,7 @@ import java.nio.file.Path;
 
 public class FFmpeg{
     private static final String FileName = "ffmpeg" + (SystemUtils.IS_OS_WINDOWS ? ".exe": "");
-    private static final File Directory = VinURL.CONFIGPATH.resolve("vinurl/ffmpeg").toFile();
+    private static final File Directory = VinURL.CONFIGPATH.resolve("ffmpeg").toFile();
     private static final Path FilePath = Directory.toPath().resolve(FileName);
     private static final String RepositoryFile = String.format("ffmpeg-%s-x64.zip",(SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows"));
     private static final String RepositoryName = "Tyrrrz/FFmpegBin";
