@@ -1,5 +1,9 @@
 package com.vinurl;
 
+import com.vinurl.cmd.Commands;
+import com.vinurl.exe.FFmpeg;
+import com.vinurl.exe.YoutubeDL;
+import com.vinurl.gui.MusicDiscScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.text.Text;

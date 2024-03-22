@@ -32,14 +32,14 @@ public class ServerConfig {
     }
 
     public static class ConfigData {
-        Map<String, String[]> whitelistedUrls = new HashMap<>() {{
+        public Map<String, String[]> whitelistedUrls = new HashMap<>() {{
             put("Youtube", new String[]{"https://youtu.be", "https://www.youtube.com", "https://youtube.com"});
             put("Discord", new String[]{"https://cdn.discordapp.com"});
             put("Dropbox", new String[]{"https://www.dropbox.com/scl","https://dropbox.com/scl"});
             put("GDrive", new String[]{"https://drive.google.com/uc"});
         }};
-        Boolean UpdateCheckingOnStartup = true;
-        Integer MaxAudioLengthInSeconds = 3600;
-        Integer AudioBitrate = 64;
+        public Boolean UpdateCheckingOnStartup = true;
+        public Integer MaxAudioLengthInSeconds = 3600;
+        public Integer AudioBitrate = 64;
     }
 }

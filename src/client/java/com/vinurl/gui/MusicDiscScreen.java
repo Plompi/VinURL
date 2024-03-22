@@ -1,5 +1,6 @@
-package com.vinurl;
+package com.vinurl.gui;
 
+import com.vinurl.VinURL;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
@@ -15,11 +16,13 @@ public class MusicDiscScreen extends Screen {
     private static final Identifier TEXTURE = new Identifier(VinURL.MOD_ID, "textures/gui/record_input.png");
     private final static int backgroundWidth = 176;
     private final static int backgroundHeight = 44;
+    private int x;
+    private int y;
     private final String inputDefaultText;
     private final TextFieldWidget textField;
 
 
-    protected MusicDiscScreen(String inputDefaultText) {
+    public MusicDiscScreen(String inputDefaultText) {
         super(Text.literal("VinURL Screen"));
 
         this.inputDefaultText = inputDefaultText;
@@ -30,14 +33,16 @@ public class MusicDiscScreen extends Screen {
         this.textField.setDrawsBackground(false);
         this.textField.setEditableColor(-1);
         this.textField.setFocusUnlocked(false);
-        this.setFocused(this.textField);
         textField.setText(this.inputDefaultText);
     }
 
     @Override
     protected void init() {
         super.init();
-        textField.setPosition((width-backgroundWidth)/2 + 62, (height-backgroundHeight)/2 + 18);
+        x = (width - backgroundWidth) / 2;
+        y = (height - backgroundHeight) / 2;
+        textField.setPosition(x + 62, y + 18);
+        this.setFocused(this.textField);
         this.addSelectableChild(this.textField);
     }
 
@@ -57,14 +62,12 @@ public class MusicDiscScreen extends Screen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        renderInGameBackground(context);
-        int x = (width - backgroundWidth) / 2;
-        int y = (height - backgroundHeight) / 2;
+        context.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
         context.drawTexture(TEXTURE, x + 59, y + 14, 0, backgroundHeight, 110, 16);
-        this.textField.render(context, mouseX, mouseY, delta);
+        textField.render(context, mouseX, mouseY, delta);
     }
 }
+

@@ -1,6 +1,9 @@
-package com.vinurl;
+package com.vinurl.cmd;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.vinurl.VinURL;
+import com.vinurl.exe.FFmpeg;
+import com.vinurl.exe.YoutubeDL;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;

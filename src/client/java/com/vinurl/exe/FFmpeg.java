@@ -1,5 +1,6 @@
-package com.vinurl;
+package com.vinurl.exe;
 
+import com.vinurl.VinURL;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
@@ -14,11 +15,11 @@ public class FFmpeg{
     private static final String RepositoryFile = String.format("ffmpeg-%s-x64.zip",(SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows"));
     private static final String RepositoryName = "Tyrrrz/FFmpegBin";
 
-    static void checkForExecutable() throws IOException, URISyntaxException {
+    public static void checkForExecutable() throws IOException, URISyntaxException {
         Executable.checkForExecutable(FileName, Directory, FilePath, RepositoryFile, RepositoryName);
     }
 
-    static boolean checkForUpdates(){
+    public static boolean checkForUpdates(){
         return Executable.checkForUpdates(FileName, FilePath, RepositoryFile, RepositoryName);
     }
 }

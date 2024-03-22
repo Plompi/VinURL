@@ -1,5 +1,6 @@
-package com.vinurl;
+package com.vinurl.exe;
 
+import com.vinurl.VinURL;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -14,15 +15,15 @@ public class YoutubeDL {
     private static final String RepositoryName = "yt-dlp/yt-dlp";
 
 
-    static void checkForExecutable() throws IOException, URISyntaxException{
+    public static void checkForExecutable() throws IOException, URISyntaxException{
         Executable.checkForExecutable(FileName, Directory, FilePath, RepositoryFile, RepositoryName);
     }
 
-    static boolean checkForUpdates(){
+    public static boolean checkForUpdates(){
         return Executable.checkForUpdates(FileName, FilePath, RepositoryFile, RepositoryName);
     }
 
-    static void executeCommand(String ... arguments) throws IOException, InterruptedException {
+    public static void executeCommand(String ... arguments) throws IOException, InterruptedException {
         Executable.executeCommand(FilePath.toString(), arguments);
     }
 }
