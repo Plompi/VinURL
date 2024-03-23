@@ -1,12 +1,13 @@
 package com.vinurl.gui;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.vinurl.VinURL;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -63,10 +64,11 @@ public class MusicDiscScreen extends Screen {
     }
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
-        context.drawTexture(TEXTURE, x, y, 0, 0, backgroundWidth, backgroundHeight);
-        context.drawTexture(TEXTURE, x + 59, y + 14, 0, backgroundHeight, 110, 16);
-        textField.render(context, mouseX, mouseY, delta);
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        fillGradient(matrices, 0, 0, this.width, this.height, -1072689136, -804253680);
+        RenderSystem.setShaderTexture(0, TEXTURE);
+        drawTexture(matrices, x , y, 0, 0, backgroundWidth, backgroundHeight);
+        drawTexture(matrices, x + 59, y + 14, 0, backgroundHeight, 110, 16);
+        textField.render(matrices, mouseX, mouseY, delta);
     }
 }
