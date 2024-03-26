@@ -9,6 +9,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
@@ -50,17 +51,17 @@ public class VinURLClient implements ClientModInitializer {
 
 
 					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
-						if (result){
+						if (result) {
 							client.player.sendMessage(Text.literal("Downloading complete!"));
 
-							FileSound fileSound = new FileSound(fileName,blockPosition);
+							FileSound fileSound = new FileSound(fileName, blockPosition);
 							playingSounds.put(blockPosition, fileSound);
 							client.getSoundManager().play(fileSound);
+						} else {
+							client.player.sendMessage(Text.literal("Failed to download music!"));
 						}
-						else{client.player.sendMessage(Text.literal("Failed to download music!"));}
 					});
-				}
-				else{
+				} else {
 					FileSound fileSound = new FileSound(fileName, blockPosition);
 					playingSounds.put(blockPosition, fileSound);
 					client.getSoundManager().play(fileSound);
