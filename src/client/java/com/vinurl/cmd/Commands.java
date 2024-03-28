@@ -4,16 +4,19 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.vinurl.VinURL;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
+import io.wispforest.owo.config.ui.ConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import org.apache.commons.io.FileUtils;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
@@ -48,6 +51,12 @@ public class Commands {
                 });
                 return 1;
             }))
+
+                .then(ClientCommandManager.literal("config").executes(context -> {
+                    ConfigScreen screen = Objects.requireNonNull(ConfigScreen.getProvider(VinURL.MOD_ID)).apply(null);
+                    MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
+                    return 0;
+                }))
 
             .then(ClientCommandManager.literal("set")
                 .then(argument("url", StringArgumentType.greedyString())
