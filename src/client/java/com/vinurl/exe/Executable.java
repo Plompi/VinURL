@@ -1,6 +1,7 @@
 package com.vinurl.exe;
 
 import com.vinurl.VinURL;
+import com.vinurl.VinURLClient;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -23,7 +24,7 @@ public class Executable {
 		if (directory.exists() || directory.mkdirs()) {
 			if (!filePath.toFile().exists()) {
 				downloadExecutable(fileName, filePath, repositoryFile, repositoryName);
-			} else if (VinURL.CONFIG.currentData.UpdateCheckingOnStartup) {
+			} else if (VinURLClient.CONFIG.UpdateCheckingOnStartup()) {
 				checkForUpdates(fileName, directory, repositoryFile, repositoryName);
 			}
 		}

@@ -16,6 +16,7 @@ import java.util.HashMap;
 
 public class VinURLClient implements ClientModInitializer {
 	HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
+	public static final com.vinurl.VinURLConfig CONFIG = com.vinurl.VinURLConfig.createAndLoad();
 
 	@Override
 	public void onInitializeClient() {

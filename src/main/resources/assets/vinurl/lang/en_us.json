@@ -1,4 +1,16 @@
 {
   "item.vinurl.custom_record": "Custom Music Disc",
-  "item.vinurl.custom_record.desc": "Custom Song"
+  "item.vinurl.custom_record.desc": "Custom Song",
+  "text.config.VinURLConfig.option.UpdateCheckingOnStartup": "Auto Updates",
+  "text.config.VinURLConfig.option.UpdateCheckingOnStartup.tooltip": "update checks on startup for the YT-Downloader & FFmpeg",
+  "text.config.VinURLConfig.option.AudioBitrate": "Audio Quality",
+  "text.config.VinURLConfig.option.AudioBitrate.tooltip": "Quality of the Audio Files",
+  "text.config.VinURLConfig.option.AudioBitrate.value.low": "Low",
+  "text.config.VinURLConfig.option.AudioBitrate.value.medium": "Medium",
+  "text.config.VinURLConfig.option.AudioBitrate.value.high": "High",
+  "text.config.VinURLConfig.option.MaxAudioInMinutes": "Audio Length",
+  "text.config.VinURLConfig.option.MaxAudioInMinutes.tooltip": "Maximum length of Audio Files in minutes",
+  "text.config.VinURLConfig.title": "VinURL Config",
+  "text.config.VinURLConfig.section.General": "General",
+  "text.config.VinURLConfig.section.AudioSettings": "Audio Settings"
 }
