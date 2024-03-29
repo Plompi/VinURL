@@ -106,9 +106,7 @@ modrinth {
 	uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
 	gameVersions = [project.minecraft_version] // Must be an array, even with only one version
 	loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
-	String content = new File("CHANGELOG.md").readBytes()
-	content = content.replace(System.lineSeparator(), " \n ")
-	changelog = content
+	changelog = new String(new File("CHANGELOG.md").readBytes())
 
 	dependencies { // A special DSL for creating dependencies
 		// scope.type
