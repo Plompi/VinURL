@@ -63,12 +63,12 @@ public class MusicDiscScreen extends Screen {
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
-    @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        fillGradient(matrices, 0, 0, this.width, this.height, -1072689136, -804253680);
-        RenderSystem.setShaderTexture(0, TEXTURE);
-        drawTexture(matrices, x , y, 0, 0, backgroundWidth, backgroundHeight);
-        drawTexture(matrices, x + 59, y + 14, 0, backgroundHeight, 110, 16);
-        textField.render(matrices, mouseX, mouseY, delta);
-    }
+	@Override
+	public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+		fillGradient(matrices, 0, 0, this.width, this.height, -1072689136, -804253680);
+		RenderSystem.setShaderTexture(0, TEXTURE);
+		drawTexture(matrices, x, y, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
+		drawTexture(matrices, x + 59, y + 14, 0, BACKGROUND_HEIGHT, 110, 16);
+		textField.render(matrices, mouseX, mouseY, delta);
+	}
 }
