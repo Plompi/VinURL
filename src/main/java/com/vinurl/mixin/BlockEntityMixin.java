@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(BlockEntity.class)
-public class BlockEntityMixin{
+public class BlockEntityMixin {
 	@Shadow
 	protected World world;
 	@Final

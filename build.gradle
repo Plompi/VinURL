@@ -12,6 +12,7 @@ base {
 }
 
 repositories {
+	maven { url 'https://maven.wispforest.io' }
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -33,8 +34,10 @@ loom {
 
 dependencies {
 	implementation 'net.lingala.zip4j:zip4j:2.11.5'
-	implementation 'com.google.code.gson:gson:2.10.1'
 
+	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
+	include "io.wispforest:owo-sentinel:${project.owo_version}"
+	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
@@ -103,10 +106,15 @@ modrinth {
 	uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
 	gameVersions = [project.minecraft_version] // Must be an array, even with only one version
 	loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
+	String content = new File("CHANGELOG.md").readBytes()
+	content = content.replace(System.lineSeparator(), " \n ")
+	changelog = content
+
 	dependencies { // A special DSL for creating dependencies
 		// scope.type
 		// The scope can be `required`, `optional`, `incompatible`, or `embedded`
 		// The type can either be `project` or `version`
 		required.project "fabric-api" // Creates a new required dependency on Fabric API
+		required.project "owo-lib"
 	}
 }

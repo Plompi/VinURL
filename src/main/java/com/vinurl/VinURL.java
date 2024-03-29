@@ -19,14 +19,13 @@ import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.vinurl.items.VinURLDiscItem;
+
 import java.net.URL;
 import java.nio.file.Path;
 
 public class VinURL implements ModInitializer {
 	public static final String MOD_ID = "vinurl";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-	public static final Path CONFIGPATH = FabricLoader.getInstance().getConfigDir();
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 
 	public static final Identifier CUSTOM_RECORD_PACKET_ID = new Identifier(MOD_ID, "play_sound");
@@ -45,8 +44,6 @@ public class VinURL implements ModInitializer {
 					17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 0
 			)
 	);
-
-	public static final ServerConfig CONFIG = new ServerConfig();
 
 	@Override
 	public void onInitialize() {
@@ -77,20 +74,10 @@ public class VinURL implements ModInitializer {
 				return;
 			}
 
-			for (String[] urls: CONFIG.currentData.whitelistedUrls.values()
-			) {
-				for (String url: urls
-				) {
-					if (urlName.startsWith(url)){
-						player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
-						NbtCompound currentNbt = currentItem.getOrCreateNbt();
-						currentNbt.putString("music_url", urlName);
-						currentItem.setNbt(currentNbt);
-						return;
-					}
-				}
-			}
-			player.sendMessage(Text.literal(String.format("Song URL must be a %s URL!", String.join(", ", CONFIG.currentData.whitelistedUrls.keySet()))));
+			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+			NbtCompound currentNbt = currentItem.getOrCreateNbt();
+			currentNbt.putString("music_url", urlName);
+			currentItem.setNbt(currentNbt);
 		});
 	}
 }
