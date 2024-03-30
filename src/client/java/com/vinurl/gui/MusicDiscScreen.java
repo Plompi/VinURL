@@ -6,7 +6,6 @@ import com.vinurl.VinURLClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -76,5 +75,9 @@ public class MusicDiscScreen extends Screen {
 		drawTexture(matrices, x, y, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		drawTexture(matrices, x + 59, y + 14, 0, BACKGROUND_HEIGHT, 110, 16);
 		textField.render(matrices, mouseX, mouseY, delta);
+
+		if (this.textField.getText().isEmpty()) {
+			drawTextWithShadow(matrices, MinecraftClient.getInstance().textRenderer, Text.literal("URL"), this.textField.getX(), this.textField.getY(), 0xAAAAAA);
+		}
 	}
 }
