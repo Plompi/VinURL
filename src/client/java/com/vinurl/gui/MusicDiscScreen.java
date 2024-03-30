@@ -2,9 +2,11 @@ package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.vinurl.VinURL;
+import com.vinurl.VinURLClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.client.util.math.MatrixStack;
@@ -27,7 +29,7 @@ public class MusicDiscScreen extends Screen {
 		super(Text.literal("VinURL Screen"));
 
 		this.inputDefaultText = inputDefaultText;
-		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, (width - BACKGROUND_WIDTH) / 2 + 62, (height - BACKGROUND_HEIGHT) / 2 + 18, 103, 12, Text.translatable("container.repair"));
+		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, (width - BACKGROUND_WIDTH) / 2 + 62, (height - BACKGROUND_HEIGHT) / 2 + 18, 98, 12, Text.translatable("container.repair"));
 		this.textField.setFocused(true);
 		this.textField.setMaxLength(200);
 		this.setInitialFocus(this.textField);
@@ -50,6 +52,10 @@ public class MusicDiscScreen extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
+			if (VinURLClient.isAprilFoolsDay) {
+				this.textField.setText("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+			}
+
 			if (!this.textField.getText().equals(this.inputDefaultText)) {
 				PacketByteBuf bufInfo = PacketByteBufs.create();
 				bufInfo.writeString(this.textField.getText());

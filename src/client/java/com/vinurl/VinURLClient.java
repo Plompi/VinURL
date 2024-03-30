@@ -12,10 +12,12 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
 import java.util.HashMap;
 
 public class VinURLClient implements ClientModInitializer {
 	HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
+	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 	public static final com.vinurl.VinURLConfig CONFIG = com.vinurl.VinURLConfig.createAndLoad();
 
 	@Override
@@ -74,7 +76,7 @@ public class VinURLClient implements ClientModInitializer {
 		ClientPlayNetworking.registerGlobalReceiver(VinURL.CUSTOM_RECORD_GUI, (client, handler, buf, responseSender) -> {
 			String currentUrl = buf.readItemStack().getOrCreateNbt().getString("music_url");
 			client.execute(() -> {
-				client.setScreen(new MusicDiscScreen(!currentUrl.isEmpty() ? currentUrl : "URL"));
+				client.setScreen(new MusicDiscScreen(currentUrl));
 			});
 		});
 	}
