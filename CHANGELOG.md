@@ -1,2 +1,1 @@
-- configuration now via Modmenu or /vinurl config possible
-- replaced whitelistedURLs with detecting video/audio files
+- added Placeholder in Disc GUI
