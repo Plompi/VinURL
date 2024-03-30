@@ -1,6 +1,7 @@
 package com.vinurl.gui;
 
 import com.vinurl.VinURL;
+import com.vinurl.VinURLClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
@@ -26,7 +27,7 @@ public class MusicDiscScreen extends Screen {
 		super(Text.literal("VinURL Screen"));
 
 		this.inputDefaultText = inputDefaultText;
-		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, (width - BACKGROUND_WIDTH) / 2 + 62, (height - BACKGROUND_HEIGHT) / 2 + 18, 103, 12, Text.translatable("container.repair"));
+		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, (width - BACKGROUND_WIDTH) / 2 + 62, (height - BACKGROUND_HEIGHT) / 2 + 18, 98, 12, Text.translatable("container.repair"));
 		this.textField.setFocused(true);
 		this.textField.setMaxLength(200);
 		this.setInitialFocus(this.textField);
@@ -49,6 +50,10 @@ public class MusicDiscScreen extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
+			if (VinURLClient.isAprilFoolsDay) {
+				this.textField.setText("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+			}
+
 			if (!this.textField.getText().equals(this.inputDefaultText)) {
 				PacketByteBuf bufInfo = PacketByteBufs.create();
 				bufInfo.writeString(this.textField.getText());
@@ -68,5 +73,9 @@ public class MusicDiscScreen extends Screen {
 		context.drawTexture(TEXTURE, x, y, 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT);
 		context.drawTexture(TEXTURE, x + 59, y + 14, 0, BACKGROUND_HEIGHT, 110, 16);
 		textField.render(context, mouseX, mouseY, delta);
+
+		if (this.textField.getText().isEmpty()) {
+			context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, Text.literal("URL"), this.textField.getX(), this.textField.getY(), 0xAAAAAA);
+		}
 	}
 }
