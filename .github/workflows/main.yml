@@ -33,6 +33,12 @@ jobs:
 
       - name: Build
         run: ./gradlew clean build
+        
+      - uses: madhead/read-java-properties@latest
+        id: read_properties
+        with:
+          file: gradle.properties
+          all: true
 
         env:
           mod_name: ${{ steps.read_properties.outputs.archives_base_name }}
