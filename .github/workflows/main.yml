@@ -37,6 +37,8 @@ jobs:
       - name: Publish (CurseForge/Modrinth/GitHub)
         uses: Kir-Antipov/mc-publish@v3.3                                   
         with:
+          files: build/libs/!(*-@(dev|sources|javadoc)).jar
+          name: ""
           modrinth-id: 5PsMUIsq                                             
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
         
