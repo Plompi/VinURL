@@ -45,7 +45,7 @@ jobs:
           mod_version: ${{ steps.read_properties.outputs.mod_version }}
         
       - name: Publish (CurseForge/Modrinth/GitHub)
-        uses: Kir-Antipov/mc-publish@latest                                   
+        uses: Kir-Antipov/mc-publish@v3.3                                   
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "${{ env.mod_name }} ${{ env.mod_version }}"
