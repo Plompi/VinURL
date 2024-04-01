@@ -17,12 +17,12 @@ jobs:
         run: env
 
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@latest
         with:
           submodules: true
 
       - name: Setup Java
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@latest
         with:
           distribution: "temurin"
           java-version: 17
@@ -32,7 +32,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew clean build
+        run: ./gradlew build
         
       - uses: madhead/read-java-properties@latest
         id: read_properties
@@ -45,7 +45,7 @@ jobs:
           mod_version: ${{ steps.read_properties.outputs.mod_version }}
         
       - name: Publish (CurseForge/Modrinth/GitHub)
-        uses: Kir-Antipov/mc-publish@v3.3                                   
+        uses: Kir-Antipov/mc-publish@latest                                   
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "${{ env.mod_name }} ${{ env.mod_version }}"
