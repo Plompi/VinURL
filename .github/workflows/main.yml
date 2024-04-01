@@ -1,0 +1,17 @@
+name: Publish on GitHub & Modrinth
+
+on: [ pull_request, workflow_dispatch ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          # Only include this section if you wish to publish
+          # your assets on Modrinth.
+          modrinth-id: 5PsMUIsq
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
