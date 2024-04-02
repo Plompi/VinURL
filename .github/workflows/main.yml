@@ -15,17 +15,17 @@ jobs:
     steps:                                        
       - name: Check Environment Variables
         run: env
+        
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
 
       - uses: madhead/read-java-properties@latest
         id: read_properties
         with:
           file: gradle.properties
           all: true
-
-      - name: Checkout Repository
-        uses: actions/checkout@v3
-        with:
-          submodules: true
 
       - name: Setup Java
         uses: actions/setup-java@v2
