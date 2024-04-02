@@ -36,8 +36,5 @@
 		"java": ">=17",
 		"fabric-api": "*",
 		"owo-lib": "*"
-	},
-	"mc-publish": {
-		"name": "VINURL ${version}"
 	}
 }
