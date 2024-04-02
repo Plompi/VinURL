@@ -16,13 +16,19 @@ jobs:
       - name: Check Environment Variables
         run: env
 
+      - uses: madhead/read-java-properties@latest
+        id: read_properties
+        with:
+          file: gradle.properties
+          all: true
+
       - name: Checkout Repository
-        uses: actions/checkout@latest
+        uses: actions/checkout@v3
         with:
           submodules: true
 
       - name: Setup Java
-        uses: actions/setup-java@latest
+        uses: actions/setup-java@v2
         with:
           distribution: "temurin"
           java-version: 17
@@ -32,13 +38,7 @@ jobs:
         run: chmod +x ./gradlew
 
       - name: Build
-        run: ./gradlew build
-        
-      - uses: madhead/read-java-properties@latest
-        id: read_properties
-        with:
-          file: gradle.properties
-          all: true
+        run: ./gradlew clean build
 
         env:
           mod_name: ${{ steps.read_properties.outputs.archives_base_name }}
