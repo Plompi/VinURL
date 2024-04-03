@@ -2,7 +2,7 @@
 
 VinURL is an exciting fork of the popular [URL Music Discs mod by Hoofer](https://modrinth.com/mod/url-music-discs).
 With the Custom Music Disc, players can download and play any cloud-hosted audio file directly in Minecraft or download
-them from YouTube, all via an URL, creating a personalized musical experience like never before.
+them from YouTube, all via a URL, creating a personalized musical experience like never before.
 
 # Usage
 
@@ -24,8 +24,8 @@ them from YouTube, all via an URL, creating a personalized musical experience li
 
 # Commands
 
-`/vinurl update` manually checks/installs updates for all of the external executables that are required for the mod \
-`/vinurl delete` deletes all downloaded audio files that are not being used in that moment for the player\
+`/vinurl update` manually checks/installs updates for all the external executables that are required for the mod \
+`/vinurl delete` deletes all downloaded audio files that are not being used at that moment for the player\
 `/vinurl config` to open the config-screen \
 `/vinurl set <URL>` writes the specified <URL> to the held Custom Music Disc (can be used if GUI doesnt work)
 
