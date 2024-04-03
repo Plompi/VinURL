@@ -1,5 +1,6 @@
 package com.vinurl;
 
+import com.vinurl.items.VinURLDiscItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -18,7 +19,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.vinurl.items.VinURLDiscItem;
 
 import java.net.URL;
 import java.nio.file.Path;
