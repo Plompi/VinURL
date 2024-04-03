@@ -1,9 +1,12 @@
 package com.vinurl;
 
+import io.wispforest.owo.config.annotation.Config;
+import io.wispforest.owo.config.annotation.Modmenu;
+import io.wispforest.owo.config.annotation.RangeConstraint;
+import io.wispforest.owo.config.annotation.SectionHeader;
 
-import io.wispforest.owo.config.annotation.*;
 
-
+@SuppressWarnings("unused")
 @Modmenu(modId = VinURL.MOD_ID)
 @Config(name = "VinURLConfig", wrapperName = "VinURLConfig")
 public class ClientConfig {

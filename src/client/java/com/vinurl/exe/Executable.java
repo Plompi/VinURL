@@ -61,7 +61,7 @@ public class Executable {
 				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
 			}
 			if (SystemUtils.IS_OS_UNIX) {
-				Runtime.getRuntime().exec(new String[]{"chmod", "+x", filePath.toString()});
+				Runtime.getRuntime().exec(new String[] {"chmod", "+x", filePath.toString()});
 			}
 			createVersionFile(latestVersion(repositoryName), filePath.getParent().resolve("version.txt"));
 		}

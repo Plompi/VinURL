@@ -17,11 +17,10 @@ public class MusicDiscScreen extends Screen {
 	private static final Identifier TEXTURE = new Identifier(VinURL.MOD_ID, "textures/gui/record_input.png");
 	private static final int BACKGROUND_WIDTH = 176;
 	private static final int BACKGROUND_HEIGHT = 44;
-	private int x;
-	private int y;
 	private final String inputDefaultText;
 	private final TextFieldWidget textField;
-
+	private int x;
+	private int y;
 
 	public MusicDiscScreen(String inputDefaultText) {
 		super(Text.literal("VinURL Screen"));

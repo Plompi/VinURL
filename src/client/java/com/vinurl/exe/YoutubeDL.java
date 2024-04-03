@@ -13,7 +13,6 @@ public class YoutubeDL {
 	private static final String REPOSITORY_FILE = String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe"));
 	private static final String REPOSITORY_NAME = "yt-dlp/yt-dlp";
 
-
 	public static void checkForExecutable() throws IOException, URISyntaxException {
 		Executable.checkForExecutable(FILENAME, DIRECTORY, REPOSITORY_FILE, REPOSITORY_NAME);
 	}
