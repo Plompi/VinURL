@@ -9,15 +9,15 @@ import net.minecraft.item.MusicDiscItem;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-import net.minecraft.util.Hand;
 
 public class VinURLDiscItem extends MusicDiscItem {
 	public VinURLDiscItem(int comparatorOutput, SoundEvent sound, Settings settings, int lengthInSeconds) {
 		super(comparatorOutput, sound, settings, lengthInSeconds);
 	}
-
+	
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stackInHand = player.getStackInHand(hand);
 		if (!world.isClient) {
