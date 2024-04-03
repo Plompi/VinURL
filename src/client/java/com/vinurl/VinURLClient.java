@@ -16,9 +16,9 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 public class VinURLClient implements ClientModInitializer {
-	HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
-	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 	public static final com.vinurl.VinURLConfig CONFIG = com.vinurl.VinURLConfig.createAndLoad();
+	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
+	HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
 
 	@Override
 	public void onInitializeClient() {
@@ -51,7 +51,6 @@ public class VinURLClient implements ClientModInitializer {
 
 				if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
-
 
 					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
 						if (result) {

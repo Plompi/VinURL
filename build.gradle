@@ -1,6 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.5-SNAPSHOT'
-	id 'maven-publish'
+	id 'fabric-loom' version '1.6-SNAPSHOT'
 	id "com.modrinth.minotaur" version "2.+"
 }
 
@@ -21,7 +20,7 @@ repositories {
 }
 
 loom {
-    splitEnvironmentSourceSets()
+	splitEnvironmentSourceSets()
 
 	mods {
 		"vinurl" {
@@ -38,18 +37,13 @@ dependencies {
 	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
 	include "io.wispforest:owo-sentinel:${project.owo_version}"
 	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
-	// To change the versions see the gradle.properties file
+
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
-	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	// Uncomment the following line to enable the deprecated Fabric API modules. 
-	// These are included in the Fabric API production distribution and allow you to update your mod to the latest modules at a later more convenient time.
-
-	// modImplementation "net.fabricmc.fabric-api:fabric-api-deprecated:${project.fabric_version}"
 }
 
 processResources {
@@ -76,43 +70,6 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.base.archivesName.get()}"}
-	}
-}
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			from components.java
-		}
-	}
-
-	// See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-	repositories {
-		// Add repositories to publish to here.
-		// Notice: This block does NOT have the same function as the block in the top level.
-		// The repositories here will be used for publishing your artifact, not for
-		// retrieving dependencies.
-	}
-}
-
-modrinth {
-	token = System.getenv("MODRINTH_TOKEN") // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
-	projectId = "5PsMUIsq" // This can be the project ID or the slug. Either will work!
-	versionNumber = project.mod_version // You don't need to set this manually. Will fail if Modrinth has this version already
-	versionType = "release" // This is the default -- can also be `beta` or `alpha`
-	versionName = "VinURL " + project.mod_version
-	uploadFile = remapJar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-	gameVersions = [project.minecraft_version] // Must be an array, even with only one version
-	loaders = ["fabric"] // Must also be an array - no need to specify this if you're using Loom or ForgeGradle
-	changelog = new String(new File("CHANGELOG.md").readBytes())
-
-	dependencies { // A special DSL for creating dependencies
-		// scope.type
-		// The scope can be `required`, `optional`, `incompatible`, or `embedded`
-		// The type can either be `project` or `version`
-		required.project "fabric-api" // Creates a new required dependency on Fabric API
-		required.project "owo-lib"
+		rename { "${it}_${archiveBaseName}" }
 	}
 }

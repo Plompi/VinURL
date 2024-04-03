@@ -1,5 +1,7 @@
 package com.vinurl.mixin;
 
+import com.vinurl.VinURL;
+import com.vinurl.items.VinURLDiscItem;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.JukeboxBlockEntity;
@@ -11,8 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import com.vinurl.VinURL;
-import com.vinurl.items.VinURLDiscItem;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxMixin extends BlockEntityMixin implements SingleStackInventory {
