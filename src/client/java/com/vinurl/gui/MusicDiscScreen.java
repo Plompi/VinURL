@@ -19,14 +19,14 @@ public class MusicDiscScreen extends Screen {
 	private static final int BACKGROUND_HEIGHT = 44;
 	private final String inputDefaultText;
 	private final TextFieldWidget textField;
-	private int x;
-	private int y;
+	private int x = (width - BACKGROUND_WIDTH) / 2;
+	private int y = (height - BACKGROUND_HEIGHT) / 2;
 
 	public MusicDiscScreen(String inputDefaultText) {
 		super(Text.literal("VinURL Screen"));
 
 		this.inputDefaultText = inputDefaultText;
-		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, (width - BACKGROUND_WIDTH) / 2 + 62, (height - BACKGROUND_HEIGHT) / 2 + 18, 98, 12, Text.translatable("container.repair"));
+		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 98, 12, Text.translatable("container.repair"));
 		this.textField.setFocused(true);
 		this.textField.setMaxLength(200);
 		this.setInitialFocus(this.textField);
@@ -59,9 +59,6 @@ public class MusicDiscScreen extends Screen {
 				ClientPlayNetworking.send(VinURL.CUSTOM_RECORD_SET_URL, bufInfo);
 			}
 			MinecraftClient.getInstance().setScreen(null);
-		}
-		if (this.textField.keyPressed(keyCode, scanCode, modifiers) || this.textField.isActive()) {
-			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
