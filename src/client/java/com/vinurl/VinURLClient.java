@@ -24,8 +24,8 @@ public class VinURLClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Download FFmpeg and YoutubeDL if they are not already downloaded and checks for updates.
 		try {
-			FFmpeg.checkForExecutable();
-			YoutubeDL.checkForExecutable();
+			FFmpeg.getInstance().checkForExecutable();
+			YoutubeDL.getInstance().checkForExecutable();
 		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
 		}

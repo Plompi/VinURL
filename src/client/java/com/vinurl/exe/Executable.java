@@ -17,25 +17,36 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class Executable {
+	private final String FILENAME;
+	private final File DIRECTORY;
+	private final String REPOSITORY_FILE;
+	private final String REPOSITORY_NAME;
+	private final Path FILEPATH;
 
-	static void checkForExecutable(String fileName, File directory, String repositoryFile, String repositoryName) throws IOException, URISyntaxException {
-		Path filePath = getFilePath(fileName, directory);
+	public Executable(String fileName, File directory, String repository_file, String repository_name) {
+		FILENAME = fileName;
+		DIRECTORY = directory;
+		REPOSITORY_FILE = repository_file;
+		REPOSITORY_NAME = repository_name;
+		FILEPATH = DIRECTORY.toPath().resolve(FILENAME);
+	}
 
-		if (directory.exists() || directory.mkdirs()) {
-			if (!filePath.toFile().exists()) {
-				downloadExecutable(fileName, filePath, repositoryFile, repositoryName);
+	public void checkForExecutable() throws IOException, URISyntaxException {
+
+		if (DIRECTORY.exists() || DIRECTORY.mkdirs()) {
+			if (!FILEPATH.toFile().exists()) {
+				downloadExecutable();
 			} else if (VinURLClient.CONFIG.UpdateCheckingOnStartup()) {
-				checkForUpdates(fileName, directory, repositoryFile, repositoryName);
+				checkForUpdates();
 			}
 		}
 	}
 
-	static boolean checkForUpdates(String fileName, File directory, String repositoryFile, String repositoryName) {
+	public boolean checkForUpdates() {
 		try {
-			Path filePath = getFilePath(fileName, directory);
-			if (!currentVersion(filePath.getParent().resolve("version.txt")).equals(latestVersion(repositoryName))) {
-				Files.deleteIfExists(filePath);
-				downloadExecutable(fileName, filePath, repositoryFile, repositoryName);
+			if (!currentVersion(FILEPATH.getParent().resolve("version.txt")).equals(latestVersion())) {
+				Files.deleteIfExists(FILEPATH);
+				downloadExecutable();
 				return true;
 			}
 			return false;
@@ -44,56 +55,56 @@ public class Executable {
 		}
 	}
 
-	private static void downloadExecutable(String fileName, Path filePath, String repositoryFile, String repositoryName) throws IOException, URISyntaxException {
-		try (InputStream inputStream = getDownloadInputStream(repositoryFile, repositoryName)) {
-			if (repositoryFile.endsWith(".zip")) {
+	private void downloadExecutable() throws IOException, URISyntaxException {
+		try (InputStream inputStream = getDownloadInputStream()) {
+			if (REPOSITORY_FILE.endsWith(".zip")) {
 				try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
 					ZipEntry zipEntry = zipInput.getNextEntry();
 					while (zipEntry != null) {
-						if (zipEntry.getName().endsWith(fileName)) {
-							Files.copy(zipInput, filePath, StandardCopyOption.REPLACE_EXISTING);
+						if (zipEntry.getName().endsWith(FILENAME)) {
+							Files.copy(zipInput, FILEPATH, StandardCopyOption.REPLACE_EXISTING);
 							break;
 						}
 						zipEntry = zipInput.getNextEntry();
 					}
 				}
 			} else {
-				Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(inputStream, FILEPATH, StandardCopyOption.REPLACE_EXISTING);
 			}
 			if (SystemUtils.IS_OS_UNIX) {
-				Runtime.getRuntime().exec(new String[] {"chmod", "+x", filePath.toString()});
+				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILEPATH.toString()});
 			}
-			createVersionFile(latestVersion(repositoryName), filePath.getParent().resolve("version.txt"));
+			createVersionFile(latestVersion(), FILEPATH.getParent().resolve("version.txt"));
 		}
 	}
 
-	private static void createVersionFile(String version, Path versionFilePath) throws IOException {
+	private void createVersionFile(String version, Path versionFilePath) throws IOException {
 		try (FileWriter writer = new FileWriter(versionFilePath.toFile())) {
 			writer.write(version);
 		}
 	}
 
-	private static String currentVersion(Path filePath) throws IOException {
+	private String currentVersion(Path filePath) throws IOException {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
 			return reader.readLine().trim();
 		}
 	}
 
-	private static String latestVersion(String repositoryName) {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("https://api.github.com/repos/%s/releases/latest", repositoryName)).openStream()))) {
+	private String latestVersion() {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME)).openStream()))) {
 			return reader.readLine().split("\"tag_name\":\"")[1].split("\",\"target_commitish\"")[0];
 		} catch (IOException | ArrayIndexOutOfBoundsException e) {
 			return "";
 		}
 	}
 
-	private static InputStream getDownloadInputStream(String repositoryFile, String repositoryName) throws IOException, URISyntaxException {
-		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", repositoryName, repositoryFile)).toURL().openStream();
+	private InputStream getDownloadInputStream() throws IOException, URISyntaxException {
+		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE)).toURL().openStream();
 	}
 
-	static boolean executeCommand(String fileName, File directory, String... arguments) {
+	public boolean executeCommand(String... arguments) {
 		try {
-			Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(getFilePath(fileName, directory).toString()), Arrays.stream(arguments)).toArray(String[]::new));
+			Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new));
 
 			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
 				for (String line; (line = errorReader.readLine()) != null; ) {
@@ -107,9 +118,5 @@ public class Executable {
 		} catch (IOException | InterruptedException e) {
 			return false;
 		}
-	}
-
-	private static Path getFilePath(String fileName, File directory) {
-		return directory.toPath().resolve(fileName);
 	}
 }
