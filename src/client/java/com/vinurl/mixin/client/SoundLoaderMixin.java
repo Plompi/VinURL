@@ -28,7 +28,7 @@ public class SoundLoaderMixin {
 			try {
 				//directly strips out sounds/customsounds (19 chars)
 				InputStream inputStream = AudioHandlerClient.getAudioInputStream(id.getPath().substring(19));
-				return inputStream == null ? null : repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
+				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);
 			}

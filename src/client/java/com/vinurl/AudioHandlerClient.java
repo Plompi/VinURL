@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class AudioHandlerClient {
 	public static CompletableFuture<Boolean> downloadAudio(String url, String fileName) {
-		return CompletableFuture.supplyAsync(() -> YoutubeDL.executeCommand(url, "-x", "--no-progress", "--no-playlist", "--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm", "--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.AudioBitrate().getValue(), "--postprocessor-args", String.format("ffmpeg:-ac 1 -t %s", VinURLClient.CONFIG.MaxAudioInMinutes() * 60), "--ffmpeg-location", VinURL.VINURLPATH.resolve("ffmpeg").toString(), "-o", fileNameToFile(fileName).toString()));
+		return CompletableFuture.supplyAsync(() -> YoutubeDL.getInstance().executeCommand(url, "-x", "--no-progress", "--no-playlist", "--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm", "--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.AudioBitrate().getValue(), "--postprocessor-args", String.format("ffmpeg:-ac 1 -t %s", VinURLClient.CONFIG.MaxAudioInMinutes() * 60), "--ffmpeg-location", VinURL.VINURLPATH.resolve("ffmpeg").toString(), "-o", fileNameToFile(fileName).toString()));
 	}
 
 	public static InputStream getAudioInputStream(String fileName) {
