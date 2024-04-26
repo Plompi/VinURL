@@ -45,7 +45,6 @@ public class Executable {
 	public boolean checkForUpdates() {
 		try {
 			if (!currentVersion(FILEPATH.getParent().resolve("version.txt")).equals(latestVersion())) {
-				Files.deleteIfExists(FILEPATH);
 				downloadExecutable();
 				return true;
 			}
