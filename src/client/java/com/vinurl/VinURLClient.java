@@ -6,6 +6,7 @@ import com.vinurl.exe.YoutubeDL;
 import com.vinurl.gui.MusicDiscScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -33,10 +34,12 @@ public class VinURLClient implements ClientModInitializer {
 		Commands.register();
 
 		// Client Music Played Event
-		ClientPlayNetworking.registerGlobalReceiver(VinURL.CUSTOM_RECORD_PACKET_ID, (client, handler, buf, responseSender) -> {
+		//PayloadTypeRegistry.playC2S().register(VinURL.CUSTOM_RECORD_PACKET_ID);
+		ClientPlayNetworking.registerGlobalReceiver(VinURL.CUSTOM_RECORD_PACKET_ID, (payload, context) -> {
 			Vec3d blockPosition = buf.readBlockPos().toCenterPos();
 			String fileUrl = buf.readString();
 			String fileName = DigestUtils.sha256Hex(fileUrl);
+			MinecraftClient client = context.client();
 			client.execute(() -> {
 
 				FileSound currentSound = playingSounds.get(blockPosition);
@@ -72,8 +75,9 @@ public class VinURLClient implements ClientModInitializer {
 		});
 
 		// Client Open Record UI Event
-		ClientPlayNetworking.registerGlobalReceiver(VinURL.CUSTOM_RECORD_GUI, (client, handler, buf, responseSender) -> {
+		ClientPlayNetworking.registerGlobalReceiver(VinURL.CUSTOM_RECORD_GUI, (payload, context) -> {
 			String currentUrl = buf.readItemStack().getOrCreateNbt().getString("music_url");
+			MinecraftClient client = context.client();
 			client.execute(() -> {
 				client.setScreen(new MusicDiscScreen(currentUrl));
 			});
