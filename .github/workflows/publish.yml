@@ -1,21 +1,21 @@
-name: Publish on Modrinth    
- 
-on: [ pull_request, workflow_dispatch ]           
+name: Publish on Modrinth
 
-env:                                                                      
-  JAVA_VERSION: 17      
-  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}          
+on: [ pull_request, workflow_dispatch ]
+
+env:
+  JAVA_VERSION: 17
+  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
 
 permissions:
   contents: write
 
-jobs:                                             
-  build:                                          
-    runs-on: ubuntu-latest                        
-    steps:                                        
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
       - name: Check Environment Variables
         run: env
-        
+
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
@@ -31,7 +31,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: "temurin"
-          java-version: 17
+          java-version: 21
 
       - name: Make Gradle Wrapper Executable
         if: ${{ runner.os != 'Windows' }}
@@ -39,16 +39,16 @@ jobs:
 
       - name: Build
         run: ./gradlew clean build
-        
+
       - name: Publish (CurseForge/Modrinth/GitHub)
-        uses: Kir-Antipov/mc-publish@v3.3                                   
+        uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "VinURL ${{ steps.read_properties.outputs.mod_version }}"
-          modrinth-id: 5PsMUIsq                                             
+          modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
-        
+
           version-type: release
-          changelog-file: CHANGELOG.md                                      
+          changelog-file: CHANGELOG.md
           loaders: fabric
           java: "${{env.JAVA_VERSION}}"
