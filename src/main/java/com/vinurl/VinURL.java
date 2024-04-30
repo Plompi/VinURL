@@ -28,7 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
+import java.net.URI;
 import java.nio.file.Path;
 
 public class VinURL implements ModInitializer {
@@ -69,7 +69,8 @@ public class VinURL implements ModInitializer {
 			String urlName = payload.urlName();
 
 			try {
-				new URL(urlName).toURI();
+				new URI(urlName);
+
 			} catch (Exception e) {
 				player.sendMessage(Text.literal("Song URL is invalid!"));
 				return;

@@ -7,7 +7,6 @@ import org.apache.commons.lang3.SystemUtils;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -90,9 +89,9 @@ public class Executable {
 	}
 
 	private String latestVersion() {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URL(String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME)).openStream()))) {
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME)).toURL().openStream()))) {
 			return reader.readLine().split("\"tag_name\":\"")[1].split("\",\"target_commitish\"")[0];
-		} catch (IOException | ArrayIndexOutOfBoundsException e) {
+		} catch (IOException | ArrayIndexOutOfBoundsException | URISyntaxException e) {
 			return "";
 		}
 	}
