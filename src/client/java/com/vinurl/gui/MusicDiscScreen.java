@@ -3,12 +3,10 @@ package com.vinurl.gui;
 import com.vinurl.VinURL;
 import com.vinurl.VinURLClient;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -54,9 +52,7 @@ public class MusicDiscScreen extends Screen {
 			}
 
 			if (!this.textField.getText().equals(this.inputDefaultText)) {
-				PacketByteBuf bufInfo = PacketByteBufs.create();
-				bufInfo.writeString(this.textField.getText());
-				ClientPlayNetworking.send(VinURL.CUSTOM_RECORD_SET_URL, bufInfo);
+				ClientPlayNetworking.send(new VinURL.SetURLPayload(this.textField.getText()));
 			}
 			MinecraftClient.getInstance().setScreen(null);
 		}

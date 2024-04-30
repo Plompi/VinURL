@@ -10,10 +10,8 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import org.apache.commons.io.FileUtils;
@@ -74,9 +72,7 @@ public class Commands {
 			return 0;
 		}
 
-		PacketByteBuf bufInfo = PacketByteBufs.create();
-		bufInfo.writeString(url);
-		ClientPlayNetworking.send(VinURL.CUSTOM_RECORD_SET_URL, bufInfo);
+		ClientPlayNetworking.send(new VinURL.SetURLPayload(url));
 		return 1;
 	}
 }
