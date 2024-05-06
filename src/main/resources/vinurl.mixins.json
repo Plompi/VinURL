@@ -1,12 +1,12 @@
 {
   "required": true,
   "package": "com.vinurl.mixin",
-  "compatibilityLevel": "JAVA_17",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "BlockEntityMixin",
     "JukeboxMixin"
   ],
   "injectors": {
     "defaultRequire": 1
-	}
+  }
 }

@@ -13,7 +13,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
@@ -56,6 +56,9 @@ public class VinURL implements ModInitializer {
 			content.add(CUSTOM_RECORD);
 		});
 
+		PayloadTypeRegistry.playS2C().register(PlaySoundPayload.ID, PlaySoundPayload.CODEC);
+		PayloadTypeRegistry.playS2C().register(RecordGUIPayload.ID, RecordGUIPayload.CODEC);
+
 		// Server event handler for setting the URL on the Custom Record
 		PayloadTypeRegistry.playC2S().register(SetURLPayload.ID, SetURLPayload.CODEC);
 		ServerPlayNetworking.registerGlobalReceiver(SetURLPayload.ID, (payload, context) -> {
@@ -69,7 +72,7 @@ public class VinURL implements ModInitializer {
 			String urlName = payload.urlName();
 
 			try {
-				new URI(urlName);
+				new URI(urlName).toURL();
 
 			} catch (Exception e) {
 				player.sendMessage(Text.literal("Song URL is invalid!"));
@@ -90,7 +93,7 @@ public class VinURL implements ModInitializer {
 
 	public record PlaySoundPayload(BlockPos blockPos, String urlName) implements CustomPayload {
 		public static final CustomPayload.Id<PlaySoundPayload> ID = CustomPayload.id("vinurl:play_sound");
-		public static final PacketCodec<PacketByteBuf, PlaySoundPayload> CODEC = PacketCodec.tuple(PacketCodecs.codec(BlockPos.CODEC), PlaySoundPayload::blockPos, PacketCodecs.STRING, PlaySoundPayload::urlName, PlaySoundPayload::new);
+		public static final PacketCodec<RegistryByteBuf, PlaySoundPayload> CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, PlaySoundPayload::blockPos, PacketCodecs.STRING, PlaySoundPayload::urlName, PlaySoundPayload::new);
 
 		@Override
 		public Id<PlaySoundPayload> getId() {
@@ -100,7 +103,7 @@ public class VinURL implements ModInitializer {
 
 	public record SetURLPayload(String urlName) implements CustomPayload {
 		public static final CustomPayload.Id<SetURLPayload> ID = CustomPayload.id("vinurl:record_set_url");
-		public static final PacketCodec<PacketByteBuf, SetURLPayload> CODEC = PacketCodecs.STRING.xmap(SetURLPayload::new, SetURLPayload::urlName).cast();
+		public static final PacketCodec<RegistryByteBuf, SetURLPayload> CODEC = PacketCodecs.STRING.xmap(SetURLPayload::new, SetURLPayload::urlName).cast();
 
 		@Override
 		public Id<SetURLPayload> getId() {
@@ -111,7 +114,7 @@ public class VinURL implements ModInitializer {
 
 	public record RecordGUIPayload(String urlName) implements CustomPayload {
 		public static final CustomPayload.Id<RecordGUIPayload> ID = CustomPayload.id("vinurl:record_gui");
-		public static final PacketCodec<PacketByteBuf, RecordGUIPayload> CODEC = PacketCodecs.STRING.xmap(RecordGUIPayload::new, RecordGUIPayload::urlName).cast();
+		public static final PacketCodec<RegistryByteBuf, RecordGUIPayload> CODEC = PacketCodecs.STRING.xmap(RecordGUIPayload::new, RecordGUIPayload::urlName).cast();
 
 
 		@Override

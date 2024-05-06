@@ -6,7 +6,6 @@ import com.vinurl.exe.YoutubeDL;
 import com.vinurl.gui.MusicDiscScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
@@ -35,58 +34,54 @@ public class VinURLClient implements ClientModInitializer {
 		Commands.register();
 
 		// Client Music Played Event
-		PayloadTypeRegistry.playS2C().register(VinURL.PlaySoundPayload.ID, VinURL.PlaySoundPayload.CODEC);
 		ClientPlayNetworking.registerGlobalReceiver(VinURL.PlaySoundPayload.ID, (payload, context) -> {
 			Vec3d blockPosition = payload.blockPos().toCenterPos();
 			String fileUrl = payload.urlName();
 			String fileName = DigestUtils.sha256Hex(fileUrl);
 			MinecraftClient client = context.client();
-			try (client) {
-				client.execute(() -> {
-	
-					FileSound currentSound = playingSounds.get(blockPosition);
+			client.execute(() -> {
 
-					if (currentSound != null) {
-						client.getSoundManager().stop(currentSound);
-					}
+				FileSound currentSound = playingSounds.get(blockPosition);
 
-					if (fileUrl.isEmpty()) {
-						return;
-					}
+				if (currentSound != null) {
+					client.getSoundManager().stop(currentSound);
+				}
 
-					if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
-						client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
+				if (fileUrl.isEmpty()) {
+					return;
+				}
 
-						AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
-							if (result) {
-								client.player.sendMessage(Text.literal("Downloading complete!"));
+				if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
+					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
-								FileSound fileSound = new FileSound(fileName, blockPosition);
-								playingSounds.put(blockPosition, fileSound);
-								client.getSoundManager().play(fileSound);
-							} else {
-								client.player.sendMessage(Text.literal("Failed to download music!"));
-							}
-						});
-					} else {
-						FileSound fileSound = new FileSound(fileName, blockPosition);
-						playingSounds.put(blockPosition, fileSound);
-						client.getSoundManager().play(fileSound);
-					}
-				});
-			}
+					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
+						if (result) {
+							client.player.sendMessage(Text.literal("Downloading complete!"));
+
+							FileSound fileSound = new FileSound(fileName, blockPosition);
+							playingSounds.put(blockPosition, fileSound);
+							client.getSoundManager().play(fileSound);
+						} else {
+							client.player.sendMessage(Text.literal("Failed to download music!"));
+						}
+					});
+				} else {
+					FileSound fileSound = new FileSound(fileName, blockPosition);
+					playingSounds.put(blockPosition, fileSound);
+					client.getSoundManager().play(fileSound);
+				}
+			});
 		});
 
 		// Client Open Record UI Event
-		PayloadTypeRegistry.playS2C().register(VinURL.RecordGUIPayload.ID, VinURL.RecordGUIPayload.CODEC);
 		ClientPlayNetworking.registerGlobalReceiver(VinURL.RecordGUIPayload.ID, (payload, context) -> {
 			String currentUrl = payload.urlName();
 			MinecraftClient client = context.client();
-			try (client) {
-				client.execute(() -> {
-					client.setScreen(new MusicDiscScreen(currentUrl));
-				});
-			}
+			client.execute(() -> {
+
+				client.setScreen(new MusicDiscScreen(currentUrl));
+			});
+
 		});
 	}
 }
