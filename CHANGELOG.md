@@ -1,2 +1,3 @@
 - Now supports .opus files
 - Supports Downloading from Soundcloud and other Services that use .opus
+- increased link length in GUI from 200 to 400 chars
