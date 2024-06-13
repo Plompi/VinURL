@@ -26,7 +26,7 @@ public class MusicDiscScreen extends Screen {
 		super(Text.literal("VinURL Screen"));
 
 		this.inputDefaultText = inputDefaultText;
-		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, 98, 12, Text.translatable("container.repair"));
+		textField = new TextFieldWidget(MinecraftClient.getInstance().textRenderer, x, y, 98, 12, Text.translatable("container.repair"));
 		this.textField.setFocused(true);
 		this.textField.setMaxLength(400);
 		this.setInitialFocus(this.textField);
