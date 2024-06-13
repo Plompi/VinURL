@@ -1,40 +1,40 @@
 {
-	"schemaVersion": 1,
-	"id": "vinurl",
-	"version": "${version}",
-	"name": "VinURL",
-	"description": "Adds a writeable music disc, allowing you to customize the music that plays from any youtube link.",
-	"authors": [
-		"Plompii",
-		"Hoofer"
-	],
-	"contact": {
-		"homepage": "https://plompi.github.io/",
-		"sources": "https://github.com/Plompi/VinURL"
-	},
-	"license": "CC-BY-NC-4.0",
-	"icon": "assets/vinurl/icon.png",
-	"environment": "*",
-	"entrypoints": {
-		"main": [
-			"com.vinurl.VinURL"
-		],
-		"client": [
-			"com.vinurl.VinURLClient"
-		]
-	},
-	"mixins": [
-		"vinurl.mixins.json",
-		{
-			"config": "vinurl.client.mixins.json",
-			"environment": "client"
-		}
-	],
-	"depends": {
-		"fabricloader": ">=0.15.0",
-		"minecraft": ["~1.20.1"],
-		"java": ">=17",
-		"fabric-api": "*",
-		"owo-lib": "*"
-	}
+  "schemaVersion": 1,
+  "id": "vinurl",
+  "version": "${version}",
+  "name": "VinURL",
+  "description": "Adds a writeable music disc, allowing you to customize the music that plays from any youtube link.",
+  "authors": [
+    "Plompii",
+    "Hoofer"
+  ],
+  "contact": {
+    "homepage": "https://plompi.github.io/",
+    "sources": "https://github.com/Plompi/VinURL"
+  },
+  "license": "CC-BY-NC-4.0",
+  "icon": "assets/vinurl/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.vinurl.VinURL"
+    ],
+    "client": [
+      "com.vinurl.VinURLClient"
+    ]
+  },
+  "mixins": [
+    "vinurl.mixins.json",
+    {
+      "config": "vinurl.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.20.1",
+    "java": ">=17",
+    "fabric-api": "*",
+    "owo-lib": "*"
+  }
 }
