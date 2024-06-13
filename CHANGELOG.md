@@ -1,1 +1,2 @@
-- added Placeholder in Disc GUI
+- Now supports .opus files
+- Supports Downloading from Soundcloud and other Services that use .opus
