@@ -5,18 +5,18 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MusicDiscItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-public class VinURLDiscItem extends MusicDiscItem {
-	public VinURLDiscItem(int comparatorOutput, SoundEvent sound, Settings settings, int lengthInSeconds) {
-		super(comparatorOutput, sound, settings, lengthInSeconds);
+public class VinURLDiscItem extends Item {
+
+	public VinURLDiscItem(Item.Settings settings) {
+		super(settings);
 	}
 
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {

@@ -19,7 +19,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Identifier getId() {
-		return new Identifier(VinURL.MOD_ID, "customsound/" + fileName);
+		return Identifier.of(VinURL.MOD_ID, "customsound/" + fileName);
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {
@@ -27,7 +27,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Sound getSound() {
-		return new Sound(getId().toString(), ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
+		return new Sound(Identifier.of(getId().toString()), ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
 	}
 
 	public SoundCategory getCategory() {

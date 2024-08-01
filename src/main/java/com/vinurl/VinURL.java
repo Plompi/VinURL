@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.block.jukebox.JukeboxSong;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,6 +20,8 @@ import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -35,19 +38,15 @@ public class VinURL implements ModInitializer {
 	public static final String MOD_ID = "vinurl";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
-	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = new Identifier(MOD_ID, "placeholder_sound");
+	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = Identifier.of(MOD_ID, "placeholder_sound");
 	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
 			Registries.SOUND_EVENT,
 			PLACEHOLDER_SOUND_IDENTIFIER,
 			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
 	);
-	public static final Item CUSTOM_RECORD = Registry.register(
-			Registries.ITEM,
-			new Identifier(MOD_ID, "custom_record"),
-			new VinURLDiscItem(
-					17, PLACEHOLDER_SOUND, new Item.Settings().maxCount(1), 0
-			)
-	);
+	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
+	public static final Item MUSIC_DISC_CUSTOM = new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song));
+	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), MUSIC_DISC_CUSTOM);
 
 	@Override
 	public void onInitialize() {
@@ -92,7 +91,7 @@ public class VinURL implements ModInitializer {
 	}
 
 	public record PlaySoundPayload(BlockPos blockPos, String urlName) implements CustomPayload {
-		public static final CustomPayload.Id<PlaySoundPayload> ID = CustomPayload.id("vinurl:play_sound");
+		public static final CustomPayload.Id<PlaySoundPayload> ID = CustomPayload.id("vinurl.play_sound");
 		public static final PacketCodec<RegistryByteBuf, PlaySoundPayload> CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, PlaySoundPayload::blockPos, PacketCodecs.STRING, PlaySoundPayload::urlName, PlaySoundPayload::new);
 
 		@Override
@@ -102,7 +101,7 @@ public class VinURL implements ModInitializer {
 	}
 
 	public record SetURLPayload(String urlName) implements CustomPayload {
-		public static final CustomPayload.Id<SetURLPayload> ID = CustomPayload.id("vinurl:record_set_url");
+		public static final CustomPayload.Id<SetURLPayload> ID = CustomPayload.id("vinurl.record_set_url");
 		public static final PacketCodec<RegistryByteBuf, SetURLPayload> CODEC = PacketCodecs.STRING.xmap(SetURLPayload::new, SetURLPayload::urlName).cast();
 
 		@Override
@@ -113,7 +112,7 @@ public class VinURL implements ModInitializer {
 
 
 	public record RecordGUIPayload(String urlName) implements CustomPayload {
-		public static final CustomPayload.Id<RecordGUIPayload> ID = CustomPayload.id("vinurl:record_gui");
+		public static final CustomPayload.Id<RecordGUIPayload> ID = CustomPayload.id("vinurl.record_gui");
 		public static final PacketCodec<RegistryByteBuf, RecordGUIPayload> CODEC = PacketCodecs.STRING.xmap(RecordGUIPayload::new, RecordGUIPayload::urlName).cast();
 
 

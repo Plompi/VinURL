@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 public class MusicDiscScreen extends Screen {
-	private static final Identifier TEXTURE = new Identifier(VinURL.MOD_ID, "textures/gui/record_input.png");
+	private static final Identifier TEXTURE = Identifier.of(VinURL.MOD_ID, "textures/gui/record_input.png");
 	private static final int BACKGROUND_WIDTH = 176;
 	private static final int BACKGROUND_HEIGHT = 44;
 	private final String inputDefaultText;
