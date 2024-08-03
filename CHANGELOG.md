@@ -1,1 +1,1 @@
-- 1.21 support
+- fixed recipe not working for 1.21
