@@ -1,3 +1,1 @@
-- Now supports .opus files
-- Supports Downloading from Soundcloud and other Services that use .opus
-- increased link length in GUI from 200 to 400 chars
+- fixed recipe not working for 1.20.5/1.20.6
