@@ -45,8 +45,7 @@ public class VinURL implements ModInitializer {
 			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
 	);
 	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item MUSIC_DISC_CUSTOM = new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song));
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), MUSIC_DISC_CUSTOM);
+	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
 
 	@Override
 	public void onInitialize() {
