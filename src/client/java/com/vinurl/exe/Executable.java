@@ -82,9 +82,12 @@ public class Executable {
 		}
 	}
 
-	private String currentVersion(Path filePath) throws IOException {
+	private String currentVersion(Path filePath) {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
-			return reader.readLine().trim();
+			String version = reader.readLine();
+			return (version != null ? version : "");
+		} catch (IOException e) {
+			return "";
 		}
 	}
 
