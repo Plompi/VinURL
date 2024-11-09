@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.function.Consumer;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.VinURLConfig CONFIG = com.vinurl.VinURLConfig.createAndLoad();
@@ -39,6 +40,11 @@ public class VinURLClient implements ClientModInitializer {
 			String fileUrl = payload.urlName();
 			String fileName = DigestUtils.sha256Hex(fileUrl);
 			MinecraftClient client = context.client();
+
+			Consumer<String> sendMessage = CONFIG.ShowDownloadStatus() && client.player != null
+					? message -> client.player.sendMessage(Text.literal(message))
+					: message -> {};
+
 			client.execute(() -> {
 
 				FileSound currentSound = playingSounds.get(blockPosition);
@@ -52,17 +58,17 @@ public class VinURLClient implements ClientModInitializer {
 				}
 
 				if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
-					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
+					sendMessage.accept("Downloading music, please wait a moment...");
 
 					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
 						if (result) {
-							client.player.sendMessage(Text.literal("Downloading complete!"));
+							sendMessage.accept("Downloading complete!");
 
 							FileSound fileSound = new FileSound(fileName, blockPosition);
 							playingSounds.put(blockPosition, fileSound);
 							client.getSoundManager().play(fileSound);
 						} else {
-							client.player.sendMessage(Text.literal("Failed to download music!"));
+							sendMessage.accept("Failed to download music!");
 						}
 					});
 				} else {

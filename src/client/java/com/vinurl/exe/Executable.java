@@ -78,7 +78,6 @@ public class Executable {
 
 	private void createVersionFile(String version, Path versionFilePath) throws IOException {
 		try (FileWriter writer = new FileWriter(versionFilePath.toFile())) {
-			System.out.println(version);
 			writer.write(version);
 		}
 	}

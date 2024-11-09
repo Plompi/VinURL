@@ -9,6 +9,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 
+import static com.vinurl.Helper.identifier;
+
 public class FileSound implements SoundInstance {
 	private final String fileName;
 	private final Vec3d position;
@@ -19,7 +21,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Identifier getId() {
-		return Identifier.of(VinURL.MOD_ID, "customsound/" + fileName);
+		return identifier(VinURL.MOD_ID, "customsound/" + fileName);
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {
@@ -27,7 +29,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Sound getSound() {
-		return new Sound(Identifier.of(getId().toString()), ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
+		return new Sound(getId(), ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
 	}
 
 	public SoundCategory getCategory() {

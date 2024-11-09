@@ -13,6 +13,7 @@ public class ClientConfig {
 
 	@SectionHeader("General")
 	public Boolean UpdateCheckingOnStartup = true;
+	public Boolean ShowDownloadStatus = true;
 	@SectionHeader("AudioSettings")
 	@RangeConstraint(min = 1, max = 60)
 	public byte MaxAudioInMinutes = 60;

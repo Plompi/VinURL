@@ -1,0 +1,8 @@
+{
+  "comparator_output": 15,
+  "description": {
+    "translate": "item.vinurl.custom_record.desc"
+  },
+  "length_in_seconds": 1.0,
+  "sound_event": "vinurl:placeholder_sound"
+}

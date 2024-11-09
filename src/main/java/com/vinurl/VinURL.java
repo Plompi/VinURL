@@ -34,18 +34,22 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.nio.file.Path;
 
+import static com.vinurl.Helper.identifier;
+
+
 public class VinURL implements ModInitializer {
 	public static final String MOD_ID = "vinurl";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
-	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = Identifier.of(MOD_ID, "placeholder_sound");
+	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = identifier(MOD_ID, "placeholder_sound");
 	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
 			Registries.SOUND_EVENT,
 			PLACEHOLDER_SOUND_IDENTIFIER,
 			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
 	);
+
 	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
+	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, identifier(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
 
 	@Override
 	public void onInitialize() {
@@ -120,5 +124,4 @@ public class VinURL implements ModInitializer {
 			return ID;
 		}
 	}
-
 }
