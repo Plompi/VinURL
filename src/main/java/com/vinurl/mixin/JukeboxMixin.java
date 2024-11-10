@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
+
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxMixin extends BlockEntityMixin implements SingleStackInventory {
 	@Shadow
@@ -22,7 +24,7 @@ public abstract class JukeboxMixin extends BlockEntityMixin implements SingleSta
 	@Inject(at = @At("TAIL"), method = "dropRecord")
 	public void dropRecord(CallbackInfo cir) {
 		world.getPlayers().forEach(playerEntity -> {
-			ServerPlayNetworking.send((ServerPlayerEntity) playerEntity, new VinURL.PlaySoundPayload(pos, ""));
+			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos,""));
 		});
 	}
 
@@ -33,14 +35,11 @@ public abstract class JukeboxMixin extends BlockEntityMixin implements SingleSta
 
 			if (musicUrl != null && !musicUrl.isEmpty()) {
 				world.getPlayers().forEach(
-						playerEntity -> ServerPlayNetworking.send(
-								(ServerPlayerEntity) playerEntity,
-								new VinURL.PlaySoundPayload(pos, musicUrl)
-						)
+						playerEntity -> NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos,musicUrl))
 				);
 			} else {
 				world.getPlayers().forEach(playerEntity -> {
-					ServerPlayNetworking.send((ServerPlayerEntity) playerEntity, new VinURL.PlaySoundPayload(pos, ""));
+					NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos,""));
 				});
 			}
 		}

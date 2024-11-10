@@ -1,18 +1,25 @@
 package com.vinurl.items;
 
 import com.vinurl.VinURL;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.component.DataComponentTypes;
+//? if >=1.20.5 {
+/*import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+*///?}
+
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
+
+//? if >=1.20.5 {
+/*import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
+*///?}
 public class VinURLDiscItem extends Item {
 
 	public VinURLDiscItem(Item.Settings settings) {
@@ -27,7 +34,7 @@ public class VinURLDiscItem extends Item {
 			currentNbt.putString("music_url", "");
 
 			NbtCompound value = stackInHand.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt)).copyNbt();
-			ServerPlayNetworking.send((ServerPlayerEntity) player, new VinURL.RecordGUIPayload(value.getString("music_url")));
+			NETWORK_CHANNEL.serverHandle(player).send(new VinURL.GUIRecord(value.getString("music_url")));
 		}
 		return TypedActionResult.success(stackInHand);
 	}

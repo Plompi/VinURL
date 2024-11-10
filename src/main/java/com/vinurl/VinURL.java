@@ -1,27 +1,21 @@
 package com.vinurl;
 
-import com.vinurl.items.VinURLDiscItem;
+import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.jukebox.JukeboxSong;
+//? if >=1.20.5 {
+/*import net.minecraft.block.jukebox.JukeboxSong;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
+*///?}
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.RegistryByteBuf;
-import net.minecraft.network.codec.PacketCodec;
-import net.minecraft.network.codec.PacketCodecs;
-import net.minecraft.network.packet.CustomPayload;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
@@ -34,13 +28,14 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.nio.file.Path;
 
-import static com.vinurl.Helper.identifier;
+import static com.vinurl.Helper.*;
 
 
 public class VinURL implements ModInitializer {
 	public static final String MOD_ID = "vinurl";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
+	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(identifier(MOD_ID, "main"));
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = identifier(MOD_ID, "placeholder_sound");
 	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
 			Registries.SOUND_EVENT,
@@ -48,8 +43,7 @@ public class VinURL implements ModInitializer {
 			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
 	);
 
-	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, identifier(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
+	public static final Item CUSTOM_RECORD = getRecord();
 
 	@Override
 	public void onInitialize() {
@@ -58,12 +52,9 @@ public class VinURL implements ModInitializer {
 			content.add(CUSTOM_RECORD);
 		});
 
-		PayloadTypeRegistry.playS2C().register(PlaySoundPayload.ID, PlaySoundPayload.CODEC);
-		PayloadTypeRegistry.playS2C().register(RecordGUIPayload.ID, RecordGUIPayload.CODEC);
 
 		// Server event handler for setting the URL on the Custom Record
-		PayloadTypeRegistry.playC2S().register(SetURLPayload.ID, SetURLPayload.CODEC);
-		ServerPlayNetworking.registerGlobalReceiver(SetURLPayload.ID, (payload, context) -> {
+		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class,((payload, context) -> {
 			PlayerEntity player = context.player();
 			ItemStack currentItem = player.getStackInHand(player.getActiveHand());
 
@@ -86,42 +77,14 @@ public class VinURL implements ModInitializer {
 				return;
 			}
 
-			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+			playSound(player, SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 			NbtCompound currentNbt = new NbtCompound();
 			currentNbt.putString("music_url", urlName);
-			currentItem.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt));
-		});
+			setNbt(currentItem, currentNbt);
+		}));
 	}
 
-	public record PlaySoundPayload(BlockPos blockPos, String urlName) implements CustomPayload {
-		public static final CustomPayload.Id<PlaySoundPayload> ID = CustomPayload.id("vinurl.play_sound");
-		public static final PacketCodec<RegistryByteBuf, PlaySoundPayload> CODEC = PacketCodec.tuple(BlockPos.PACKET_CODEC, PlaySoundPayload::blockPos, PacketCodecs.STRING, PlaySoundPayload::urlName, PlaySoundPayload::new);
-
-		@Override
-		public Id<PlaySoundPayload> getId() {
-			return ID;
-		}
-	}
-
-	public record SetURLPayload(String urlName) implements CustomPayload {
-		public static final CustomPayload.Id<SetURLPayload> ID = CustomPayload.id("vinurl.record_set_url");
-		public static final PacketCodec<RegistryByteBuf, SetURLPayload> CODEC = PacketCodecs.STRING.xmap(SetURLPayload::new, SetURLPayload::urlName).cast();
-
-		@Override
-		public Id<SetURLPayload> getId() {
-			return ID;
-		}
-	}
-
-
-	public record RecordGUIPayload(String urlName) implements CustomPayload {
-		public static final CustomPayload.Id<RecordGUIPayload> ID = CustomPayload.id("vinurl.record_gui");
-		public static final PacketCodec<RegistryByteBuf, RecordGUIPayload> CODEC = PacketCodecs.STRING.xmap(RecordGUIPayload::new, RecordGUIPayload::urlName).cast();
-
-
-		@Override
-		public Id<RecordGUIPayload> getId() {
-			return ID;
-		}
-	}
+	public record PlaySoundRecord(BlockPos blockPos, String urlName) {}
+	public record SetURLRecord(String urlName) {}
+	public record GUIRecord(String urlName) {}
 }
