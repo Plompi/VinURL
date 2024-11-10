@@ -1,7 +1,13 @@
 package com.vinurl;
 
 import com.vinurl.items.VinURLDiscItem;
+//? if <1.20.5
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+//? if >=1.20.5 {
+/*import net.minecraft.block.jukebox.JukeboxSong;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.NbtComponent;
+*///?}
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -15,7 +21,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
-import static com.vinurl.VinURL.PLACEHOLDER_SOUND;
+import static com.vinurl.VinURL.*;
 
 public class Helper {
 	public static Identifier identifier(String modid, String name){
@@ -36,19 +42,18 @@ public class Helper {
 		//? if <1.20.5 {
 		currentItem.setNbt(nbt);
 		//?} else
-		/*currentItem.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt));*/
+		/*currentItem.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));*/
 	}
 
-	public static Item getRecord(){
+	public static Item getRecord() {
 		//? if <1.20.5 {
 		return Registry.register(
 				Registries.ITEM,
 				new Identifier(VinURL.MOD_ID, "custom_record"),
 				new VinURLDiscItem(17, PLACEHOLDER_SOUND, new FabricItemSettings().maxCount(1), 0));
-		//?} else
-		/*
-		* RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-		* return Registry.register(Registries.ITEM, identifier(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));*/
-
+		//?} else {
+		/*RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
+		return Registry.register(Registries.ITEM, identifier(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
+		*///?}
 	}
 }

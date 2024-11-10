@@ -4,7 +4,9 @@ import com.vinurl.VinURL;
 import com.vinurl.items.VinURLDiscItem;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.component.DataComponentTypes;
+//import net.minecraft.component.DataComponentTypes;
+//? if >=1.20.5
+/*import net.minecraft.component.DataComponentTypes;*/
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,8 +32,12 @@ public abstract class JukeboxMixin extends BlockEntityMixin implements SingleSta
 
 	@Inject(at = @At("TAIL"), method = "setStack")
 	public void setStack(ItemStack stack, CallbackInfo cir) {
-		if (recordStack.getItem() instanceof VinURLDiscItem && !world.isClient() && recordStack.get(DataComponentTypes.CUSTOM_DATA) != null) {
-			String musicUrl = recordStack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getString("music_url");
+		if (recordStack.getItem() instanceof VinURLDiscItem && !world.isClient()) {
+			//? if <1.20.5
+			String musicUrl = recordStack.getOrCreateNbt().getString("music_url");
+			//? if >=1.20.5
+			/*String musicUrl = recordStack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().getString("music_url");*/
+
 
 			if (musicUrl != null && !musicUrl.isEmpty()) {
 				world.getPlayers().forEach(
