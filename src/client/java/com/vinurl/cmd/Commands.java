@@ -10,7 +10,6 @@ import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -22,6 +21,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static com.vinurl.VinURL.CUSTOM_RECORD;
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class Commands {
@@ -73,7 +73,7 @@ public class Commands {
 			return 0;
 		}
 
-		ClientPlayNetworking.send(new VinURL.SetURLPayload(url));
+		NETWORK_CHANNEL.clientHandle().send(new VinURL.SetURLRecord(url));
 		return 1;
 	}
 }

@@ -2,7 +2,6 @@ package com.vinurl.gui;
 
 import com.vinurl.VinURL;
 import com.vinurl.VinURLClient;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -12,6 +11,7 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.Helper.identifier;
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
 
 public class MusicDiscScreen extends Screen {
 	private static final Identifier TEXTURE = identifier(VinURL.MOD_ID, "textures/gui/record_input.png");
@@ -54,7 +54,7 @@ public class MusicDiscScreen extends Screen {
 			}
 
 			if (!this.textField.getText().equals(this.inputDefaultText)) {
-				ClientPlayNetworking.send(new VinURL.SetURLPayload(this.textField.getText()));
+				NETWORK_CHANNEL.clientHandle().send(new VinURL.SetURLRecord(this.textField.getText()));
 			}
 			MinecraftClient.getInstance().setScreen(null);
 		}
