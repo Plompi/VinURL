@@ -37,8 +37,8 @@ public class Helper {
 
 	public static void playSound(PlayerEntity player, SoundEvent event, SoundCategory category, float volume, float pitch){
 		//? if <1.20.5 {
-		/*player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		/*player.playSound(event, category, volume, pitch);
 		*///?} else
-		player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		player.playSoundToPlayer(event, category, volume, pitch);
 	}
 }
