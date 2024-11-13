@@ -3,15 +3,11 @@ package com.vinurl;
 import com.vinurl.items.VinURLDiscItem;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
-import io.wispforest.endec.util.EndecBuffer;
 import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.EnderChestBlock;
 import net.minecraft.block.jukebox.JukeboxSong;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
@@ -34,6 +30,7 @@ import java.net.URI;
 import java.nio.file.Path;
 
 import static com.vinurl.Helper.identifier;
+import static com.vinurl.Helper.setNbt;
 
 
 public class VinURL implements ModInitializer {
@@ -43,11 +40,6 @@ public class VinURL implements ModInitializer {
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(identifier(MOD_ID, "main"));
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = identifier(MOD_ID, "placeholder_sound");
-	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
-			Registries.SOUND_EVENT,
-			PLACEHOLDER_SOUND_IDENTIFIER,
-			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
-	);
 
 	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
 	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, identifier(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
@@ -58,6 +50,11 @@ public class VinURL implements ModInitializer {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> {
 			content.add(CUSTOM_RECORD);
 		});
+
+		Registry.register(
+			Registries.SOUND_EVENT,
+			PLACEHOLDER_SOUND_IDENTIFIER,
+			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER));
 
 
 		// Server event handler for setting the URL on the Custom Record
@@ -88,7 +85,7 @@ public class VinURL implements ModInitializer {
 			NbtCompound currentNbt = new NbtCompound();
 
 			currentNbt.put(URL_KEY, urlName);
-			currentItem.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt));
+			setNbt(currentItem,currentNbt);
 		}));
 	}
 
