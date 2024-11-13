@@ -3,7 +3,6 @@ package com.vinurl.mixin;
 import com.vinurl.VinURL;
 import com.vinurl.items.VinURLDiscItem;
 import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.component.DataComponentTypes;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import static com.vinurl.Helper.getNbt;
 import static com.vinurl.VinURL.NETWORK_CHANNEL;
 import static com.vinurl.VinURL.URL_KEY;
 
@@ -29,8 +29,8 @@ public abstract class JukeboxMixin extends BlockEntityMixin implements SingleSta
 
 	@Inject(at = @At("TAIL"), method = "setStack")
 	public void setStack(ItemStack stack, CallbackInfo cir) {
-		if (recordStack.getItem() instanceof VinURLDiscItem && !world.isClient() && recordStack.get(DataComponentTypes.CUSTOM_DATA) != null) {
-			String musicUrl = recordStack.get(DataComponentTypes.CUSTOM_DATA).copyNbt().get(URL_KEY);
+		if (recordStack.getItem() instanceof VinURLDiscItem && !world.isClient()) {
+			String musicUrl = getNbt(recordStack).get(URL_KEY);
 
 			if (musicUrl != null && !musicUrl.isEmpty()) {
 				world.getPlayers().forEach(playerEntity -> {

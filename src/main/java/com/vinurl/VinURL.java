@@ -29,8 +29,7 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.nio.file.Path;
 
-import static com.vinurl.Helper.identifier;
-import static com.vinurl.Helper.setNbt;
+import static com.vinurl.Helper.*;
 
 
 public class VinURL implements ModInitializer {
@@ -81,11 +80,11 @@ public class VinURL implements ModInitializer {
 				return;
 			}
 
-			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+			playSound(player, SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 			NbtCompound currentNbt = new NbtCompound();
 
 			currentNbt.put(URL_KEY, urlName);
-			setNbt(currentItem,currentNbt);
+			setNbt(currentItem, currentNbt);
 		}));
 	}
 

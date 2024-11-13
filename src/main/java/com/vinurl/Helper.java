@@ -1,7 +1,11 @@
 package com.vinurl;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
 
 import static com.vinurl.VinURL.URL_KEY;
@@ -29,5 +33,12 @@ public class Helper {
 		currentNbt.put(URL_KEY, "");
 		return item.getOrDefault(net.minecraft.component.DataComponentTypes.CUSTOM_DATA, net.minecraft.component.type.NbtComponent.of(currentNbt)).copyNbt();
 		//?}
+	}
+
+	public static void playSound(PlayerEntity player, SoundEvent event, SoundCategory category, float volume, float pitch){
+		//? if <1.20.5 {
+		/*player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+		*///?} else
+		player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 	}
 }

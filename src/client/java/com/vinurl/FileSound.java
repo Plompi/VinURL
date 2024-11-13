@@ -29,7 +29,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Sound getSound() {
-		return new Sound(getId(), ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
+		return new Sound(getId()/*? if <1.20.5 {*//*.toString()*//*?}*/, ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
 	}
 
 	public SoundCategory getCategory() {
