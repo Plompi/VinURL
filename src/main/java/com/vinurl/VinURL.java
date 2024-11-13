@@ -1,9 +1,15 @@
 package com.vinurl;
 
 import com.vinurl.items.VinURLDiscItem;
+import io.wispforest.owo.network.OwoNetChannel;
+//? if <1.20.5 {
+/*import io.wispforest.owo.serialization.Endec;
+import io.wispforest.owo.serialization.endec.KeyedEndec;
+*///?} else {
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
-import io.wispforest.owo.network.OwoNetChannel;
+//?}
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
