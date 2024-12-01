@@ -6,7 +6,6 @@ import com.vinurl.VinURL;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
 import io.wispforest.owo.config.ui.ConfigScreen;
-import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -59,7 +58,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreenProviders.get(VinURL.MOD_ID)).apply(null);
+		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreen.getProvider(VinURL.MOD_ID)).apply(null);
 		MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
 		return 0;
 	}

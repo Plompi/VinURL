@@ -1,6 +1,5 @@
 package com.vinurl;
 
-import com.vinurl.items.VinURLDiscItem;
 import io.wispforest.owo.network.OwoNetChannel;
 //? if <1.20.5 {
 /*import io.wispforest.owo.serialization.Endec;
@@ -13,18 +12,12 @@ import io.wispforest.endec.impl.KeyedEndec;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.block.jukebox.JukeboxSong;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroups;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
@@ -46,8 +39,7 @@ public class VinURL implements ModInitializer {
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(identifier(MOD_ID, "main"));
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = identifier(MOD_ID, "placeholder_sound");
 
-	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, identifier(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
+	public static final Item CUSTOM_RECORD = getRecord();
 
 	@Override
 	public void onInitialize() {
@@ -55,11 +47,6 @@ public class VinURL implements ModInitializer {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> {
 			content.add(CUSTOM_RECORD);
 		});
-
-		Registry.register(
-			Registries.SOUND_EVENT,
-			PLACEHOLDER_SOUND_IDENTIFIER,
-			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER));
 
 
 		// Server event handler for setting the URL on the Custom Record
