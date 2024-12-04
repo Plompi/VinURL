@@ -35,7 +35,7 @@ Then the following dependencies must be added in the `build.gradle` to reference
 
 ```groovy title="build.gradle"
 dependencies {
-modCompileOnly "maven.modrinth:vinurl:${project.vinurl_version}"
+    modCompileOnly "maven.modrinth:vinurl:${project.vinurl_version}"
 }
 ```
 
@@ -45,27 +45,20 @@ vinurl_version=...
 
 ### Implementation
 
+First declare a static variable to determine if VinURL is loaded
+
+```java
+public static boolean isVinURLLoaded = FabricLoader.getInstance().isModLoaded("vinurl");
+```
+
 Add the following lines of code to the start of your method that is responsible for starting the music playing
 
 ```java
 public void startPlaying(){
-    ItemStack recordStack = this.getStack();
-    if (recordStack.getItem() instanceof VinURLDiscItem && !world.isClient()) {
-        String musicUrl = recordStack.getOrCreateNbt().getString("music_url");
-
-        if (musicUrl != null && !musicUrl.isEmpty()) {
-            PacketByteBuf bufInfo = PacketByteBufs.create();
-            bufInfo.writeBlockPos(pos);
-            bufInfo.writeString(musicUrl);
-
-            world.getPlayers().forEach(
-                    playerEntity -> ServerPlayNetworking.send(
-                            (ServerPlayerEntity) playerEntity,
-                            VinURL.CUSTOM_RECORD_PACKET_ID, bufInfo
-                    )
-            );
+    if (isVinURLLoaded) {
+            playVinURLDisc(world, itemStack, blockPos);
         }
-    }
+
     // Your own Logic...
 }
 ```
@@ -77,12 +70,8 @@ and in the method that stops the music add the following at the end
 public void dropRecord(){
     // Your own Logic...
 
-    PacketByteBuf bufInfo = PacketByteBufs.create();
-    bufInfo.writeBlockPos(pos);
-    bufInfo.writeString("");
-
-    world.getPlayers().forEach(playerEntity -> {
-        ServerPlayNetworking.send((ServerPlayerEntity) playerEntity, VinURL.CUSTOM_RECORD_PACKET_ID, bufInfo);
-    });
+    if (isVinURLLoaded) {
+		stopVinURLDisc(world, blockPos);
+	}
 }
 ```
