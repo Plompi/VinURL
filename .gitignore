@@ -38,3 +38,9 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+# javascript
+
+package.json
+package-lock.json
+node_modules/

@@ -1,0 +1,88 @@
+---
+title: Integration with VinURL
+project: vinurl
+---
+
+## Easy Method
+
+The easiest way to ensure the functionality of a self-developed jukebox with VinURL is to extend the standard jukebox.
+```java
+public class CustomJukeBox extends JukeboxBlock{
+     public CustomJukeBox(Settings settings) {
+        super(settings);
+    }
+    // Your own Logic...
+}
+```
+
+## Advanced Method
+
+This method should only be used if a separate entity class has been created for the jukebox and therefore also separate functions for starting and stopping the jukebox sounds.
+
+### Setup
+
+First, the following Maven repositories must be added.
+
+```groovy title="build.gradle"
+repositories {
+    maven { url 'https://api.modrinth.com/maven' }
+}
+```
+
+Then the following dependencies must be added in the `build.gradle` to reference them in the code. The versions of the mods used must also be added to the `gradle.properties`.
+
+
+
+```groovy title="build.gradle"
+dependencies {
+modCompileOnly "maven.modrinth:vinurl:${project.vinurl_version}"
+}
+```
+
+```.properties title="gradle.properties"
+vinurl_version=...
+```
+
+### Implementation
+
+Add the following lines of code to the start of your method that is responsible for starting the music playing
+
+```java
+public void startPlaying(){
+    ItemStack recordStack = this.getStack();
+    if (recordStack.getItem() instanceof VinURLDiscItem && !world.isClient()) {
+        String musicUrl = recordStack.getOrCreateNbt().getString("music_url");
+
+        if (musicUrl != null && !musicUrl.isEmpty()) {
+            PacketByteBuf bufInfo = PacketByteBufs.create();
+            bufInfo.writeBlockPos(pos);
+            bufInfo.writeString(musicUrl);
+
+            world.getPlayers().forEach(
+                    playerEntity -> ServerPlayNetworking.send(
+                            (ServerPlayerEntity) playerEntity,
+                            VinURL.CUSTOM_RECORD_PACKET_ID, bufInfo
+                    )
+            );
+        }
+    }
+    // Your own Logic...
+}
+```
+
+and in the method that stops the music add the following at the end
+
+
+```java
+public void dropRecord(){
+    // Your own Logic...
+
+    PacketByteBuf bufInfo = PacketByteBufs.create();
+    bufInfo.writeBlockPos(pos);
+    bufInfo.writeString("");
+
+    world.getPlayers().forEach(playerEntity -> {
+        ServerPlayNetworking.send((ServerPlayerEntity) playerEntity, VinURL.CUSTOM_RECORD_PACKET_ID, bufInfo);
+    });
+}
+```

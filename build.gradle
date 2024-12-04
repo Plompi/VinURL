@@ -1,5 +1,6 @@
 plugins {
 	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id("org.moddedmc.wiki.toolkit") version "0.2.4"
 }
 
 version = project.mod_version
@@ -70,5 +71,15 @@ java {
 jar {
 	from("LICENSE") {
 		rename { "${it}_${archiveBaseName}" }
+	}
+}
+
+wiki {
+	docs {
+		// The name of the object (examplemod) should match the registered wiki project ID (if it exists).
+		vinurl {
+			// The path to the folder containing the documentation metadata file (sinytra-wiki.json)
+			root = file('docs')
+		}
 	}
 }
