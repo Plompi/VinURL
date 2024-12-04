@@ -1,1 +1,1 @@
-- fixed recipe not working for 1.21
+- Easier integration of VinURL Discs for mod developers
