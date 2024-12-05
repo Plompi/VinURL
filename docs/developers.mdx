@@ -1,6 +1,6 @@
 ---
-title: Integration with VinURL
-project: vinurl
+title: Integration
+hide_meta: true
 ---
 
 ## Easy Method
@@ -17,11 +17,11 @@ public class CustomJukeBox extends JukeboxBlock{
 
 ## Advanced Method
 
-This method should only be used if a separate entity class has been created for the jukebox and therefore also separate functions for starting and stopping the jukebox sounds.
+This method should only be used if a separate entity class has been created for your use case, and therefore you implemented separate functions for starting and stopping jukebox sounds.
 
 ### Setup
 
-First, the following Maven repositories must be added.
+Add the following repository to your `build.gradle`.
 
 ```groovy title="build.gradle"
 repositories {
@@ -29,8 +29,11 @@ repositories {
 }
 ```
 
-Then the following dependencies must be added in the `build.gradle` to reference them in the code. The versions of the mods used must also be added to the `gradle.properties`.
+Then the following dependency must be added in the `build.gradle` to reference VinURL specific code. The version of VinURL needs to be declared in the `gradle.properties`.
 
+<Callout variant="warning">
+    Only VinURL 1.2.0+ supports this method. Previous versions dont have the Helper methods
+</Callout>
 
 
 ```groovy title="build.gradle"
@@ -51,19 +54,25 @@ First declare a static variable to determine if VinURL is loaded
 public static boolean isVinURLLoaded = FabricLoader.getInstance().isModLoaded("vinurl");
 ```
 
-Add the following lines of code to the start of your method that is responsible for starting the music playing
+Import the Helper class from VinURL, which contains methods for playing and stopping VinURLDiscs
+
+```java
+import com.vinurl.Helper;
+```
+
+Add the following lines of code to the start of your method that is responsible for starting the music
 
 ```java
 public void startPlaying(){
     if (isVinURLLoaded) {
-            playVinURLDisc(world, itemStack, blockPos);
+            Helper.playVinURLDisc(world, itemStack, blockPos);
         }
 
     // Your own Logic...
 }
 ```
 
-and in the method that stops the music add the following at the end
+and in the method that stops the music, add the following at the end
 
 
 ```java
@@ -71,7 +80,7 @@ public void dropRecord(){
     // Your own Logic...
 
     if (isVinURLLoaded) {
-		stopVinURLDisc(world, blockPos);
+		Helper.stopVinURLDisc(world, blockPos);
 	}
 }
 ```
