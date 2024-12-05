@@ -1,0 +1,86 @@
+---
+title: Integration
+hide_meta: true
+---
+
+## Easy Method
+
+The easiest way to ensure the functionality of a self-developed jukebox with VinURL is to extend the standard jukebox.
+```java
+public class CustomJukeBox extends JukeboxBlock{
+     public CustomJukeBox(Settings settings) {
+        super(settings);
+    }
+    // Your own Logic...
+}
+```
+
+## Advanced Method
+
+This method should only be used if a separate entity class has been created for your use case, and therefore you implemented separate functions for starting and stopping jukebox sounds.
+
+### Setup
+
+Add the following repository to your `build.gradle`.
+
+```groovy title="build.gradle"
+repositories {
+    maven { url 'https://api.modrinth.com/maven' }
+}
+```
+
+Then the following dependency must be added in the `build.gradle` to reference VinURL specific code. The version of VinURL needs to be declared in the `gradle.properties`.
+
+<Callout variant="warning">
+    Only VinURL 1.2.0+ supports this method. Previous versions dont have the Helper methods
+</Callout>
+
+
+```groovy title="build.gradle"
+dependencies {
+    modCompileOnly "maven.modrinth:vinurl:${project.vinurl_version}"
+}
+```
+
+```.properties title="gradle.properties"
+vinurl_version=...
+```
+
+### Implementation
+
+First declare a static variable to determine if VinURL is loaded
+
+```java
+public static boolean isVinURLLoaded = FabricLoader.getInstance().isModLoaded("vinurl");
+```
+
+Import the Helper class from VinURL, which contains methods for playing and stopping VinURLDiscs
+
+```java
+import com.vinurl.Helper;
+```
+
+Add the following lines of code to the start of your method that is responsible for starting the music
+
+```java
+public void startPlaying(){
+    if (isVinURLLoaded) {
+            Helper.playVinURLDisc(world, itemStack, blockPos);
+        }
+
+    // Your own Logic...
+}
+```
+
+and in the method that stops the music, add the following at the end
+
+
+```java
+public void dropRecord(){
+    // Your own Logic...
+
+    if (isVinURLLoaded) {
+		Helper.stopVinURLDisc(world, blockPos);
+	}
+}
+```
