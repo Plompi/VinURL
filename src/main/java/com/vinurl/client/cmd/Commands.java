@@ -35,7 +35,7 @@ public class Commands {
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
-			FileUtils.deleteDirectory(com.vinurl.main.VinURL.VINURLPATH.resolve("client_downloads").toFile());
+			FileUtils.deleteDirectory(VinURL.VINURLPATH.resolve("client_downloads").toFile());
 			ctx.getSource().sendFeedback(Text.literal("Deleted all Audio Files"));
 			return 1;
 		} catch (IOException e) {
@@ -57,7 +57,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		ConfigScreen screen = Objects.requireNonNull(ConfigScreen.getProvider(com.vinurl.main.VinURL.MOD_ID)).apply(null);
+		ConfigScreen screen = Objects.requireNonNull(ConfigScreen.getProvider(VinURL.MOD_ID)).apply(null);
 		MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
 		return 0;
 	}
@@ -66,7 +66,7 @@ public class Commands {
 		String url = StringArgumentType.getString(ctx, "url");
 		ItemStack heldItem = ctx.getSource().getPlayer().getStackInHand(Hand.MAIN_HAND);
 
-		if (heldItem.getItem() != com.vinurl.main.VinURL.CUSTOM_RECORD) {
+		if (heldItem.getItem() != VinURL.CUSTOM_RECORD) {
 			ctx.getSource().sendFeedback(Text.of("VinURL-Disc needed in Main Hand"));
 			return 0;
 		}
