@@ -1,16 +1,17 @@
-package com.vinurl.main;
+package com.vinurl.api;
 
-import com.vinurl.main.items.VinURLDiscItem;
+import com.vinurl.VinURL;
+import com.vinurl.items.VinURLDiscItem;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import static com.vinurl.main.VinURL.NETWORK_CHANNEL;
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
 
-public class Helper {
-	public static void playVinURLDisc(World level, ItemStack recordStack, BlockPos pos) {
+public class VinURLSound {
+	public static void play(World level, ItemStack recordStack, BlockPos pos) {
 		NbtComponent nbt = recordStack.get(DataComponentTypes.CUSTOM_DATA);
 		if (recordStack.getItem() instanceof VinURLDiscItem && !level.isClient && nbt != null) {
 			String musicUrl = nbt.copyNbt().getString("music_url");
@@ -22,7 +23,7 @@ public class Helper {
 		}
 	}
 
-	public static void stopVinURLDisc(World level, BlockPos pos) {
+	public static void stop(World level, BlockPos pos) {
 		level.getPlayers().forEach(playerEntity -> {
 			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos, ""));
 		});

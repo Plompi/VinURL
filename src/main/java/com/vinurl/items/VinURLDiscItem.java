@@ -1,6 +1,6 @@
-package com.vinurl.main.items;
+package com.vinurl.items;
 
-import com.vinurl.main.VinURL;
+import com.vinurl.VinURL;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,8 +11,8 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
 
-import static com.vinurl.main.VinURL.NETWORK_CHANNEL;
-import static com.vinurl.main.VinURL.URL_KEY;
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
+import static com.vinurl.VinURL.URL_KEY;
 
 public class VinURLDiscItem extends Item {
 

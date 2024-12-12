@@ -57,7 +57,7 @@ public static boolean isVinURLLoaded = FabricLoader.getInstance().isModLoaded("v
 Import the Helper class from VinURL, which contains methods for playing and stopping VinURLDiscs
 
 ```java
-import com.vinurl.main.Helper;
+import com.vinurl.api.VinURLSound;
 ```
 
 Add the following lines of code to the start of your method that is responsible for starting the music
@@ -65,7 +65,7 @@ Add the following lines of code to the start of your method that is responsible 
 ```java
 public void startPlaying(){
     if (isVinURLLoaded) {
-            Helper.playVinURLDisc(world, itemStack, blockPos);
+            VinURLSound.play(world, itemStack, blockPos);
         }
 
     // Your own Logic...
@@ -80,7 +80,7 @@ public void dropRecord(){
     // Your own Logic...
 
     if (isVinURLLoaded) {
-		Helper.stopVinURLDisc(world, blockPos);
+		VinURLSound.stop(world, blockPos);
 	}
 }
 ```

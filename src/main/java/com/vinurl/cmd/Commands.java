@@ -1,10 +1,10 @@
-package com.vinurl.client.cmd;
+package com.vinurl.cmd;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.client.exe.FFmpeg;
-import com.vinurl.client.exe.YoutubeDL;
-import com.vinurl.main.VinURL;
+import com.vinurl.VinURL;
+import com.vinurl.exe.FFmpeg;
+import com.vinurl.exe.YoutubeDL;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -19,13 +19,13 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static com.vinurl.main.VinURL.NETWORK_CHANNEL;
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class Commands {
 
 	public static void register() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(com.vinurl.main.VinURL.MOD_ID)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(VinURL.MOD_ID)
 				.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
 				.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
 				.then(ClientCommandManager.literal("config").executes(Commands::openConfig))

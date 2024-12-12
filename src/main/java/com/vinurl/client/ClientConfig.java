@@ -1,6 +1,6 @@
 package com.vinurl.client;
 
-import com.vinurl.main.VinURL;
+import com.vinurl.VinURL;
 import io.wispforest.owo.config.annotation.Config;
 import io.wispforest.owo.config.annotation.Modmenu;
 import io.wispforest.owo.config.annotation.RangeConstraint;

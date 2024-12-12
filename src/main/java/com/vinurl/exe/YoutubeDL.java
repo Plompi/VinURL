@@ -1,6 +1,6 @@
-package com.vinurl.client.exe;
+package com.vinurl.exe;
 
-import com.vinurl.main.VinURL;
+import com.vinurl.VinURL;
 import org.apache.commons.lang3.SystemUtils;
 
 public class YoutubeDL extends Executable {

@@ -1,6 +1,6 @@
-package com.vinurl.main.mixin;
+package com.vinurl.mixin;
 
-import com.vinurl.main.Helper;
+import com.vinurl.api.VinURLSound;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
@@ -17,12 +17,12 @@ public abstract class JukeboxMixin extends BlockEntityMixin implements SingleSta
 
 	@Inject(at = @At("TAIL"), method = "dropRecord")
 	public void dropRecord(CallbackInfo cir) {
-		Helper.stopVinURLDisc(world, pos);
+		VinURLSound.stop(world, pos);
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")
 	public void setStack(ItemStack stack, CallbackInfo cir) {
-		Helper.playVinURLDisc(world, recordStack, pos);
+		VinURLSound.play(world, recordStack, pos);
 	}
 
 

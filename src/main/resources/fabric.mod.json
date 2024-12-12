@@ -17,18 +17,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.vinurl.main.VinURL"
+      "com.vinurl.VinURL"
     ],
     "client": [
       "com.vinurl.client.VinURLClient"
     ]
   },
   "mixins": [
-    "vinurl.mixins.json",
-    {
-      "config": "vinurl.client.mixins.json",
-      "environment": "client"
-    }
+    "vinurl.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.15.0",

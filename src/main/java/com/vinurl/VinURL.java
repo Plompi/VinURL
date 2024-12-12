@@ -1,6 +1,6 @@
-package com.vinurl.main;
+package com.vinurl;
 
-import com.vinurl.main.items.VinURLDiscItem;
+import com.vinurl.items.VinURLDiscItem;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.network.OwoNetChannel;

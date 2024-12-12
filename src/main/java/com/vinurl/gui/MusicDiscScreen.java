@@ -1,6 +1,6 @@
-package com.vinurl.client.gui;
+package com.vinurl.gui;
 
-import com.vinurl.main.VinURL;
+import com.vinurl.VinURL;
 import com.vinurl.client.VinURLClient;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -10,7 +10,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
-import static com.vinurl.main.VinURL.NETWORK_CHANNEL;
+import static com.vinurl.VinURL.NETWORK_CHANNEL;
 
 public class MusicDiscScreen extends Screen {
 	private static final Identifier TEXTURE = Identifier.of(VinURL.MOD_ID, "textures/gui/record_input.png");
