@@ -1,11 +1,11 @@
-package com.vinurl;
+package com.vinurl.client;
 
-import com.vinurl.cmd.Commands;
-import com.vinurl.exe.FFmpeg;
-import com.vinurl.exe.YoutubeDL;
-import com.vinurl.gui.MusicDiscScreen;
+import com.vinurl.client.cmd.Commands;
+import com.vinurl.client.exe.FFmpeg;
+import com.vinurl.client.exe.YoutubeDL;
+import com.vinurl.client.gui.MusicDiscScreen;
+import com.vinurl.main.VinURL;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
@@ -17,7 +17,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 
 public class VinURLClient implements ClientModInitializer {
-	public static final com.vinurl.VinURLConfig CONFIG = com.vinurl.VinURLConfig.createAndLoad();
+	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
 	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 	HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
 
@@ -34,11 +34,11 @@ public class VinURLClient implements ClientModInitializer {
 		Commands.register();
 
 		// Client Music Played Event
-		ClientPlayNetworking.registerGlobalReceiver(VinURL.PlaySoundPayload.ID, (payload, context) -> {
+		VinURL.NETWORK_CHANNEL.registerClientbound(VinURL.PlaySoundRecord.class, ((payload, context) -> {
 			Vec3d blockPosition = payload.blockPos().toCenterPos();
 			String fileUrl = payload.urlName();
 			String fileName = DigestUtils.sha256Hex(fileUrl);
-			MinecraftClient client = context.client();
+			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
 
 				FileSound currentSound = playingSounds.get(blockPosition);
@@ -71,17 +71,15 @@ public class VinURLClient implements ClientModInitializer {
 					client.getSoundManager().play(fileSound);
 				}
 			});
-		});
+		}));
 
 		// Client Open Record UI Event
-		ClientPlayNetworking.registerGlobalReceiver(VinURL.RecordGUIPayload.ID, (payload, context) -> {
+		VinURL.NETWORK_CHANNEL.registerClientbound(VinURL.GUIRecord.class, ((payload, context) -> {
 			String currentUrl = payload.urlName();
-			MinecraftClient client = context.client();
+			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
-
 				client.setScreen(new MusicDiscScreen(currentUrl));
 			});
-
-		});
+		}));
 	}
 }

@@ -1,4 +1,4 @@
-package com.vinurl.mixin;
+package com.vinurl.main.mixin;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;

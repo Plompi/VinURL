@@ -17,10 +17,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.vinurl.VinURL"
+      "com.vinurl.main.VinURL"
     ],
     "client": [
-      "com.vinurl.VinURLClient"
+      "com.vinurl.client.VinURLClient"
     ]
   },
   "mixins": [

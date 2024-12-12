@@ -1,12 +1,11 @@
-package com.vinurl.exe;
+package com.vinurl.client.exe;
 
-import com.vinurl.VinURL;
 import org.apache.commons.lang3.SystemUtils;
 
 public class FFmpeg extends Executable {
 	public FFmpeg() {
 		super("ffmpeg" + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""),
-				VinURL.VINURLPATH.resolve("ffmpeg").toFile(),
+				com.vinurl.main.VinURL.VINURLPATH.resolve("ffmpeg").toFile(),
 				String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
 				"Tyrrrz/FFmpegBin");
 	}

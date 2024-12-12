@@ -1,6 +1,7 @@
-package com.vinurl;
+package com.vinurl.client;
 
-import com.vinurl.exe.YoutubeDL;
+import com.vinurl.client.exe.YoutubeDL;
+import com.vinurl.main.VinURL;
 
 import java.io.File;
 import java.io.FileInputStream;

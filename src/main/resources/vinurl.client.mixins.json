@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.vinurl.mixin.client",
+  "package": "com.vinurl.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
     "SoundLoaderMixin"

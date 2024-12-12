@@ -1,6 +1,6 @@
-package com.vinurl.mixin.client;
+package com.vinurl.client.mixin;
 
-import com.vinurl.AudioHandlerClient;
+import com.vinurl.client.AudioHandlerClient;
 import net.minecraft.client.sound.AudioStream;
 import net.minecraft.client.sound.OggAudioStream;
 import net.minecraft.client.sound.RepeatingAudioStream;

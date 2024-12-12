@@ -1,7 +1,6 @@
-package com.vinurl.exe;
+package com.vinurl.client.exe;
 
-import com.vinurl.VinURL;
-import com.vinurl.VinURLClient;
+import com.vinurl.client.VinURLClient;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
@@ -109,7 +108,7 @@ public class Executable {
 
 			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
 				for (String line; (line = errorReader.readLine()) != null; ) {
-					VinURL.LOGGER.info(line);
+					com.vinurl.main.VinURL.LOGGER.info(line);
 				}
 				if (process.waitFor() != 0) {
 					throw new IOException();

@@ -1,5 +1,6 @@
-package com.vinurl;
+package com.vinurl.client;
 
+import com.vinurl.main.VinURL;
 import net.minecraft.client.sound.Sound;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;

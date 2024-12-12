@@ -19,18 +19,6 @@ repositories {
 	// for more information about repositories.
 }
 
-loom {
-	splitEnvironmentSourceSets()
-
-	mods {
-		"vinurl" {
-			sourceSet sourceSets.main
-			sourceSet sourceSets.client
-		}
-	}
-
-}
-
 dependencies {
 	implementation 'net.lingala.zip4j:zip4j:2.11.5'
 

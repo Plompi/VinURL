@@ -1,6 +1,6 @@
-package com.vinurl.mixin;
+package com.vinurl.main.mixin;
 
-import com.vinurl.Helper;
+import com.vinurl.main.Helper;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
