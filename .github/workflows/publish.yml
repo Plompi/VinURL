@@ -40,7 +40,7 @@ jobs:
       - name: Build
         run: ./gradlew clean build
 
-      - name: Publish (Modrinth/GitHub)
+      - name: Publish Fabric Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
@@ -48,18 +48,27 @@ jobs:
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
+          dependencies: |
+            fabric-api
+            owo-lib
+
           version-type: release
           changelog-file: CHANGELOG.md
           loaders: fabric
           java: "${{env.JAVA_VERSION}}"
 
-      - name: Publish (Modrinth/GitHub)
+      - name: Publish Neoforge Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "VinURL Neoforge ${{ steps.read_properties.outputs.mod_version }}"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
+
+          dependencies: |
+            forgified-fabric-api
+            owo
+            connector
 
           version-type: release
           changelog-file: CHANGELOG.md
