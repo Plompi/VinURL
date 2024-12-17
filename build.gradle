@@ -1,6 +1,6 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
-	id("org.moddedmc.wiki.toolkit") version "0.2.4"
+	id "fabric-loom" version "1.9-SNAPSHOT"
+	id "org.moddedmc.wiki.toolkit" version "0.2.4"
 }
 
 version = project.mod_version
@@ -11,7 +11,7 @@ base {
 }
 
 repositories {
-	maven { url 'https://maven.wispforest.io' }
+	maven { url "https://maven.wispforest.io" }
 	// Add repositories to retrieve artifacts from in here.
 	// You should only use this when depending on other mods because
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-	implementation 'net.lingala.zip4j:zip4j:2.11.5'
+	implementation "net.lingala.zip4j:zip4j:2.11.5"
 
 	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
 	include "io.wispforest:owo-sentinel:${project.owo_version}"
@@ -67,7 +67,7 @@ wiki {
 		// The name of the object (examplemod) should match the registered wiki project ID (if it exists).
 		vinurl {
 			// The path to the folder containing the documentation metadata file (sinytra-wiki.json)
-			root = file('docs')
+			root = file("docs")
 		}
 	}
 }

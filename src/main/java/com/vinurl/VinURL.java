@@ -38,20 +38,18 @@ public class VinURL implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = Identifier.of(MOD_ID, "placeholder_sound");
-	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
-			Registries.SOUND_EVENT,
-			PLACEHOLDER_SOUND_IDENTIFIER,
-			SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER)
-	);
 	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
 	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
 
 	@Override
 	public void onInitialize() {
 		// Register the Custom Record to the Tools Item Group
-		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> {
-			content.add(CUSTOM_RECORD);
-		});
+		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(CUSTOM_RECORD));
+
+		Registry.register(
+				Registries.SOUND_EVENT,
+				PLACEHOLDER_SOUND_IDENTIFIER,
+				SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER));
 
 		NETWORK_CHANNEL.registerClientboundDeferred(GUIRecord.class);
 		NETWORK_CHANNEL.registerClientboundDeferred(PlaySoundRecord.class);
@@ -82,7 +80,7 @@ public class VinURL implements ModInitializer {
 
 			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 			NbtCompound currentNbt = new NbtCompound();
-			currentNbt.putString("music_url", urlName);
+			currentNbt.put(URL_KEY, urlName);
 			currentItem.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt));
 		}));
 	}

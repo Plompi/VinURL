@@ -3,7 +3,6 @@
   "package": "com.vinurl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BlockEntityMixin",
     "JukeboxMixin"
   ],
   "client": [

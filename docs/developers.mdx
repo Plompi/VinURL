@@ -60,27 +60,26 @@ Import the Helper class from VinURL, which contains methods for playing and stop
 import com.vinurl.api.VinURLSound;
 ```
 
-Add the following lines of code to the start of your method that is responsible for starting the music
+Add the following lines of code to the end of your method that is responsible for starting the music
 
 ```java
 public void startPlaying(){
+    // Your own Logic...
     if (isVinURLLoaded) {
             VinURLSound.play(world, itemStack, blockPos);
         }
-
-    // Your own Logic...
 }
 ```
 
-and in the method that stops the music, add the following at the end
+and in the method that stops the music, add the following at the top
 
 
 ```java
 public void dropRecord(){
-    // Your own Logic...
-
     if (isVinURLLoaded) {
 		VinURLSound.stop(world, blockPos);
 	}
+    // Your own Logic...
+
 }
 ```

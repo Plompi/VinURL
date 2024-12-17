@@ -1,23 +1,36 @@
 package com.vinurl.mixin;
 
 import com.vinurl.api.VinURLSound;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxMixin extends BlockEntityMixin implements SingleStackInventory {
+public abstract class JukeboxMixin implements SingleStackInventory {
 	@Shadow
 	private ItemStack recordStack;
 
-	@Inject(at = @At("TAIL"), method = "dropRecord")
+	@Shadow
+	public abstract BlockEntity asBlockEntity();
+
+	@Unique
+	World world = asBlockEntity().getWorld();
+
+	@Unique
+	BlockPos pos = asBlockEntity().getPos();
+
+	@Inject(at = @At("HEAD"), method = "dropRecord")
 	public void dropRecord(CallbackInfo cir) {
-		VinURLSound.stop(world, pos);
+		VinURLSound.stop(world, recordStack, pos);
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")

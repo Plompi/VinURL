@@ -5,7 +5,9 @@ import com.mojang.brigadier.context.CommandContext;
 import com.vinurl.VinURL;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
+import com.vinurl.items.VinURLDiscItem;
 import io.wispforest.owo.config.ui.ConfigScreen;
+import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -57,7 +59,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		ConfigScreen screen = Objects.requireNonNull(ConfigScreen.getProvider(VinURL.MOD_ID)).apply(null);
+		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreenProviders.get(VinURL.MOD_ID)).apply(null);
 		MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
 		return 0;
 	}
@@ -66,7 +68,7 @@ public class Commands {
 		String url = StringArgumentType.getString(ctx, "url");
 		ItemStack heldItem = ctx.getSource().getPlayer().getStackInHand(Hand.MAIN_HAND);
 
-		if (heldItem.getItem() != VinURL.CUSTOM_RECORD) {
+		if (!(heldItem.getItem() instanceof VinURLDiscItem)) {
 			ctx.getSource().sendFeedback(Text.of("VinURL-Disc needed in Main Hand"));
 			return 0;
 		}

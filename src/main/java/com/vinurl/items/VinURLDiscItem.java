@@ -24,10 +24,7 @@ public class VinURLDiscItem extends Item {
 		ItemStack stackInHand = player.getStackInHand(hand);
 		if (!world.isClient) {
 
-			NbtCompound currentNbt = new NbtCompound();
-			currentNbt.putString("music_url", "");
-
-			NbtCompound nbt = stackInHand.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt)).copyNbt();
+			NbtCompound nbt = stackInHand.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound())).copyNbt();
 			NETWORK_CHANNEL.serverHandle(player).send(new VinURL.GUIRecord(nbt.get(URL_KEY)));
 		}
 		return TypedActionResult.success(stackInHand);
