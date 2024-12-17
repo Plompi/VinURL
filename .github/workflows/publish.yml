@@ -67,7 +67,7 @@ jobs:
 
           dependencies: |
             forgified-fabric-api
-            owo
+            owo-lib
             connector
 
           version-type: release
