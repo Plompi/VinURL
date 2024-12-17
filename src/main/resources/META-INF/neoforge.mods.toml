@@ -1,0 +1,48 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="${mod_license}"
+
+[properties]
+"connector:placeholder"=true
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors=["${mod_author}","${mod_credits}"]
+description='''${mod_description}'''
+
+[[dependencies.vinurl]]
+modId="neoforge"
+mandatory=true
+versionRange="[${mod_neoforge_loader_version},)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.vinurl]]
+modId="minecraft"
+mandatory=true
+versionRange="[${mod_minecraft_version_start},${mod_minecraft_version_end}]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.vinurl]]
+modId="connector"
+mandatory=true
+versionRange="*"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.vinurl]]
+modId = "fabric_api"
+mandatory = true
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.vinurl]]
+modId="owo"
+mandatory=true
+versionRange="*"
+ordering="NONE"
+side="BOTH"

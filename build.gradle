@@ -4,10 +4,10 @@ plugins {
 }
 
 version = project.mod_version
-group = project.maven_group
+
 
 base {
-	archivesName = project.archives_base_name
+	archivesName = project.mod_id
 }
 
 repositories {
@@ -22,23 +22,38 @@ repositories {
 dependencies {
 	implementation "net.lingala.zip4j:zip4j:2.11.5"
 
-	modImplementation "io.wispforest:owo-lib:${project.owo_version}"
-	include "io.wispforest:owo-sentinel:${project.owo_version}"
-	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.owo_version}")
+	modImplementation "io.wispforest:owo-lib:${project.run_owo_version}"
+	include "io.wispforest:owo-sentinel:${project.run_owo_version}"
+	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.run_owo_version}")
 
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	minecraft "com.mojang:minecraft:${project.run_minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.run_yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.run_fabric_loader_version}"
 
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.run_fabric_version}"
 
 }
 
 processResources {
-	inputs.property "version", project.version
+	var replaceProperties = [
+			mod_version               		: mod_version,
+			mod_id							: mod_id,
+			mod_name						: mod_name,
+			mod_license                     : mod_license,
+			mod_author                      : mod_author,
+			mod_credits                     : mod_credits,
+			mod_description                 : mod_description,
+			mod_url                         : mod_url,
 
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+			mod_minecraft_version_start		: mod_minecraft_version_start,
+			mod_minecraft_version_end		: mod_minecraft_version_end,
+
+			mod_fabric_loader_version		: mod_fabric_loader_version,
+			mod_neoforge_loader_version		: mod_neoforge_loader_version
+	]
+	inputs.properties replaceProperties
+	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
+		expand replaceProperties
 	}
 }
 
@@ -58,7 +73,7 @@ java {
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${archiveBaseName}" }
+		rename { "${it}_${mod_id}" }
 	}
 }
 

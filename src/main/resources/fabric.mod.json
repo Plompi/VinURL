@@ -1,18 +1,17 @@
 {
   "schemaVersion": 1,
-  "id": "vinurl",
-  "version": "${version}",
-  "name": "VinURL",
-  "description": "Adds a writeable music disc, allowing you to customize the music that plays from any youtube link.",
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
-    "Plompii",
-    "Hoofer"
+    "${mod_author}",
+    "${mod_credits}"
   ],
   "contact": {
-    "homepage": "https://plompi.github.io/",
-    "sources": "https://github.com/Plompi/VinURL"
+    "sources": "${mod_url}"
   },
-  "license": "CC-BY-NC-4.0",
+  "license": "${mod_license}",
   "icon": "assets/vinurl/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -27,10 +26,8 @@
     "vinurl.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
-    "minecraft": [
-      "~1.21"
-    ],
+    "fabricloader": ">=${mod_fabric_loader_version}",
+    "minecraft": ["${mod_minecraft_version_start}","${mod_minecraft_version_end}"],
     "java": ">=21",
     "fabric-api": "*",
     "owo-lib": "*"
