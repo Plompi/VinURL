@@ -1,20 +1,18 @@
 package com.vinurl.api;
 
 import com.vinurl.VinURL;
-import com.vinurl.items.VinURLDiscItem;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-import static com.vinurl.VinURL.NETWORK_CHANNEL;
-import static com.vinurl.VinURL.URL_KEY;
+import static com.vinurl.VinURL.*;
 
 public class VinURLSound {
 	public static void play(World level, ItemStack recordStack, BlockPos pos) {
 		NbtComponent nbt = recordStack.get(DataComponentTypes.CUSTOM_DATA);
-		if (!(recordStack.getItem() instanceof VinURLDiscItem) || level.isClient || nbt == null) {return;}
+		if (recordStack.getItem() != CUSTOM_RECORD || level.isClient || nbt == null) {return;}
 
 		String musicUrl = nbt.copyNbt().get(URL_KEY);
 		if (musicUrl == null || musicUrl.isEmpty()) {return;}
@@ -25,7 +23,7 @@ public class VinURLSound {
 	}
 
 	public static void stop(World level, ItemStack recordStack, BlockPos pos) {
-		if (!(recordStack.getItem() instanceof VinURLDiscItem) || level.isClient) {return;}
+		if (recordStack.getItem() != CUSTOM_RECORD || level.isClient) {return;}
 		level.getPlayers().forEach(playerEntity -> {
 			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos, ""));
 		});

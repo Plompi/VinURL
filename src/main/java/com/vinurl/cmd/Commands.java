@@ -5,7 +5,6 @@ import com.mojang.brigadier.context.CommandContext;
 import com.vinurl.VinURL;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
-import com.vinurl.items.VinURLDiscItem;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -21,6 +20,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import static com.vinurl.VinURL.CUSTOM_RECORD;
 import static com.vinurl.VinURL.NETWORK_CHANNEL;
 import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
@@ -68,7 +68,7 @@ public class Commands {
 		String url = StringArgumentType.getString(ctx, "url");
 		ItemStack heldItem = ctx.getSource().getPlayer().getStackInHand(Hand.MAIN_HAND);
 
-		if (!(heldItem.getItem() instanceof VinURLDiscItem)) {
+		if (heldItem.getItem() != CUSTOM_RECORD) {
 			ctx.getSource().sendFeedback(Text.of("VinURL-Disc needed in Main Hand"));
 			return 0;
 		}

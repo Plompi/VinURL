@@ -12,35 +12,35 @@ displayName="${mod_name}"
 authors=["${mod_author}","${mod_credits}"]
 description='''${mod_description}'''
 
-[[dependencies.vinurl]]
+[[dependencies."${mod_id}"]]
 modId="neoforge"
 mandatory=true
 versionRange="[${mod_neoforge_loader_version},)"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.vinurl]]
+[[dependencies."${mod_id}"]]
 modId="minecraft"
 mandatory=true
 versionRange="[${mod_minecraft_version_start},${mod_minecraft_version_end}]"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.vinurl]]
+[[dependencies."${mod_id}"]]
 modId="connector"
 mandatory=true
 versionRange="*"
 ordering="NONE"
 side="BOTH"
 
-[[dependencies.vinurl]]
+[[dependencies."${mod_id}"]]
 modId = "fabric_api"
 mandatory = true
 versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.vinurl]]
+[[dependencies."${mod_id}"]]
 modId="owo"
 mandatory=true
 versionRange="*"

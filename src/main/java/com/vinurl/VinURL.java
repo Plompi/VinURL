@@ -63,10 +63,10 @@ public class VinURL implements ModInitializer {
 				return;
 			}
 
-			String urlName = payload.urlName();
+			String urlName;
 
 			try {
-				new URI(urlName).toURL();
+				urlName = new URI(payload.urlName()).toURL().toString();
 
 			} catch (Exception e) {
 				player.sendMessage(Text.literal("Song URL is invalid!"));
