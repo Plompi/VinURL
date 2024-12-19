@@ -31,7 +31,7 @@ public class Commands {
 				.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
 				.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
 				.then(ClientCommandManager.literal("config").executes(Commands::openConfig))
-				.then(ClientCommandManager.literal("set").then(argument("url", StringArgumentType.string()).executes(Commands::setURLToDisc)))
+				.then(ClientCommandManager.literal("set").then(argument("url", StringArgumentType.greedyString()).executes(Commands::setURLToDisc)))
 		));
 	}
 
