@@ -51,7 +51,7 @@ public class VinURLClient implements ClientModInitializer {
 					return;
 				}
 
-				if (!AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
+				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
 					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {

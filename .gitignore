@@ -44,3 +44,5 @@ replay_*.log
 package.json
 package-lock.json
 node_modules/
+
+git_archive_branch.sh
