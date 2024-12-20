@@ -22,8 +22,6 @@ repositories {
 dependencies {
 	implementation "net.lingala.zip4j:zip4j:2.11.5"
 
-	modImplementation "io.wispforest:owo-lib:${project.run_owo_version}"
-	include "io.wispforest:owo-sentinel:${project.run_owo_version}"
 	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.run_owo_version}")
 
 	minecraft "com.mojang:minecraft:${project.run_minecraft_version}"

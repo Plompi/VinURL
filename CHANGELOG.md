@@ -1,4 +1,2 @@
-- Added API for easier integration of VinURL into other mods
-- Added documentation (https://moddedmc.org/en/project/vinurl/docs)
-- now supports neoforge too (sinytra-connector compatible)
-- restructured code base massively (switched to a lot of owo-lib stuff)
+- Added new Config Options
+- made /set command a greedy string (does not required " around url anymore)
