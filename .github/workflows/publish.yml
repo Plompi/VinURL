@@ -1,6 +1,10 @@
 name: Publish on Modrinth
 
-on: [ pull_request, workflow_dispatch ]
+on:
+  push:
+    paths:
+      - "CHANGELOG.md"
+  workflow_dispatch:
 
 env:
   JAVA_VERSION: 21

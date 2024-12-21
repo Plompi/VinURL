@@ -3,7 +3,8 @@ plugins {
 	id "org.moddedmc.wiki.toolkit" version "0.2.4"
 }
 
-version = project.mod_version
+def mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
+version = mod_version
 
 
 base {
