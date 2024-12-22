@@ -25,11 +25,13 @@ jobs:
         with:
           submodules: true
 
-      - uses: madhead/read-java-properties@latest
-        id: read_properties
-        with:
-          file: gradle.properties
-          all: true
+      - name: Extrahiere Version aus CHANGELOG.md
+        id: extract_version
+        run: |
+          # Extrahiere die Version aus der CHANGELOG.md mit grep und sed
+          VERSION=$(grep -oP '(?<=Version: )\d+\.\d+\.\d+' CHANGELOG.md | head -n 1)
+          
+          echo "mod_version=$VERSION" >> $GITHUB_ENV
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -48,7 +50,7 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL Fabric ${{ steps.read_properties.outputs.mod_version }}"
+          name: "VinURL Fabric ${{ env.mod_version }}"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
@@ -63,14 +65,14 @@ jobs:
 
       - name: Add Null Byte to Neoforge (Modrinth has Hashing Issues)
         run: |
-          JAR_NAME="build/libs/vinurl-${{ steps.read_properties.outputs.mod_version }}.jar"
+          JAR_NAME="build/libs/vinurl-${{ env.mod_version }}.jar"
           echo -n -e "\x00" >> "$JAR_NAME"
 
       - name: Publish Neoforge Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL Neoforge ${{ steps.read_properties.outputs.mod_version }}"
+          name: "VinURL Neoforge ${{ env.mod_version }}"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
