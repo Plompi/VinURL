@@ -1,3 +1,2 @@
-Version: 1.2.1
-- Added new Config Options
-- made /set command a greedy string (does not required " around url anymore)
+Version: 1.2.2
+- Fixed Modrinth Update Issue
