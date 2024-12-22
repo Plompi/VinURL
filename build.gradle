@@ -6,7 +6,6 @@ plugins {
 def mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
 version = mod_version
 
-
 base {
 	archivesName = project.mod_id
 }
@@ -22,15 +21,11 @@ repositories {
 
 dependencies {
 	implementation "net.lingala.zip4j:zip4j:2.11.5"
-
 	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.run_owo_version}")
-
 	minecraft "com.mojang:minecraft:${project.run_minecraft_version}"
 	mappings "net.fabricmc:yarn:${project.run_yarn_mappings}:v2"
 	modImplementation "net.fabricmc:fabric-loader:${project.run_fabric_loader_version}"
-
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.run_fabric_version}"
-
 }
 
 processResources {
@@ -61,16 +56,16 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
 	withSourcesJar()
-
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
+	// Wenn NeoForge nicht gebaut wird, schließt das META-INF-Verzeichnis aus
+	if (!project.hasProperty('neoforge')) {
+		exclude('META-INF/**')
+	}
 	from("LICENSE") {
 		rename { "${it}_${mod_id}" }
 	}
@@ -78,9 +73,7 @@ jar {
 
 wiki {
 	docs {
-		// The name of the object (examplemod) should match the registered wiki project ID (if it exists).
 		vinurl {
-			// The path to the folder containing the documentation metadata file (sinytra-wiki.json)
 			root = file("docs")
 		}
 	}
