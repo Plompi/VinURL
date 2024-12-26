@@ -10,22 +10,22 @@ import net.minecraft.world.World;
 import static com.vinurl.VinURL.*;
 
 public class VinURLSound {
-	public static void play(World level, ItemStack recordStack, BlockPos pos) {
-		NbtComponent nbt = recordStack.get(DataComponentTypes.CUSTOM_DATA);
-		if (recordStack.getItem() != CUSTOM_RECORD || level.isClient || nbt == null) {return;}
+	public static void play(World world, ItemStack stack, BlockPos position) {
+		NbtComponent nbt = stack.get(DataComponentTypes.CUSTOM_DATA);
+		if (stack.getItem() != CUSTOM_RECORD || world.isClient || nbt == null) {return;}
 
-		String musicUrl = nbt.copyNbt().get(URL_KEY);
-		if (musicUrl == null || musicUrl.isEmpty()) {return;}
+		String url = nbt.copyNbt().get(URL_KEY);
+		if (url == null || url.isEmpty()) {return;}
 
-		level.getPlayers().forEach(playerEntity -> {
-			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos, musicUrl));
+		world.getPlayers().forEach(playerEntity -> {
+			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(position, url));
 		});
 	}
 
-	public static void stop(World level, ItemStack recordStack, BlockPos pos) {
-		if (recordStack.getItem() != CUSTOM_RECORD || level.isClient) {return;}
-		level.getPlayers().forEach(playerEntity -> {
-			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(pos, ""));
+	public static void stop(World world, ItemStack stack, BlockPos position) {
+		if (stack.getItem() != CUSTOM_RECORD || world.isClient) {return;}
+		world.getPlayers().forEach(playerEntity -> {
+			NETWORK_CHANNEL.serverHandle(playerEntity).send(new VinURL.PlaySoundRecord(position, ""));
 		});
 	}
 }

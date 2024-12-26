@@ -35,39 +35,38 @@ public class VinURLClient implements ClientModInitializer {
 
 		// Client Music Played Event
 		VinURL.NETWORK_CHANNEL.registerClientbound(VinURL.PlaySoundRecord.class, ((payload, context) -> {
-			Vec3d blockPosition = payload.blockPos().toCenterPos();
-			String fileUrl = payload.urlName();
-			String fileName = DigestUtils.sha256Hex(fileUrl);
+			Vec3d position = payload.position().toCenterPos();
+			String url = payload.url();
+			String fileName = DigestUtils.sha256Hex(url);
 			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
 
-				FileSound currentSound = playingSounds.get(blockPosition);
+				if (url.isEmpty() || client.player == null) {
+					return;
+				}
 
+				FileSound currentSound = playingSounds.get(position);
 				if (currentSound != null) {
 					client.getSoundManager().stop(currentSound);
 				}
 
-				if (fileUrl.isEmpty()) {
-					return;
-				}
-
-				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists() && client.player != null) {
+				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
 
-					AudioHandlerClient.downloadAudio(fileUrl, fileName).thenAccept((result) -> {
+					AudioHandlerClient.downloadAudio(url, fileName).thenAccept((result) -> {
 						if (result) {
 							client.player.sendMessage(Text.literal("Downloading complete!"));
 
-							FileSound fileSound = new FileSound(fileName, blockPosition);
-							playingSounds.put(blockPosition, fileSound);
+							FileSound fileSound = new FileSound(fileName, position);
+							playingSounds.put(position, fileSound);
 							client.getSoundManager().play(fileSound);
 						} else {
 							client.player.sendMessage(Text.literal("Failed to download music!"));
 						}
 					});
 				} else {
-					FileSound fileSound = new FileSound(fileName, blockPosition);
-					playingSounds.put(blockPosition, fileSound);
+					FileSound fileSound = new FileSound(fileName, position);
+					playingSounds.put(position, fileSound);
 					client.getSoundManager().play(fileSound);
 				}
 			});
@@ -75,11 +74,7 @@ public class VinURLClient implements ClientModInitializer {
 
 		// Client Open Record UI Event
 		VinURL.NETWORK_CHANNEL.registerClientbound(VinURL.GUIRecord.class, ((payload, context) -> {
-			String currentUrl = payload.urlName();
-			MinecraftClient client = MinecraftClient.getInstance();
-			client.execute(() -> {
-				client.setScreen(new MusicDiscScreen(currentUrl));
-			});
+			MinecraftClient.getInstance().setScreen(new MusicDiscScreen(payload.url()));
 		}));
 	}
 }

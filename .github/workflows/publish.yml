@@ -25,10 +25,16 @@ jobs:
         with:
           submodules: true
 
-      - name: Extrahiere Version aus CHANGELOG.md
+      - uses: madhead/read-java-properties@latest
+        id: read_properties
+        with:
+          file: gradle.properties
+          property: mod_minecraft_version_end
+
+      - name: Extract version from CHANGELOG.md
         id: extract_version
         run: |
-          # Extrahiere die Version aus der CHANGELOG.md mit grep und sed
+         
           VERSION=$(grep -oP '(?<=Version: )\d+\.\d+\.\d+' CHANGELOG.md | head -n 1)
           
           echo "mod_version=$VERSION" >> $GITHUB_ENV
@@ -50,7 +56,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL Fabric ${{ env.mod_version }}"
+          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.mod_minecraft_version_end.outputs.value }}"
+          version: "${{ env.mod_version }}+${{ steps.mod_minecraft_version_end.outputs.value }}-fabric"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
@@ -70,7 +77,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL Neoforge ${{ env.mod_version }}"
+          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.mod_minecraft_version_end.outputs.value }}"
+          version: "${{ env.mod_version }}+${{ steps.mod_minecraft_version_end.outputs.value }}-neoforge"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 

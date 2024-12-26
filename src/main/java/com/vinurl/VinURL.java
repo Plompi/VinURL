@@ -38,8 +38,8 @@ public class VinURL implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = Identifier.of(MOD_ID, "placeholder_sound");
-	public static final RegistryKey<JukeboxSong> Song = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(Song)));
+	public static final RegistryKey<JukeboxSong> SONG = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
+	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(SONG)));
 
 	@Override
 	public void onInitialize() {
@@ -57,37 +57,37 @@ public class VinURL implements ModInitializer {
 		// Server event handler for setting the URL on the Custom Record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, ((payload, context) -> {
 			PlayerEntity player = context.player();
-			ItemStack currentItem = player.getStackInHand(player.getActiveHand());
+			ItemStack stack = player.getStackInHand(player.getActiveHand());
 
-			if (currentItem.getItem() != CUSTOM_RECORD) {
+			if (stack.getItem() != CUSTOM_RECORD) {
 				return;
 			}
 
-			String urlName;
+			String url;
 
 			try {
-				urlName = new URI(payload.urlName()).toURL().toString();
+				url = new URI(payload.url()).toURL().toString();
 
 			} catch (Exception e) {
 				player.sendMessage(Text.literal("Song URL is invalid!"));
 				return;
 			}
 
-			if (urlName.length() >= 400) {
+			if (url.length() >= 400) {
 				player.sendMessage(Text.literal("Song URL is too long!"));
 				return;
 			}
 
 			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
-			NbtCompound currentNbt = new NbtCompound();
-			currentNbt.put(URL_KEY, urlName);
-			currentItem.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(currentNbt));
+			NbtCompound nbt = new NbtCompound();
+			nbt.put(URL_KEY, url);
+			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 		}));
 	}
-	public record PlaySoundRecord(BlockPos blockPos, String urlName) {}
+	public record PlaySoundRecord(BlockPos position, String url) {}
 
-	public record SetURLRecord(String urlName) {}
+	public record SetURLRecord(String url) {}
 
-	public record GUIRecord(String urlName) {}
+	public record GUIRecord(String url) {}
 
 }

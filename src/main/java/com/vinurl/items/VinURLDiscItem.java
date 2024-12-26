@@ -21,12 +21,12 @@ public class VinURLDiscItem extends Item {
 	}
 
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-		ItemStack stackInHand = player.getStackInHand(hand);
+		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
 
-			NbtCompound nbt = stackInHand.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound())).copyNbt();
+			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound())).copyNbt();
 			NETWORK_CHANNEL.serverHandle(player).send(new VinURL.GUIRecord(nbt.get(URL_KEY)));
 		}
-		return TypedActionResult.success(stackInHand);
+		return TypedActionResult.success(stack);
 	}
 }

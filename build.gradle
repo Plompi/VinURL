@@ -4,10 +4,10 @@ plugins {
 }
 
 def mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
-version = mod_version
+version = "${mod_version}+mc${mod_minecraft_version_end}"
 
 base {
-	archivesName = project.mod_id
+	archivesName = mod_id
 }
 
 repositories {
@@ -56,7 +56,6 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 java {
-	withSourcesJar()
 	sourceCompatibility = JavaVersion.VERSION_21
 	targetCompatibility = JavaVersion.VERSION_21
 }
