@@ -1,7 +1,7 @@
 package com.vinurl.gui;
 
-import com.vinurl.VinURL;
-import com.vinurl.client.VinURLClient;
+import static com.vinurl.VinURL.*;
+import static com.vinurl.client.VinURLClient.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
@@ -13,7 +13,7 @@ import org.lwjgl.glfw.GLFW;
 import static com.vinurl.VinURL.NETWORK_CHANNEL;
 
 public class MusicDiscScreen extends Screen {
-	private static final Identifier TEXTURE = Identifier.of(VinURL.MOD_ID, "textures/gui/record_input.png");
+	private static final Identifier TEXTURE = Identifier.of(MOD_ID, "textures/gui/record_input.png");
 	private static final int BACKGROUND_WIDTH = 176;
 	private static final int BACKGROUND_HEIGHT = 44;
 	private final String inputDefaultText;
@@ -48,12 +48,12 @@ public class MusicDiscScreen extends Screen {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			if (VinURLClient.isAprilFoolsDay) {
+			if (isAprilFoolsDay) {
 				this.textField.setText("https://www.youtube.com/watch?v=dQw4w9WgXcQ");
 			}
 
 			if (!this.textField.getText().equals(this.inputDefaultText)) {
-				NETWORK_CHANNEL.clientHandle().send(new VinURL.SetURLRecord(this.textField.getText()));
+				NETWORK_CHANNEL.clientHandle().send(new SetURLRecord(this.textField.getText()));
 			}
 			MinecraftClient.getInstance().setScreen(null);
 		}

@@ -1,15 +1,19 @@
 package com.vinurl.cmd;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.VinURL;
+import static com.vinurl.VinURL.*;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
+
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.context.CommandContext;
+
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreenProviders;
+import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -20,14 +24,11 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static com.vinurl.VinURL.CUSTOM_RECORD;
-import static com.vinurl.VinURL.NETWORK_CHANNEL;
-import static net.fabricmc.fabric.api.client.command.v2.ClientCommandManager.argument;
 
 public class Commands {
 
 	public static void register() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(VinURL.MOD_ID)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(MOD_ID)
 				.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
 				.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
 				.then(ClientCommandManager.literal("config").executes(Commands::openConfig))
@@ -37,7 +38,7 @@ public class Commands {
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
-			FileUtils.deleteDirectory(VinURL.VINURLPATH.resolve("client_downloads").toFile());
+			FileUtils.deleteDirectory(VINURLPATH.resolve("client_downloads").toFile());
 			ctx.getSource().sendFeedback(Text.literal("Deleted all Audio Files"));
 			return 1;
 		} catch (IOException e) {
@@ -59,7 +60,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreenProviders.get(VinURL.MOD_ID)).apply(null);
+		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null);
 		MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
 		return 0;
 	}
@@ -73,7 +74,7 @@ public class Commands {
 			return 0;
 		}
 
-		NETWORK_CHANNEL.clientHandle().send(new VinURL.SetURLRecord(url));
+		NETWORK_CHANNEL.clientHandle().send(new SetURLRecord(url));
 		return 1;
 	}
 }

@@ -1,6 +1,7 @@
 package com.vinurl;
 
 import com.vinurl.items.VinURLDiscItem;
+
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.network.OwoNetChannel;
@@ -55,7 +56,7 @@ public class VinURL implements ModInitializer {
 		NETWORK_CHANNEL.registerClientboundDeferred(PlaySoundRecord.class);
 
 		// Server event handler for setting the URL on the Custom Record
-		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, ((payload, context) -> {
+		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
 			ItemStack stack = player.getStackInHand(player.getActiveHand());
 
@@ -82,7 +83,7 @@ public class VinURL implements ModInitializer {
 			NbtCompound nbt = new NbtCompound();
 			nbt.put(URL_KEY, url);
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
-		}));
+		});
 	}
 	public record PlaySoundRecord(BlockPos position, String url) {}
 

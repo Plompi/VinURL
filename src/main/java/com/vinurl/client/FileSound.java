@@ -1,6 +1,7 @@
 package com.vinurl.client;
 
-import com.vinurl.VinURL;
+import static com.vinurl.VinURL.*;
+
 import net.minecraft.client.sound.Sound;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
@@ -20,7 +21,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Identifier getId() {
-		return Identifier.of(VinURL.MOD_ID, "customsound/" + fileName);
+		return Identifier.of(MOD_ID, "customsound/" + fileName);
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {

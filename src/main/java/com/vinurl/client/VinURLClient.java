@@ -1,10 +1,11 @@
 package com.vinurl.client;
 
+import static com.vinurl.VinURL.*;
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
 import com.vinurl.gui.MusicDiscScreen;
-import com.vinurl.VinURL;
+
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -34,7 +35,7 @@ public class VinURLClient implements ClientModInitializer {
 		Commands.register();
 
 		// Client Music Played Event
-		VinURL.NETWORK_CHANNEL.registerClientbound(VinURL.PlaySoundRecord.class, ((payload, context) -> {
+		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			String fileName = DigestUtils.sha256Hex(url);
@@ -70,11 +71,11 @@ public class VinURLClient implements ClientModInitializer {
 					client.getSoundManager().play(fileSound);
 				}
 			});
-		}));
+		});
 
 		// Client Open Record UI Event
-		VinURL.NETWORK_CHANNEL.registerClientbound(VinURL.GUIRecord.class, ((payload, context) -> {
+		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
 			MinecraftClient.getInstance().setScreen(new MusicDiscScreen(payload.url()));
-		}));
+		});
 	}
 }

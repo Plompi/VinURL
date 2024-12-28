@@ -1,6 +1,7 @@
 package com.vinurl.items;
 
-import com.vinurl.VinURL;
+import static com.vinurl.VinURL.*;
+
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,9 +11,6 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
-
-import static com.vinurl.VinURL.NETWORK_CHANNEL;
-import static com.vinurl.VinURL.URL_KEY;
 
 public class VinURLDiscItem extends Item {
 
@@ -25,7 +23,7 @@ public class VinURLDiscItem extends Item {
 		if (!world.isClient) {
 
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound())).copyNbt();
-			NETWORK_CHANNEL.serverHandle(player).send(new VinURL.GUIRecord(nbt.get(URL_KEY)));
+			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY)));
 		}
 		return TypedActionResult.success(stack);
 	}

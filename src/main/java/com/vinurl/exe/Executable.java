@@ -1,8 +1,7 @@
 package com.vinurl.exe;
 
-import com.vinurl.client.VinURLClient;
-import com.vinurl.VinURL;
-import org.apache.commons.lang3.SystemUtils;
+import static com.vinurl.VinURL.*;
+import static com.vinurl.client.VinURLClient.*;
 
 import java.io.*;
 import java.net.URI;
@@ -14,6 +13,7 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.apache.commons.lang3.SystemUtils;
 
 public class Executable {
 	private final String FILENAME;
@@ -35,7 +35,7 @@ public class Executable {
 		if (DIRECTORY.exists() || DIRECTORY.mkdirs()) {
 			if (!FILEPATH.toFile().exists()) {
 				downloadExecutable();
-			} else if (VinURLClient.CONFIG.UpdateCheckingOnStartup()) {
+			} else if (CONFIG.UpdateCheckingOnStartup()) {
 				checkForUpdates();
 			}
 		}
@@ -109,7 +109,7 @@ public class Executable {
 
 			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
 				for (String line; (line = errorReader.readLine()) != null; ) {
-					VinURL.LOGGER.info(line);
+					LOGGER.info(line);
 				}
 				if (process.waitFor() != 0) {
 					throw new IOException();
