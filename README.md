@@ -2,25 +2,17 @@
 
 VinURL is an exciting fork of the popular [URL Music Discs mod by Hoofer](https://modrinth.com/mod/url-music-discs).
 With the Custom Music Disc, players can download and play any cloud-hosted audio file directly in Minecraft or download
-them from YouTube, all via a URL, creating a personalized musical experience like never before.
+them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md), all via a URL, creating a personalized musical experience like never before.
 
 # Usage
 
-### Enter URL
+| **Enter URL**                                                                                           | **Use Disc**                                                                                             |
+|---------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| 1. Rightclick the Custom Music Disc                                                                     | 1. Insert the Disc into a Jukebox                                                                        |
+| 2. Enter a valid URL                                                                                    | 2. Wait until the download completes                                                                     |
+| 3. Press Enter or Escape to set the URL                                                                 | 3. Enjoy the music :)                                                                                    |
+| ![disc_usage](https://cdn.modrinth.com/data/cached_images/c122e92fab29170f883304c3a2bf78c34ee55635.gif) | ![disc_insert](https://cdn.modrinth.com/data/cached_images/0df9b09125a49d031b0af2ad7c10765b046c90ac.gif) |
 
-1: Rightclick the Custom Music Disc \
-2: Enter a valid URL \
-3: Press Enter or Escape to set the URL
-
-![DiscUsage](https://cdn.modrinth.com/data/cached_images/086a410633fc247e465d98be69205ee585de7ca4.gif)
-
-### Use Disc
-
-1: Insert the Disc into a Jukebox \
-2: Wait until the download completes \
-3: Enjoy the music :)
-
-![DiscInsert](https://cdn.modrinth.com/data/cached_images/d52eac012abe28f7060af2f0d2f1a20c9e2817e9.gif)
 
 # Commands
 
@@ -36,5 +28,5 @@ it's shapeless, no need to align the colors with the shown image
 
 # Config
 
-various client-side settings can be made. The config-screen can be accessed through ModMenu or the slash command (see
+various client-side settings can be made. The config-screen can be accessed through [Mod Menu](https://modrinth.com/mod/modmenu) or the slash command (see
 Commands Section)
