@@ -1,0 +1,77 @@
+name: Bug Report
+title: "[Bug] "
+labels: ["bug"]
+description: Create a report to help us improve
+body:
+- type: markdown
+  attributes:
+    value: "*Please use the search functionality before reporting an issue. Some topics can also already be found in the github discussions. Also take a look at the closed issues!*"
+- type: textarea
+  attributes:
+    label: Issue description
+    description: A clear and concise description of the issue and if appropriate what the expected outcome should have been.
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+    description: If there are specific steps that need to be taken to reproduce the issue list them here.
+    placeholder: |
+      1. Start by doing...
+      2. Next do...
+      3. See result described above
+- type: dropdown
+  id: platform
+  attributes:
+    label: Platform
+    description: On which platform did the issue occur?
+    options:
+    - Fabric
+    - Neoforge
+  validations:
+    required: true
+- type: input
+  id: minecraft-version
+  attributes:
+    label: Minecraft version
+    description: What version of Minecraft are you using?
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Loader version
+    description: What version of Fabric/Neoforge are you using?
+    placeholder: e.g. 0.15.11
+  validations:
+    required: true
+- type: input
+  attributes:
+    label: Fabric API version
+    description: What version of Fabric API (or forgified fabric api) are you using?
+    placeholder: e.g. 0.100.3+1.21
+  validations:
+    required: true
+- type: input
+  id: vinurl-version
+  attributes:
+    label: VinURL version
+    description: What version of VinURL are you using?
+    placeholder: e.g. 1.2.0
+  validations:
+    required: true
+- type: input
+  id: vinurl-version
+  attributes:
+    label: VinURL version
+    description: What version of VinURL are you using?
+    placeholder: e.g. 1.2.0
+  validations:
+    required: true
+- type: textarea
+  attributes:
+    label: Other relevant versions
+    description: If this issue is related to any other mods list their versions here.
+- type: input
+  attributes:
+    label: "If a (crash)log is relevant for this issue, link it here: (It's almost always relevant)"
+    description: "Please provide a [mclogs](https://mclo.gs/) / [gist](https://gist.github.com/) / [pastebin](https://pastebin.com/) / etc link here. (Make sure that it isn't set to expire!)"
