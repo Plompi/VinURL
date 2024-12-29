@@ -60,11 +60,11 @@ body:
   validations:
     required: true
 - type: input
-  id: vinurl-version
+  id: os
   attributes:
-    label: VinURL version
-    description: What version of VinURL are you using?
-    placeholder: e.g. 1.2.0
+    label: Operating System
+    description: Which OS are you using?
+    placeholder: e.g. Windows
   validations:
     required: true
 - type: textarea
