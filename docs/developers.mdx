@@ -77,7 +77,7 @@ and in the method that stops the music, add the following at the top
 ```java
 public void dropRecord(){
     if (isVinURLLoaded) {
-		VinURLSound.stop(world, blockPos);
+		VinURLSound.stop(world, itemstack, blockPos);
 	}
     // Your own Logic...
 
