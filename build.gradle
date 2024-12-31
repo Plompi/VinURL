@@ -74,6 +74,7 @@ wiki {
 	docs {
 		vinurl {
 			root = file("docs")
+			wikiAccessToken = project.findProperty("wikiAccessToken") ?: "default_token"
 		}
 	}
 }
