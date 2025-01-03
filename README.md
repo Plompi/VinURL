@@ -1,6 +1,6 @@
 # About
 
-VinURL is an exciting fork of the popular [URL Music Discs mod by Hoofer](https://modrinth.com/mod/url-music-discs).
+VinURL is an exciting fork of the popular [URL Music Discs](https://modrinth.com/mod/url-music-discs) mod by [Hoofer](https://github.com/HooferDevelops). 
 With the Custom Music Disc, players can download and play any cloud-hosted audio file directly in Minecraft or download
 them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md), all via a URL, creating a personalized musical experience like never before.
 
@@ -30,3 +30,12 @@ it's shapeless, no need to align the colors with the shown image
 
 various client-side settings can be made. The config-screen can be accessed through [Mod Menu](https://modrinth.com/mod/modmenu) or the slash command (see
 Commands Section)
+
+# Disclaimer
+
+This mod automatically downloads the following external programs in the background to ensure proper functionality. By using this mod, you agree to the automated download and use of these external programs.
+
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp): Licensed under the [Unlicense](https://github.com/yt-dlp/yt-dlp/blob/master/LICENSE)
+- [FFmpeg binaries](https://github.com/Tyrrrz/FFmpegBin): Licensed under the [MIT](https://github.com/Tyrrrz/FFmpegBin/blob/master/license.txt)
+
+Please note that it is the sole responsibility of each user to comply with applicable copyright laws and the terms of service of any music provider when using this mod. The developers of this mod do not assume any liability for unauthorized use or violations of such laws and regulations.
