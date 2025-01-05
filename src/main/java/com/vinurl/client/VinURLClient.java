@@ -4,7 +4,7 @@ import static com.vinurl.VinURL.*;
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
-import com.vinurl.gui.MusicDiscScreen;
+import com.vinurl.gui.URLScreen;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
@@ -75,7 +75,7 @@ public class VinURLClient implements ClientModInitializer {
 
 		// Client Open Record UI Event
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			MinecraftClient.getInstance().setScreen(new MusicDiscScreen(payload.url()));
+			MinecraftClient.getInstance().setScreen(new URLScreen(payload.url()));
 		});
 	}
 }

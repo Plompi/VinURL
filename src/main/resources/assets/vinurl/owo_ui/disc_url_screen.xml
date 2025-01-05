@@ -1,0 +1,39 @@
+<owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo-lib/1.20/owo-ui.xsd">
+    <components>
+        <stack-layout>
+            <children>
+                <texture texture="vinurl:textures/gui/record_input.png" texture-height="256" texture-width="256"
+                         region-height="44" region-width="176"/>
+                <texture texture="vinurl:textures/gui/record_input.png" texture-height="256" texture-width="256"
+                         region-height="16" region-width="110" v="44">
+                    <margins><left>52</left></margins>
+                </texture>
+                <text-box id="url">
+                    <max-length>400</max-length>
+                    <margins>
+                        <left>50</left>
+                    </margins>
+                    <sizing>
+                        <horizontal method="fixed">100</horizontal>
+                        <vertical method="fixed">8</vertical>
+                    </sizing>
+                    <show-background>false</show-background>
+                </text-box>
+                <label id="placeholder">
+                    <text>URL</text>
+                    <shadow>true</shadow>
+                    <color>gray</color>
+                    <margins>
+                        <left>-32</left>
+                    </margins>
+                </label>
+            </children>
+            <horizontal-alignment>center</horizontal-alignment>
+            <vertical-alignment>center</vertical-alignment>
+            <surface>
+                <vanilla-translucent/>
+            </surface>
+        </stack-layout>
+    </components>
+</owo-ui>
