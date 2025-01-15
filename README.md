@@ -11,7 +11,7 @@ them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/bl
 | 1. Rightclick the Custom Music Disc      | 1. Insert the Disc into a Jukebox           |
 | 2. Enter a valid URL                     | 2. Wait until the download completes        |
 | 3. Press Enter or Escape to set the URL  | 3. Enjoy the music :)                       |
-| ![disc_usage](docs/assets/enter_url.gif) | ![disc_insert](docs/assets/insert_disc.gif) |
+| ![enter_url](https://github.com/Plompi/VinURL/blob/master/docs/assets/enter_url.gif?raw=true) | ![insert_disc](https://github.com/Plompi/VinURL/blob/master/docs/assets/insert_disc.gif?raw=true) |
 
 
 # Commands
