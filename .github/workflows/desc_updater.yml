@@ -1,0 +1,18 @@
+on:
+  push:
+    paths:
+      - "README.md"
+  workflow_dispatch:
+
+env:
+  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+
+jobs:
+  modrinth-desc:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: funnyboy-roks/modrinth-auto-desc@v1.5
+        with:
+          auth-token: "${{env.MODRINTH_TOKEN}}"
+          slug: 'vinurl'
