@@ -19,6 +19,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private final String inputDefaultText;
 	TextBoxComponent url;
 	LabelComponent placeholder;
+	Boolean isInitial = true;
 
 	public URLScreen(String inputDefaultText) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
@@ -46,9 +47,13 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	protected void init() {
 		super.init();
-		Objects.requireNonNull(url.focusHandler()).focus(url, Component.FocusSource.KEYBOARD_CYCLE);
-		url.setText(inputDefaultText);
+		if (isInitial){
+			url.setText(inputDefaultText);
+			isInitial = false;
+		}
 		url.setFocused(true);
+		Objects.requireNonNull(url.focusHandler()).focus(url, Component.FocusSource.KEYBOARD_CYCLE);
+		setInitialFocus(url);
 		url.setFocusUnlocked(false);
 	}
 }

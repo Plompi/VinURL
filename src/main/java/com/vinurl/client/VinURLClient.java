@@ -42,7 +42,7 @@ public class VinURLClient implements ClientModInitializer {
 			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
 
-				if (url.isEmpty() || client.player == null) {
+				if (client.player == null) {
 					return;
 				}
 
@@ -50,6 +50,8 @@ public class VinURLClient implements ClientModInitializer {
 				if (currentSound != null) {
 					client.getSoundManager().stop(currentSound);
 				}
+
+				if (url.isEmpty()){return;}
 
 				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
 					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
