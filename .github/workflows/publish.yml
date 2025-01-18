@@ -26,7 +26,7 @@ jobs:
           submodules: true
 
       - uses: madhead/read-java-properties@latest
-        id: read_properties
+        id: minecraft_version
         with:
           file: gradle.properties
           property: mod_minecraft_version_end
@@ -56,8 +56,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.mod_minecraft_version_end.outputs.value }}"
-          version: "${{ env.mod_version }}+${{ steps.mod_minecraft_version_end.outputs.value }}-fabric"
+          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.minecraft_version.outputs.value }}"
+          version: "${{ env.mod_version }}+${{ steps.minecraft_version.outputs.value }}-fabric"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
@@ -77,8 +77,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.mod_minecraft_version_end.outputs.value }}"
-          version: "${{ env.mod_version }}+${{ steps.mod_minecraft_version_end.outputs.value }}-neoforge"
+          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.minecraft_version.outputs.value }}"
+          version: "${{ env.mod_version }}+${{ steps.minecraft_version.outputs.value }}-neoforge"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
