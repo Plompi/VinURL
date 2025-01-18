@@ -1,2 +1,4 @@
-Version: 1.2.2
-- Fixed Modrinth Update Issue
+Version: 1.2.3
+- ported GUI to owo-lib
+- code refactoring
+- better mod versioning
