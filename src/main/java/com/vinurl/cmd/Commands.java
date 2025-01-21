@@ -15,9 +15,7 @@ import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallba
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -66,15 +64,7 @@ public class Commands {
 	}
 
 	private static int setURLToDisc(CommandContext<FabricClientCommandSource> ctx) {
-		String url = StringArgumentType.getString(ctx, "url");
-		ItemStack heldItem = ctx.getSource().getPlayer().getStackInHand(Hand.MAIN_HAND);
-
-		if (heldItem.getItem() != CUSTOM_RECORD) {
-			ctx.getSource().sendFeedback(Text.of("VinURL-Disc needed in Main Hand"));
-			return 0;
-		}
-
-		NETWORK_CHANNEL.clientHandle().send(new SetURLRecord(url));
+		NETWORK_CHANNEL.clientHandle().send(new SetURLRecord(StringArgumentType.getString(ctx, "url")));
 		return 1;
 	}
 }

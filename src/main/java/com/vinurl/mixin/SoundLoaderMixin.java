@@ -22,8 +22,7 @@ import java.util.concurrent.CompletionException;
 public class SoundLoaderMixin {
 	@Inject(at = @At("HEAD"), method = "loadStreamed", cancellable = true)
 	public void loadStreamed(Identifier id, boolean repeatInstantly, CallbackInfoReturnable<CompletableFuture<AudioStream>> cir) {
-		if (!id.getNamespace().equals("vinurl") || id.getPath().contains("placeholder_sound.ogg"))
-			return;
+		if (!id.getNamespace().equals("vinurl") || id.getPath().contains("placeholder_sound.ogg")) {return;}
 
 		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
 			try {

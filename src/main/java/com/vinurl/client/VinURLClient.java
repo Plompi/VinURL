@@ -9,6 +9,7 @@ import com.vinurl.gui.URLScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -42,29 +43,27 @@ public class VinURLClient implements ClientModInitializer {
 			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
 
-				if (client.player == null) {
-					return;
-				}
+				if (client.player == null) {return;}
 
 				FileSound currentSound = playingSounds.get(position);
 				if (currentSound != null) {
 					client.getSoundManager().stop(currentSound);
 				}
 
-				if (url.isEmpty()){return;}
+				if (url.isEmpty()) {return;}
 
 				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
-					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."));
+					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
 
 					AudioHandlerClient.downloadAudio(url, fileName).thenAccept((result) -> {
 						if (result) {
-							client.player.sendMessage(Text.literal("Downloading complete!"));
+							client.player.sendMessage(Text.literal("Downloading complete!").styled(style -> style.withColor(Formatting.GREEN)), true);
 
 							FileSound fileSound = new FileSound(fileName, position);
 							playingSounds.put(position, fileSound);
 							client.getSoundManager().play(fileSound);
 						} else {
-							client.player.sendMessage(Text.literal("Failed to download music!"));
+							client.player.sendMessage(Text.literal("Failed to download music!").styled(style -> style.withColor(Formatting.RED)), true);
 						}
 					});
 				} else {

@@ -21,7 +21,6 @@ public class VinURLDiscItem extends Item {
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
-
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound())).copyNbt();
 			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY)));
 		}

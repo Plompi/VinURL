@@ -24,6 +24,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
+import net.minecraft.util.Hand;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
@@ -58,9 +59,18 @@ public class VinURL implements ModInitializer {
 		// Server event handler for setting the URL on the Custom Record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
-			ItemStack stack = player.getStackInHand(player.getActiveHand());
+			ItemStack stack = null;
 
-			if (stack.getItem() != CUSTOM_RECORD) {
+			for (Hand hand : Hand.values()) {
+				ItemStack currentStack = player.getStackInHand(hand);
+				if (currentStack.getItem() == CUSTOM_RECORD) {
+					stack = currentStack;
+					break;
+				}
+			}
+
+			if (stack == null) {
+				player.sendMessage(Text.literal("VinURL-Disc needed in Hand!"), true);
 				return;
 			}
 
@@ -70,12 +80,12 @@ public class VinURL implements ModInitializer {
 				url = new URI(payload.url()).toURL().toString();
 
 			} catch (Exception e) {
-				player.sendMessage(Text.literal("Song URL is invalid!"));
+				player.sendMessage(Text.literal("Song URL is invalid!"), true);
 				return;
 			}
 
 			if (url.length() >= 400) {
-				player.sendMessage(Text.literal("Song URL is too long!"));
+				player.sendMessage(Text.literal("Song URL is too long!"), true);
 				return;
 			}
 
