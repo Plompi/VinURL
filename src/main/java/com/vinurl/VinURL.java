@@ -84,7 +84,7 @@ public class VinURL implements ModInitializer {
 				return;
 			}
 
-			if (url.length() >= 400) {
+			if (url.length() > 400) {
 				player.sendMessage(Text.literal("Song URL is too long!"), true);
 				return;
 			}
