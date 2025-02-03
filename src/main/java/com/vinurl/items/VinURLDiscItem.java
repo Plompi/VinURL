@@ -9,7 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 
 public class VinURLDiscItem extends Item {
@@ -18,12 +18,12 @@ public class VinURLDiscItem extends Item {
 		super(settings);
 	}
 
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public ActionResult use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
 			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY), nbt.get(LOOP_KEY)));
 		}
-		return TypedActionResult.success(stack);
+		return ActionResult.SUCCESS;
 	}
 }

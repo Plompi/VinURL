@@ -42,7 +42,8 @@ public class VinURL implements ModInitializer {
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = Identifier.of(MOD_ID, "placeholder_sound");
 	public static final RegistryKey<JukeboxSong> SONG = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(SONG)));
+	public static final RegistryKey<Item> ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM,Identifier.of(MOD_ID, "custom_record"));
+	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, ITEM_KEY, new VinURLDiscItem(new Item.Settings().maxCount(1).jukeboxPlayable(SONG).registryKey(ITEM_KEY)));
 
 	@Override
 	public void onInitialize() {
