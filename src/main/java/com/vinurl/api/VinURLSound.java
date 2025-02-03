@@ -15,17 +15,18 @@ public class VinURLSound {
 		if (stack.getItem() != CUSTOM_RECORD || world.isClient || nbt == null) {return;}
 
 		String url = nbt.copyNbt().get(URL_KEY);
+		Boolean loop = nbt.copyNbt().get(LOOP_KEY);
 		if (url == null || url.isEmpty()) {return;}
 
 		for (PlayerEntity player : world.getPlayers()) {
-			NETWORK_CHANNEL.serverHandle(player).send(new PlaySoundRecord(position, url));
+			NETWORK_CHANNEL.serverHandle(player).send(new PlaySoundRecord(position, url, loop));
 		}
 	}
 
 	public static void stop(World world, ItemStack stack, BlockPos position) {
 		if (stack.getItem() != CUSTOM_RECORD || world.isClient) {return;}
 		for (PlayerEntity player : world.getPlayers()) {
-			NETWORK_CHANNEL.serverHandle(player).send(new PlaySoundRecord(position, ""));
+			NETWORK_CHANNEL.serverHandle(player).send(new PlaySoundRecord(position, "", false));
 		}
 	}
 }

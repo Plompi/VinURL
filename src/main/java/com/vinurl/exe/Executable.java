@@ -41,7 +41,7 @@ public class Executable {
 		}
 	}
 
-	public boolean checkForUpdates() {
+	public Boolean checkForUpdates() {
 		try {
 			if (!currentVersion(FILEPATH.getParent().resolve("version.txt")).equals(latestVersion())) {
 				downloadExecutable();
@@ -103,7 +103,7 @@ public class Executable {
 		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE)).toURL().openStream();
 	}
 
-	public boolean executeCommand(String... arguments) {
+	public Boolean executeCommand(String... arguments) {
 		try {
 			Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new));
 

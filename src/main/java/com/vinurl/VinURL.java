@@ -36,6 +36,7 @@ import java.nio.file.Path;
 public class VinURL implements ModInitializer {
 	public static final String MOD_ID = "vinurl";
 	public static final KeyedEndec<String> URL_KEY = new KeyedEndec<>("music_url", Endec.STRING, "");
+	public static final KeyedEndec<Boolean> LOOP_KEY = new KeyedEndec<>("loop", Endec.BOOLEAN, false);
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(Identifier.of(MOD_ID, "main"));
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
@@ -92,13 +93,14 @@ public class VinURL implements ModInitializer {
 			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 			NbtCompound nbt = new NbtCompound();
 			nbt.put(URL_KEY, url);
+			nbt.put(LOOP_KEY, payload.loop());
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 		});
 	}
-	public record PlaySoundRecord(BlockPos position, String url) {}
+	public record PlaySoundRecord(BlockPos position, String url, Boolean loop) {}
 
-	public record SetURLRecord(String url) {}
+	public record SetURLRecord(String url, Boolean loop) {}
 
-	public record GUIRecord(String url) {}
+	public record GUIRecord(String url, Boolean loop) {}
 
 }

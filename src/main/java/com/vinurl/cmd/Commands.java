@@ -5,6 +5,7 @@ import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 
 import io.wispforest.owo.config.ui.ConfigScreen;
@@ -30,7 +31,7 @@ public class Commands {
 				.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
 				.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
 				.then(ClientCommandManager.literal("config").executes(Commands::openConfig))
-				.then(ClientCommandManager.literal("set").then(argument("url", StringArgumentType.greedyString()).executes(Commands::setURLToDisc)))
+				.then(ClientCommandManager.literal("set").then(argument("url", StringArgumentType.string()).then(argument("loop",BoolArgumentType.bool()).executes(Commands::setURLToDisc))))
 		));
 	}
 
@@ -64,7 +65,7 @@ public class Commands {
 	}
 
 	private static int setURLToDisc(CommandContext<FabricClientCommandSource> ctx) {
-		NETWORK_CHANNEL.clientHandle().send(new SetURLRecord(StringArgumentType.getString(ctx, "url")));
+		NETWORK_CHANNEL.clientHandle().send(new SetURLRecord(StringArgumentType.getString(ctx, "url"), BoolArgumentType.getBool(ctx, "loop")));
 		return 1;
 	}
 }

@@ -22,7 +22,7 @@ public class VinURLDiscItem extends Item {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY)));
+			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY), nbt.get(LOOP_KEY)));
 		}
 		return TypedActionResult.success(stack);
 	}

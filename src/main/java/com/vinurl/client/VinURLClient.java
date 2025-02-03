@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
-	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
+	public static Boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 	HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
 
 	@Override
@@ -39,6 +39,7 @@ public class VinURLClient implements ClientModInitializer {
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
+			Boolean loop = payload.loop();
 			String fileName = DigestUtils.sha256Hex(url);
 			MinecraftClient client = MinecraftClient.getInstance();
 			client.execute(() -> {
@@ -59,7 +60,7 @@ public class VinURLClient implements ClientModInitializer {
 						if (result) {
 							client.player.sendMessage(Text.literal("Downloading complete!").styled(style -> style.withColor(Formatting.GREEN)), true);
 
-							FileSound fileSound = new FileSound(fileName, position);
+							FileSound fileSound = new FileSound(fileName, position, loop);
 							playingSounds.put(position, fileSound);
 							client.getSoundManager().play(fileSound);
 						} else {
@@ -67,7 +68,7 @@ public class VinURLClient implements ClientModInitializer {
 						}
 					});
 				} else {
-					FileSound fileSound = new FileSound(fileName, position);
+					FileSound fileSound = new FileSound(fileName, position, loop);
 					playingSounds.put(position, fileSound);
 					client.getSoundManager().play(fileSound);
 				}
@@ -76,7 +77,7 @@ public class VinURLClient implements ClientModInitializer {
 
 		// Client Open Record UI Event
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			MinecraftClient.getInstance().setScreen(new URLScreen(payload.url()));
+			MinecraftClient.getInstance().setScreen(new URLScreen(payload.url(), payload.loop()));
 		});
 	}
 }

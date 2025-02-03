@@ -13,11 +13,11 @@ import io.wispforest.owo.config.annotation.SectionHeader;
 public class ClientConfig {
 
 	@SectionHeader("General")
-	public boolean DownloadEnabled = true;
-	public boolean UpdateCheckingOnStartup = true;
+	public Boolean DownloadEnabled = true;
+	public Boolean UpdateCheckingOnStartup = true;
 	@SectionHeader("AudioSettings")
 	@RangeConstraint(min = 1, max = 60)
-	public byte MaxAudioInMinutes = 60;
+	public Byte MaxAudioInMinutes = 60;
 
 	public Choices AudioBitrate = Choices.MEDIUM;
 

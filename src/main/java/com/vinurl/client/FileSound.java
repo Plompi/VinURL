@@ -14,10 +14,12 @@ import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 public class FileSound implements SoundInstance {
 	private final String fileName;
 	private final Vec3d position;
+	private final Boolean loop;
 
-	public FileSound(String fileName, Vec3d position) {
+	public FileSound(String fileName, Vec3d position, Boolean loop) {
 		this.fileName = fileName;
 		this.position = position;
+		this.loop = loop;
 	}
 
 	public Identifier getId() {
@@ -37,7 +39,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public boolean isRepeatable() {
-		return false;
+		return loop;
 	}
 
 	public boolean isRelative() {
