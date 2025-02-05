@@ -7,8 +7,10 @@ import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.SmallCheckboxComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
+import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.Component;
+import io.wispforest.owo.ui.core.PositionedRectangle;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
@@ -45,19 +47,20 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		});
 
 		url.onChanged().subscribe(newText -> placeholder.text(newText.isEmpty() ? Text.literal("URL") : Text.literal("")));
+
+		url.focusLost().subscribe(() -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,110,16)));
+		url.focusGained().subscribe((focusSource) -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,0,0)));
+
 	}
 
 	@Override
 	protected void init() {
 		super.init();
 		if (isInitial){
+			Objects.requireNonNull(url.focusHandler()).focus(url, Component.FocusSource.KEYBOARD_CYCLE);
 			url.setText(inputDefaultText);
 			checkbox.checked(loop);
 			isInitial = false;
 		}
-		url.setFocused(true);
-		Objects.requireNonNull(url.focusHandler()).focus(url, Component.FocusSource.KEYBOARD_CYCLE);
-		setInitialFocus(url);
-		url.setFocusUnlocked(false);
 	}
 }
