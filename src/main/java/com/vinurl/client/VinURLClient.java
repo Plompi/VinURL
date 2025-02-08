@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
@@ -54,7 +55,13 @@ public class VinURLClient implements ClientModInitializer {
 				if (url.isEmpty()) {return;}
 
 				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
-					client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
+					if (!startsWithPrefix(url, CONFIG.urlWhitelist())){
+						client.player.sendMessage(Text.literal("Provider not whitelisted").styled(style -> style.withColor(Formatting.RED)), true);
+						return;
+					}
+					else{
+						client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
+					}
 
 					AudioHandlerClient.downloadAudio(url, fileName).thenAccept((result) -> {
 						if (result) {
@@ -79,5 +86,14 @@ public class VinURLClient implements ClientModInitializer {
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
 			MinecraftClient.getInstance().setScreen(new URLScreen(payload.url(), payload.loop()));
 		});
+	}
+
+	public static boolean startsWithPrefix(String str, List<String> prefixes) {
+		for (String prefix : prefixes) {
+			if (str.startsWith(prefix)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

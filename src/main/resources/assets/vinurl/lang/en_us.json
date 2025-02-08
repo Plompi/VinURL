@@ -5,6 +5,7 @@
   "text.config.VinURLConfig.option.UpdateCheckingOnStartup.tooltip": "Update checks on startup for the YT-Downloader & FFmpeg",
   "text.config.VinURLConfig.option.DownloadEnabled": "Download Custom Music",
   "text.config.VinURLConfig.option.DownloadEnabled.tooltip": "Whether to download custom music or not",
+  "text.config.VinURLConfig.option.urlWhitelist" : "Whitelisted providers",
   "text.config.VinURLConfig.option.AudioBitrate": "Audio Quality",
   "text.config.VinURLConfig.option.AudioBitrate.tooltip": "Quality of the Audio Files",
   "text.config.VinURLConfig.option.AudioBitrate.value.low": "Low",
