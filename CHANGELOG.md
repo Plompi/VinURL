@@ -1,4 +1,4 @@
-Version: 1.3.0
-- Added loop functionality to custom discs
-- Disc is now usable in off-hand
-- Fixed 400 char long url being detected as too long
+Version: 1.4.0
+- Rewritten GUI to be more flexible
+- Added provider whitelist in config
+- New providers can easily be added via hotkey
