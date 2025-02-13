@@ -15,5 +15,7 @@
   "text.config.VinURLConfig.option.MaxAudioInMinutes.tooltip": "Maximum length of Audio Files in minutes",
   "text.config.VinURLConfig.title": "VinURL Config",
   "text.config.VinURLConfig.section.General": "General",
-  "text.config.VinURLConfig.section.AudioSettings": "Audio Settings"
+  "text.config.VinURLConfig.section.AudioSettings": "Audio Settings",
+  "category.vinurl": "VinURL",
+  "key.vinurl.accept": "Add Provider"
 }
