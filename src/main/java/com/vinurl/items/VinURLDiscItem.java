@@ -1,16 +1,21 @@
 package com.vinurl.items;
 
-import static com.vinurl.VinURL.*;
-
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.world.World;
+
+import java.util.List;
+
+import static com.vinurl.VinURL.*;
 
 public class VinURLDiscItem extends Item {
 
@@ -25,5 +30,12 @@ public class VinURLDiscItem extends Item {
 			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY), nbt.get(LOOP_KEY)));
 		}
 		return TypedActionResult.success(stack);
+	}
+
+	@Override
+	public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+		if (stack.get(DataComponentTypes.CUSTOM_DATA) != null) {
+			tooltip.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
+		}
 	}
 }

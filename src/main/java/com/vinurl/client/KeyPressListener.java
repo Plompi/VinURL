@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture;
 public class KeyPressListener {
 	public static KeyBinding acceptKey;
 
-	public static void init() {
+	public static void register() {
 		acceptKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
 				"key.vinurl.accept",
 				InputUtil.Type.KEYSYM,

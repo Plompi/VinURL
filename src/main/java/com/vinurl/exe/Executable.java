@@ -103,21 +103,40 @@ public class Executable {
 		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE)).toURL().openStream();
 	}
 
-	public Boolean executeCommand(String... arguments) {
+	public CommandResult executeCommand(String... arguments) {
+		StringBuilder output = new StringBuilder();
+		boolean success = false;
+
 		try {
-			Process process = Runtime.getRuntime().exec(Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new));
+			Process process = Runtime.getRuntime().exec(
+					Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new)
+			);
 
 			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-				for (String line; (line = errorReader.readLine()) != null; ) {
-					LOGGER.info(line);
-				}
-				if (process.waitFor() != 0) {
-					throw new IOException();
+				for (String line; (line = errorReader.readLine()) != null;) {
+					LOGGER.warn(line);
 				}
 			}
-			return true;
+
+			try (BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+				for (String line; (line = outputReader.readLine()) != null;) {
+					output.append(line).append("\n");
+				}
+			}
+
+			if (process.waitFor() == 0) {
+				success = true;
+			} else {
+				LOGGER.error("Command failed with exit code: {}", process.exitValue());
+			}
 		} catch (IOException | InterruptedException e) {
-			return false;
+			LOGGER.error("Failed to execute command: {}", e.getMessage());
 		}
+
+		return new CommandResult(success, output.toString().trim());
 	}
+
+
+	public record CommandResult(boolean success, String output) {}
+
 }

@@ -16,6 +16,7 @@ public class ClientConfig {
 	@SectionHeader("General")
 	public Boolean DownloadEnabled = true;
 	public Boolean UpdateCheckingOnStartup = true;
+	public Boolean ShowDescription = true;
 
 	@PredicateConstraint("urlSanitization")
 	public List<String> urlWhitelist =  new ArrayList<>(List.of("https://www.youtube.com", "https://www.soundcloud.com"));
@@ -54,6 +55,4 @@ public class ClientConfig {
 			return value;
 		}
 	}
-
-
 }
