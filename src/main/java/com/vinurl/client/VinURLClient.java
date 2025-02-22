@@ -1,6 +1,8 @@
 package com.vinurl.client;
 
 import com.vinurl.cmd.Commands;
+import com.vinurl.exe.FFmpeg;
+import com.vinurl.exe.YoutubeDL;
 import com.vinurl.gui.URLScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -15,6 +17,8 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,6 +32,14 @@ public class VinURLClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
+		// Download FFmpeg and YoutubeDL if they are not already downloaded and checks for updates.
+		try {
+			FFmpeg.getInstance().checkForExecutable();
+			YoutubeDL.getInstance().checkForExecutable();
+		} catch (IOException | URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+
 		KeyPressListener.register();
 		Commands.register();
 

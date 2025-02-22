@@ -1,7 +1,5 @@
 package com.vinurl;
 
-import com.vinurl.exe.FFmpeg;
-import com.vinurl.exe.YoutubeDL;
 import com.vinurl.items.VinURLDiscItem;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
@@ -30,9 +28,7 @@ import net.minecraft.util.math.BlockPos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.Arrays;
 
@@ -49,13 +45,6 @@ public class VinURL implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		// Download FFmpeg and YoutubeDL if they are not already downloaded and checks for updates.
-		try {
-			FFmpeg.getInstance().checkForExecutable();
-			YoutubeDL.getInstance().checkForExecutable();
-		} catch (IOException | URISyntaxException e) {
-			throw new RuntimeException(e);
-		}
 		// Register the Custom Record to the Tools Item Group
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(CUSTOM_RECORD));
 
