@@ -1,4 +1,4 @@
-Version: 1.4.0
-- Rewritten GUI to be more flexible
-- Added provider whitelist in config
-- New providers can easily be added via hotkey
+Version: 1.5.0
+- metadata for each song is now stored
+- hovering over a custom disc now shows the 'author - title' (like the vanilla discs)
+- disc tooltip is toggleable in config
