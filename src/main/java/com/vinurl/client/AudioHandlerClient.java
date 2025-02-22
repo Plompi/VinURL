@@ -1,25 +1,22 @@
 package com.vinurl.client;
 
+import com.jcraft.jorbis.JOrbisException;
+import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.YoutubeDL;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.tag.FieldKey;
-import org.jaudiotagger.tag.Tag;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.vinurl.VinURL.LOGGER;
 import static com.vinurl.VinURL.VINURLPATH;
 
 public class AudioHandlerClient {
@@ -61,34 +58,44 @@ public class AudioHandlerClient {
 		FileSound fileSound = new FileSound(fileName, position, loop);
 		AudioHandlerClient.playingSounds.put(position, fileSound);
 		client.getSoundManager().play(fileSound);
-		getDescription(fileName).thenAccept(description -> {client.inGameHud.setRecordPlayingOverlay(Text.literal(description));});
+		client.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileName)));
 	}
 
-	public static CompletableFuture<String> getDescription(String fileName){
-		return CompletableFuture.supplyAsync(() -> {
-			try {
-				File file = new File(fileNameToFile(fileName) + ".ogg");
-				AudioFile audioFile = AudioFileIO.read(file);
-				Tag tag = audioFile.getTag();
+	public static String getDescription(String fileName){
+		String artist = getOggAttribute(fileName, "artist");
+		String title = getOggAttribute(fileName, "title");
+		return (artist + " - " + title).replaceAll("[︀-️]", "");
+	}
 
-				String artist = tag.getFirst(FieldKey.ARTIST);
-				String title = tag.getFirst(FieldKey.TITLE);
+	private static String getOggAttribute(String fileName, String attribute) {
+		VorbisFile vorbisFile = null;
+		try{
+			vorbisFile = new VorbisFile(fileNameToFile(fileName) + ".ogg");
+			String metadata = vorbisFile.getComment(0).toString();
 
-				return (artist != null && !artist.isEmpty() && title != null && !title.isEmpty())
-						? (artist + " - " + title).replaceAll("[︀-️]", "")
-						: "Unknown";
-			} catch (Exception e) {
-				return "Unknown";
+			String filter = "Comment: " + attribute + "=";
+			return Arrays.stream(metadata.split("\n"))
+					.filter(line -> line.startsWith(filter))
+					.map(line -> line.substring(filter.length()))
+					.findFirst()
+					.orElse("N/A");
+		} catch (JOrbisException e) {
+			return "N/A";
+		}
+		finally {
+			if (vorbisFile != null){
+				try {
+					vorbisFile.close();
+				} catch (IOException e) {
+					LOGGER.error("Error closing vorbis file", e);
+				}
 			}
-		});
+		}
+
 	}
 
 	public static void cacheDescription(String url) {
-		CompletableFuture.runAsync(() -> {
-			AudioHandlerClient.getDescription(DigestUtils.sha256Hex(url)).thenAccept(description -> {
-				descriptionCache.put(url, description);
-			});
-		});
+		descriptionCache.put(url,getDescription(DigestUtils.sha256Hex(url)));
 	}
 
 	public static InputStream getAudioInputStream(String fileName) {
