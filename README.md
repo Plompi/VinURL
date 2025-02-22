@@ -17,9 +17,8 @@ them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/bl
 # Commands
 
 `/vinurl update` manually checks/installs updates for all the external executables that are required for the mod \
-`/vinurl delete` deletes all downloaded audio files that are not being used at that moment for the player\
+`/vinurl delete` deletes all downloaded audio files that are not being used at that moment for the player \
 `/vinurl config` to open the config-screen \
-`/vinurl set <url> <loop>` writes the specified URL to the held Custom Music Disc (can be used if GUI doesnt work)
 
 # Recipe
 
