@@ -1,7 +1,6 @@
 package com.vinurl.exe;
 
-import static com.vinurl.VinURL.*;
-import static com.vinurl.client.VinURLClient.*;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -13,7 +12,9 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.apache.commons.lang3.SystemUtils;
+
+import static com.vinurl.VinURL.LOGGER;
+import static com.vinurl.client.VinURLClient.CONFIG;
 
 public class Executable {
 	private final String FILENAME;
@@ -135,7 +136,6 @@ public class Executable {
 
 		return new CommandResult(success, output.toString().trim());
 	}
-
 
 	public record CommandResult(boolean success, String output) {}
 

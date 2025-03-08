@@ -23,7 +23,6 @@ public class AudioHandlerClient {
 	static HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
 	static ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
-
 	public static void downloadSound(MinecraftClient client, String url, String fileName, Vec3d position, boolean loop) {
 		if (client.player == null) {
 			return;
@@ -91,7 +90,6 @@ public class AudioHandlerClient {
 				}
 			}
 		}
-
 	}
 
 	public static void cacheDescription(String url) {

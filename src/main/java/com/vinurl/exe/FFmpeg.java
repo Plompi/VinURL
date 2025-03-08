@@ -1,7 +1,8 @@
 package com.vinurl.exe;
 
-import static com.vinurl.VinURL.*;
 import org.apache.commons.lang3.SystemUtils;
+
+import static com.vinurl.VinURL.VINURLPATH;
 
 public class FFmpeg extends Executable {
 	public FFmpeg() {
@@ -12,7 +13,7 @@ public class FFmpeg extends Executable {
 	}
 
 	public static FFmpeg getInstance() {
-		return FFmpeg.FFmpegHolder.instance;
+		return FFmpegHolder.instance;
 	}
 
 	private static final class FFmpegHolder {

@@ -63,51 +63,49 @@ public class VinURLClient implements ClientModInitializer {
 			String url = payload.url();
 			Boolean loop = payload.loop();
 			String fileName = DigestUtils.sha256Hex(url);
-			MinecraftClient client = MinecraftClient.getInstance();
-			client.execute(() -> {
+			MinecraftClient client = context.runtime();
 
-				if (client.player == null) {return;}
+			if (client.player == null) {return;}
 
-				FileSound currentSound = AudioHandlerClient.playingSounds.get(position);
-				if (currentSound != null) {
-					client.getSoundManager().stop(currentSound);
+			FileSound currentSound = AudioHandlerClient.playingSounds.get(position);
+			if (currentSound != null) {
+				client.getSoundManager().stop(currentSound);
+			}
+
+			if (url.isEmpty()) {return;}
+
+			if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
+
+				List<String> whitelist = CONFIG.urlWhitelist();
+				String baseURL = AudioHandlerClient.getBaseURL(url);
+
+				if (whitelist.stream().noneMatch(url::startsWith)) {
+					client.player.sendMessage(
+							Text.literal("Press ")
+									.append(KeyPressListener.acceptKey.getBoundKeyLocalizedText().copy().formatted(Formatting.YELLOW))
+									.append(Text.literal(" to whitelist "))
+									.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
+							true
+					);
+
+					KeyPressListener.waitForKeyPress().thenAccept(confirmed -> {
+						if (confirmed) {
+							AudioHandlerClient.downloadSound(client, url, fileName, position, loop);
+							whitelist.add(baseURL);
+							CONFIG.save();
+						}
+					});
 				}
-
-				if (url.isEmpty()) {return;}
-
-				if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
-
-					List<String> whitelist = CONFIG.urlWhitelist();
-					String baseURL = AudioHandlerClient.getBaseURL(url);
-
-					if (whitelist.stream().noneMatch(url::startsWith)) {
-						client.player.sendMessage(
-								Text.literal("Press ")
-										.append(KeyPressListener.acceptKey.getBoundKeyLocalizedText().copy().formatted(Formatting.YELLOW))
-										.append(Text.literal(" to whitelist "))
-										.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
-								true
-						);
-
-						KeyPressListener.waitForKeyPress().thenAccept(confirmed -> {
-							if (confirmed) {
-								AudioHandlerClient.downloadSound(client, url, fileName, position, loop);
-								whitelist.add(baseURL);
-								CONFIG.save();
-							}
-						});
-					}
-					else {AudioHandlerClient.downloadSound(client, url, fileName, position, loop);}
-				}
-				else {
-					AudioHandlerClient.playSound(client, fileName, position, loop);
-				}
-			});
+				else {AudioHandlerClient.downloadSound(client, url, fileName, position, loop);}
+			}
+			else {
+				AudioHandlerClient.playSound(client, fileName, position, loop);
+			}
 		});
 
 		// Client Open Record UI Event
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			MinecraftClient.getInstance().setScreen(new URLScreen(payload.url(), payload.loop()));
+			context.runtime().setScreen(new URLScreen(payload.url(), payload.loop()));
 		});
 	}
 }
