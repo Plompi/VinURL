@@ -14,9 +14,9 @@ import java.util.List;
 public class ClientConfig {
 
 	@SectionHeader("General")
-	public Boolean DownloadEnabled = true;
-	public Boolean UpdateCheckingOnStartup = true;
-	public Boolean ShowDescription = true;
+	public boolean DownloadEnabled = true;
+	public boolean UpdateCheckingOnStartup = true;
+	public boolean ShowDescription = true;
 
 	@PredicateConstraint("urlSanitization")
 	public List<String> urlWhitelist =  new ArrayList<>(List.of("https://www.youtube.com", "https://www.soundcloud.com"));

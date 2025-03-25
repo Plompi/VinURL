@@ -24,10 +24,10 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	TextBoxComponent url;
 	LabelComponent placeholder;
 	SmallCheckboxComponent checkbox;
-	Boolean loop;
-	Boolean isInitial = true;
+	boolean loop;
+	boolean isInitial = true;
 
-	public URLScreen(String inputDefaultText, Boolean loop) {
+	public URLScreen(String inputDefaultText, boolean loop) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
 		this.inputDefaultText = inputDefaultText;
 		this.loop = loop;

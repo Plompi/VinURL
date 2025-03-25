@@ -89,10 +89,10 @@ public class VinURL implements ModInitializer {
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 		});
 	}
-	public record PlaySoundRecord(BlockPos position, String url, Boolean loop) {}
 
-	public record SetURLRecord(String url, Boolean loop) {}
+	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
 
-	public record GUIRecord(String url, Boolean loop) {}
+	public record SetURLRecord(String url, boolean loop) {}
 
+	public record GUIRecord(String url, boolean loop) {}
 }

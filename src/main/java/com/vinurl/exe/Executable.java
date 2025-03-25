@@ -42,7 +42,7 @@ public class Executable {
 		}
 	}
 
-	public Boolean checkForUpdates() {
+	public boolean checkForUpdates() {
 		try {
 			if (!currentVersion(FILEPATH.getParent().resolve("version.txt")).equals(latestVersion())) {
 				downloadExecutable();

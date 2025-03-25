@@ -1,7 +1,5 @@
 package com.vinurl.client;
 
-import static com.vinurl.VinURL.*;
-
 import net.minecraft.client.sound.Sound;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundManager;
@@ -11,12 +9,14 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 
+import static com.vinurl.VinURL.MOD_ID;
+
 public class FileSound implements SoundInstance {
 	private final String fileName;
 	private final Vec3d position;
-	private final Boolean loop;
+	private final boolean loop;
 
-	public FileSound(String fileName, Vec3d position, Boolean loop) {
+	public FileSound(String fileName, Vec3d position, boolean loop) {
 		this.fileName = fileName;
 		this.position = position;
 		this.loop = loop;

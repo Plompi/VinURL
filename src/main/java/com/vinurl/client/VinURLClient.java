@@ -26,9 +26,7 @@ import static com.vinurl.VinURL.*;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
-	public static Boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
-
-
+	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 
 	@Override
 	public void onInitializeClient() {
@@ -61,7 +59,7 @@ public class VinURLClient implements ClientModInitializer {
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
-			Boolean loop = payload.loop();
+			boolean loop = payload.loop();
 			String fileName = DigestUtils.sha256Hex(url);
 			MinecraftClient client = context.runtime();
 
