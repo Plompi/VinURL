@@ -16,7 +16,8 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
 
-import static com.vinurl.VinURL.*;
+import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Networking.*;
 import static com.vinurl.client.VinURLClient.isAprilFoolsDay;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {

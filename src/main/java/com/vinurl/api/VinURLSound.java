@@ -8,7 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 
-import static com.vinurl.VinURL.*;
+import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Networking.*;
 
 public class VinURLSound {
 	public static void play(World world, ItemStack stack, BlockPos position) {

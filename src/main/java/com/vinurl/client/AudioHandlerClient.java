@@ -16,8 +16,7 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.vinurl.VinURL.LOGGER;
-import static com.vinurl.VinURL.VINURLPATH;
+import static com.vinurl.util.Constants.*;
 
 public class AudioHandlerClient {
 	static HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();

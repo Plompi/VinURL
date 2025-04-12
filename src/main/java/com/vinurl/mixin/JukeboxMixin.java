@@ -29,6 +29,4 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 	public void setStack(ItemStack stack, CallbackInfo cir) {
 		VinURLSound.play(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
 	}
-
-
 }

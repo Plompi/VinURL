@@ -16,8 +16,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static com.vinurl.VinURL.MOD_ID;
-import static com.vinurl.VinURL.VINURLPATH;
+import static com.vinurl.util.Constants.*;
 
 
 public class Commands {

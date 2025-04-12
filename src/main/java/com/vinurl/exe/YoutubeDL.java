@@ -1,7 +1,7 @@
 package com.vinurl.exe;
 
-import static com.vinurl.VinURL.*;
 import org.apache.commons.lang3.SystemUtils;
+import static com.vinurl.util.Constants.*;
 
 public class YoutubeDL extends Executable {
 	private YoutubeDL() {

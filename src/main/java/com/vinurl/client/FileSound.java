@@ -9,7 +9,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 
-import static com.vinurl.VinURL.MOD_ID;
+import static com.vinurl.util.Constants.*;
 
 public class FileSound implements SoundInstance {
 	private final String fileName;

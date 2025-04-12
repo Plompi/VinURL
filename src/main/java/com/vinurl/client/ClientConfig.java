@@ -1,15 +1,16 @@
 package com.vinurl.client;
 
-import com.vinurl.VinURL;
 import io.wispforest.owo.config.annotation.*;
 
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.vinurl.util.Constants.*;
+
 
 @SuppressWarnings("unused")
-@Modmenu(modId = VinURL.MOD_ID)
+@Modmenu(modId = MOD_ID)
 @Config(name = "VinURLConfig", wrapperName = "VinURLConfig")
 public class ClientConfig {
 

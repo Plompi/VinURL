@@ -22,7 +22,8 @@ import java.net.URISyntaxException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.vinurl.VinURL.*;
+import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Networking.*;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();

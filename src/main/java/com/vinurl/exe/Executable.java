@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.vinurl.VinURL.LOGGER;
+import static com.vinurl.util.Constants.*;
 import static com.vinurl.client.VinURLClient.CONFIG;
 
 public class Executable {
@@ -138,5 +138,4 @@ public class Executable {
 	}
 
 	public record CommandResult(boolean success, String output) {}
-
 }
