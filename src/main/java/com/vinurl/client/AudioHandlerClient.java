@@ -32,14 +32,15 @@ public class AudioHandlerClient {
 		CompletableFuture.supplyAsync(() -> {
 			return YoutubeDL.getInstance().executeCommand(
 					url,
-					"-x", "--no-progress", "--no-playlist", "--add-metadata",
+					"-x", "--no-progress", "--concat-playlist", "always", "--add-metadata",
 					"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 					"--audio-format", "vorbis",
 					"--audio-quality", VinURLClient.CONFIG.AudioBitrate().getValue(),
 					"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %s", VinURLClient.CONFIG.MaxAudioInMinutes() * 60),
 					"--ffmpeg-location", VINURLPATH.resolve("ffmpeg").toString(),
-					"-o", fileNameToFile(fileName).toString()
+					"-o", VINURLPATH.resolve("client_downloads/%(title)s.%(ext)s").toString()
 			);
+
 		}).thenAccept((result) -> {
 			if (result.success()) {
 				client.player.sendMessage(Text.literal("Downloading complete!").formatted(Formatting.GREEN), true);
