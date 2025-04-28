@@ -11,7 +11,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.ActionResult;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -24,7 +24,7 @@ public class VinURLDisc extends Item {
 		super(settings);
 	}
 
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
+	public ActionResult use(World world, PlayerEntity player, Hand hand) {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
@@ -35,7 +35,7 @@ public class VinURLDisc extends Item {
 				player.sendMessage(Text.literal("Locked 🔒"), true);
 			}
 		}
-		return TypedActionResult.success(stack);
+		return ActionResult.SUCCESS;
 	}
 
 	@Override
