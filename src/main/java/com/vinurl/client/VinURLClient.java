@@ -7,7 +7,8 @@ import com.vinurl.net.ClientEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.HudLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.IdentifiedLayer;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponents;
@@ -60,8 +61,10 @@ public class VinURLClient implements ClientModInitializer {
 			}
 		});
 
-		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
-			ProgressOverlay.render(drawContext);
+		HudLayerRegistrationCallback.EVENT.register(layeredDrawerWrapper -> {
+			layeredDrawerWrapper.addLayer(IdentifiedLayer.of(PROGRESS_HUD_ID, (drawContext, tickDelta) -> {
+				ProgressOverlay.render(drawContext);
+			}));
 		});
 	}
 }
