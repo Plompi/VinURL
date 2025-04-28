@@ -20,5 +20,6 @@ public class Constants {
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 	public static final Identifier PLACEHOLDER_SOUND_IDENTIFIER = Identifier.of(MOD_ID, "placeholder_sound");
 	public static final RegistryKey<JukeboxSong> SONG = RegistryKey.of(RegistryKeys.JUKEBOX_SONG, PLACEHOLDER_SOUND_IDENTIFIER);
-	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, Identifier.of(MOD_ID, "custom_record"), new VinURLDisc(new Item.Settings().maxCount(1).rarity(Rarity.RARE).component(DataComponentTypes.JUKEBOX_PLAYABLE, new JukeboxPlayableComponent(new RegistryPair<>(SONG), false))));
+	public static final RegistryKey<Item> ITEM_KEY = RegistryKey.of(RegistryKeys.ITEM,Identifier.of(MOD_ID, "custom_record"));
+	public static final Item CUSTOM_RECORD = Registry.register(Registries.ITEM, ITEM_KEY, new VinURLDisc(new Item.Settings().maxCount(1).rarity(Rarity.RARE).component(DataComponentTypes.JUKEBOX_PLAYABLE, new JukeboxPlayableComponent(new RegistryPair<>(SONG), false)).registryKey(ITEM_KEY)));
 }
