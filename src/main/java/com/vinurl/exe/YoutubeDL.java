@@ -5,7 +5,7 @@ import static com.vinurl.util.Constants.*;
 
 public class YoutubeDL extends Executable {
 	private YoutubeDL() {
-		super("yt-dlp" + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""),
+		super("yt-dlp",
 				VINURLPATH.resolve("youtubedl").toFile(),
 				String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
 				"yt-dlp/yt-dlp");

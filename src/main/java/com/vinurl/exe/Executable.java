@@ -28,7 +28,7 @@ public class Executable {
 		DIRECTORY = directory;
 		REPOSITORY_FILE = repository_file;
 		REPOSITORY_NAME = repository_name;
-		FILEPATH = DIRECTORY.toPath().resolve(FILENAME);
+		FILEPATH = DIRECTORY.toPath().resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
 	}
 
 	public void checkForExecutable() throws IOException, URISyntaxException {
@@ -44,7 +44,7 @@ public class Executable {
 
 	public boolean checkForUpdates() {
 		try {
-			if (!currentVersion(FILEPATH.getParent().resolve("version.txt")).equals(latestVersion())) {
+			if (!currentVersion(FILEPATH.getParent().resolve(FILENAME + ".txt")).equals(latestVersion())) {
 				downloadExecutable();
 				return true;
 			}
@@ -60,7 +60,7 @@ public class Executable {
 				try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
 					ZipEntry zipEntry = zipInput.getNextEntry();
 					while (zipEntry != null) {
-						if (zipEntry.getName().endsWith(FILENAME)) {
+						if (zipEntry.getName().endsWith(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""))) {
 							Files.copy(zipInput, FILEPATH, StandardCopyOption.REPLACE_EXISTING);
 							break;
 						}
@@ -73,7 +73,7 @@ public class Executable {
 			if (SystemUtils.IS_OS_UNIX) {
 				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILEPATH.toString()});
 			}
-			createVersionFile(latestVersion(), FILEPATH.getParent().resolve("version.txt"));
+			createVersionFile(latestVersion(), FILEPATH.getParent().resolve(FILENAME + ".txt"));
 		}
 	}
 

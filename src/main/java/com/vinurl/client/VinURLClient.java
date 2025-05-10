@@ -1,6 +1,7 @@
 package com.vinurl.client;
 
 import com.vinurl.cmd.Commands;
+import com.vinurl.exe.FFProbe;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
 import com.vinurl.gui.URLScreen;
@@ -23,7 +24,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.vinurl.util.Constants.*;
-import static com.vinurl.util.Networking.*;
+import static com.vinurl.util.Networking.GUIRecord;
+import static com.vinurl.util.Networking.PlaySoundRecord;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
@@ -34,6 +36,7 @@ public class VinURLClient implements ClientModInitializer {
 		// Download FFmpeg and YoutubeDL if they are not already downloaded and checks for updates.
 		try {
 			FFmpeg.getInstance().checkForExecutable();
+			FFProbe.getInstance().checkForExecutable();
 			YoutubeDL.getInstance().checkForExecutable();
 		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
