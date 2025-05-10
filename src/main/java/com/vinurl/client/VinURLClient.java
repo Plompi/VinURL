@@ -1,7 +1,7 @@
 package com.vinurl.client;
 
 import com.vinurl.cmd.Commands;
-import com.vinurl.exe.FFProbe;
+import com.vinurl.exe.FFprobe;
 import com.vinurl.exe.FFmpeg;
 import com.vinurl.exe.YoutubeDL;
 import com.vinurl.gui.URLScreen;
@@ -36,7 +36,7 @@ public class VinURLClient implements ClientModInitializer {
 		// Download FFmpeg and YoutubeDL if they are not already downloaded and checks for updates.
 		try {
 			FFmpeg.getInstance().checkForExecutable();
-			FFProbe.getInstance().checkForExecutable();
+			FFprobe.getInstance().checkForExecutable();
 			YoutubeDL.getInstance().checkForExecutable();
 		} catch (IOException | URISyntaxException e) {
 			throw new RuntimeException(e);
