@@ -1,7 +1,6 @@
 package com.vinurl.mixin;
 
 import com.vinurl.api.VinURLSound;
-
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.inventory.SingleStackInventory;
@@ -20,13 +19,13 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 	@Shadow
 	public abstract BlockEntity asBlockEntity();
 
-	@Inject(at = @At("HEAD"), method = "dropRecord")
-	public void dropRecord(CallbackInfo cir) {
+	@Inject(at = @At("HEAD"), method = "setStack")
+	public void stopPlaying(ItemStack stack, CallbackInfo cir) {
 		VinURLSound.stop(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")
-	public void setStack(ItemStack stack, CallbackInfo cir) {
+	public void startPlaying(ItemStack stack, CallbackInfo cir) {
 		VinURLSound.play(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
 	}
 }

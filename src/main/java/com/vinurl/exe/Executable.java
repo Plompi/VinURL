@@ -23,11 +23,11 @@ public class Executable {
 	private final String REPOSITORY_NAME;
 	private final Path FILEPATH;
 
-	public Executable(String fileName, File directory, String repository_file, String repository_name) {
+	public Executable(String fileName, File directory, String repositoryFile, String repositoryName) {
 		FILENAME = fileName;
 		DIRECTORY = directory;
-		REPOSITORY_FILE = repository_file;
-		REPOSITORY_NAME = repository_name;
+		REPOSITORY_FILE = repositoryFile;
+		REPOSITORY_NAME = repositoryName;
 		FILEPATH = DIRECTORY.toPath().resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
 	}
 
