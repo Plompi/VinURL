@@ -1,8 +1,7 @@
 package com.vinurl.cmd;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.exe.FFmpeg;
-import com.vinurl.exe.YoutubeDL;
+import com.vinurl.exe.Executable;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -16,7 +15,8 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.MOD_ID;
+import static com.vinurl.util.Constants.VINURLPATH;
 
 
 public class Commands {
@@ -43,10 +43,15 @@ public class Commands {
 	private static int updateExecutables(CommandContext<FabricClientCommandSource> ctx) {
 		ctx.getSource().sendFeedback(Text.literal("Checking for Updates..."));
 		CompletableFuture.runAsync(() -> {
-			if (YoutubeDL.getInstance().checkForUpdates() | FFmpeg.getInstance().checkForUpdates()) {
-				ctx.getSource().sendFeedback(Text.literal("Successfully updated Executables"));
-			} else {
-				ctx.getSource().sendFeedback(Text.literal("No Updates found"));
+			boolean anyUpdate = false;
+			for (Executable executable : Executable.values()) {
+				if(executable.checkForUpdates()){
+					ctx.getSource().sendFeedback(Text.literal("Successfully updated " + executable.name()));
+					anyUpdate = true;
+				}
+			}
+			if (!anyUpdate) {
+				ctx.getSource().sendFeedback(Text.literal("No updates found."));
 			}
 		});
 		return 1;

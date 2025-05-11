@@ -2,7 +2,7 @@ package com.vinurl.client;
 
 import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
-import com.vinurl.exe.YoutubeDL;
+import com.vinurl.exe.Executable;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.LOGGER;
+import static com.vinurl.util.Constants.VINURLPATH;
 
 public class AudioHandlerClient {
 	static HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
@@ -30,7 +31,7 @@ public class AudioHandlerClient {
 
 		// Asynchroner Download
 		CompletableFuture.supplyAsync(() -> {
-			return YoutubeDL.getInstance().executeCommand(
+			return Executable.YT_DLP.executeCommand(
 					url,
 					"-x", "--no-progress", "--concat-playlist", "always", "--add-metadata",
 					"-P", VINURLPATH.resolve("client_downloads").toString(),

@@ -16,14 +16,28 @@ import java.util.zip.ZipInputStream;
 import static com.vinurl.util.Constants.*;
 import static com.vinurl.client.VinURLClient.CONFIG;
 
-public class Executable {
+public enum Executable {
+
+	YT_DLP("yt-dlp",
+			VINURLPATH.resolve("youtubedl").toFile(),
+			String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
+			"yt-dlp/yt-dlp"),
+	FFPROBE("ffprobe",
+			VINURLPATH.resolve("ffmpeg").toFile(),
+			String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
+			"Tyrrrz/FFmpegBin"),
+	FFMPEG("ffmpeg",
+			VINURLPATH.resolve("ffmpeg").toFile(),
+			String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
+			"Tyrrrz/FFmpegBin");
+
 	private final String FILENAME;
 	private final File DIRECTORY;
 	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
 	private final Path FILEPATH;
 
-	public Executable(String fileName, File directory, String repositoryFile, String repositoryName) {
+	 Executable(String fileName, File directory, String repositoryFile, String repositoryName) {
 		FILENAME = fileName;
 		DIRECTORY = directory;
 		REPOSITORY_FILE = repositoryFile;
