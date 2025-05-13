@@ -8,7 +8,7 @@ them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/bl
 
 | **Enter URL**                                                                                  | **Use Disc**                                                                                       |
 |------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| 1. Rightclick the Custom Music Disc                                                            | 1. Insert the Disc into a Jukebox                                                                  |
+| 1. Right click the Custom Music Disc                                                           | 1. Insert the Disc into a Jukebox                                                                  |
 | 2. Enter a valid URL                                                                           | 2. Wait until the download completes                                                               |
 | 3. Press Enter or Escape to set the URL                                                        | 3. Enjoy the music :)                                                                              |
 | ![enter_url](https://github.com/Plompi/VinURL/blob/master/docs/.assets/enter_url.gif?raw=true) | ![insert_disc](https://github.com/Plompi/VinURL/blob/master/docs/.assets/insert_disc.gif?raw=true) |
@@ -27,7 +27,7 @@ it's shapeless, no need to align the colors with the shown image
 
 # Config
 
-various client-side settings can be made. The config-screen can be accessed through [Mod Menu](https://modrinth.com/mod/modmenu) or the slash command (see
+Various client-side settings can be made. The config-screen can be accessed through [Mod Menu](https://modrinth.com/mod/modmenu) or the slash command (see
 Commands Section)
 
 # Disclaimer

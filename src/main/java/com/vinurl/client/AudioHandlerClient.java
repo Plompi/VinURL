@@ -33,7 +33,7 @@ public class AudioHandlerClient {
 		CompletableFuture.supplyAsync(() -> {
 			return Executable.YT_DLP.executeCommand(
 					url,
-					"-x", "--no-progress", "--concat-playlist", "always", "--add-metadata",
+					"-x", "-q", "--no-progress", "--concat-playlist", "always", "--add-metadata",
 					"-P", VINURLPATH.resolve("client_downloads").toString(),
 					"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 					"--audio-format", "vorbis",
