@@ -5,6 +5,7 @@ import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -54,6 +55,12 @@ public class VinURLClient implements ClientModInitializer {
 				} else {
 					AudioHandlerClient.cacheDescription(url);
 				}
+			}
+		});
+
+		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
+			for (Executable executable : Executable.values()) {
+				executable.killAllProcesses();
 			}
 		});
 

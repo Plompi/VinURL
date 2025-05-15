@@ -12,7 +12,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.*;
 import java.net.URI;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -20,7 +19,7 @@ import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
 public class AudioHandlerClient {
-	static HashMap<Vec3d, FileSound> playingSounds = new HashMap<>();
+	static ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	static ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
 	public static void downloadSound(MinecraftClient client, String url, String fileName, Vec3d position, boolean loop) {

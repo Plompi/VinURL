@@ -23,7 +23,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public Identifier getId() {
-		return Identifier.of(MOD_ID, "customsound/" + fileName);
+		return Identifier.of(MOD_ID, fileName);
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {

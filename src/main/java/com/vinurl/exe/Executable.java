@@ -9,12 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import static com.vinurl.util.Constants.*;
 import static com.vinurl.client.VinURLClient.CONFIG;
+import static com.vinurl.util.Constants.LOGGER;
+import static com.vinurl.util.Constants.VINURLPATH;
 
 public enum Executable {
 
@@ -36,6 +39,7 @@ public enum Executable {
 	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
 	private final Path FILEPATH;
+	private final Set<Process> activeProcesses = ConcurrentHashMap.newKeySet();
 
 	 Executable(String fileName, File directory, String repositoryFile, String repositoryName) {
 		FILENAME = fileName;
@@ -43,6 +47,26 @@ public enum Executable {
 		REPOSITORY_FILE = repositoryFile;
 		REPOSITORY_NAME = repositoryName;
 		FILEPATH = DIRECTORY.toPath().resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
+	}
+
+	public void registerProcess(Process process) {
+		activeProcesses.add(process);
+		process.onExit().thenAccept(activeProcesses::remove);
+	}
+
+	public void killAllProcesses() {
+		activeProcesses.forEach(process -> {
+			try {
+				process.descendants().forEach(ph -> {
+					ph.destroyForcibly();
+					ph.onExit().join();
+				});
+				process.destroyForcibly();
+			} catch (Exception e) {
+				LOGGER.error("Failed to kill process", e);
+			}
+		});
+		activeProcesses.clear();
 	}
 
 	public void checkForExecutable() throws IOException, URISyntaxException {
@@ -126,6 +150,8 @@ public enum Executable {
 			Process process = Runtime.getRuntime().exec(
 					Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new)
 			);
+
+			registerProcess(process);
 
 			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
 				for (String line; (line = errorReader.readLine()) != null;) {
