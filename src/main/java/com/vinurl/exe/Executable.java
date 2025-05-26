@@ -82,7 +82,7 @@ public enum Executable {
 
 	public boolean checkForUpdates() {
 		try {
-			if (!currentVersion(FILEPATH.getParent().resolve(FILENAME + ".txt")).equals(latestVersion())) {
+			if (!currentVersion(DIRECTORY.toPath().resolve(FILENAME + ".txt")).equals(latestVersion())) {
 				downloadExecutable();
 				return true;
 			}
