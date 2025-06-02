@@ -1,6 +1,7 @@
 package com.vinurl.cmd;
 
 import com.mojang.brigadier.context.CommandContext;
+import com.vinurl.client.AudioHandlerClient;
 import com.vinurl.exe.Executable;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreenProviders;
@@ -16,7 +17,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static com.vinurl.util.Constants.MOD_ID;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 
 public class Commands {
@@ -31,7 +31,7 @@ public class Commands {
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
-			FileUtils.deleteDirectory(VINURLPATH.resolve("client_downloads").toFile());
+			FileUtils.deleteDirectory(AudioHandlerClient.AUDIO_DIRECTORY.toFile());
 			ctx.getSource().sendFeedback(Text.literal("Deleted all Audio Files"));
 			return 1;
 		} catch (IOException e) {

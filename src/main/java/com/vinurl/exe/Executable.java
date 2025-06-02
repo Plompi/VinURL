@@ -22,31 +22,27 @@ import static com.vinurl.util.Constants.VINURLPATH;
 public enum Executable {
 
 	YT_DLP("yt-dlp",
-			VINURLPATH.resolve("youtubedl").toFile(),
 			String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
 			"yt-dlp/yt-dlp"),
 	FFPROBE("ffprobe",
-			VINURLPATH.resolve("ffmpeg").toFile(),
 			String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
 			"Tyrrrz/FFmpegBin"),
 	FFMPEG("ffmpeg",
-			VINURLPATH.resolve("ffmpeg").toFile(),
 			String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
 			"Tyrrrz/FFmpegBin");
 
 	private final String FILENAME;
-	private final File DIRECTORY;
 	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
 	private final Path FILEPATH;
+	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final Set<Process> activeProcesses = ConcurrentHashMap.newKeySet();
 
-	 Executable(String fileName, File directory, String repositoryFile, String repositoryName) {
+	 Executable(String fileName, String repositoryFile, String repositoryName) {
 		FILENAME = fileName;
-		DIRECTORY = directory;
 		REPOSITORY_FILE = repositoryFile;
 		REPOSITORY_NAME = repositoryName;
-		FILEPATH = DIRECTORY.toPath().resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
+		FILEPATH = DIRECTORY.resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
 	}
 
 	public void registerProcess(Process process) {
@@ -71,7 +67,7 @@ public enum Executable {
 
 	public void checkForExecutable() throws IOException, URISyntaxException {
 
-		if (DIRECTORY.exists() || DIRECTORY.mkdirs()) {
+		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILEPATH.toFile().exists()) {
 				downloadExecutable();
 			} else if (CONFIG.UpdateCheckingOnStartup()) {
@@ -82,7 +78,7 @@ public enum Executable {
 
 	public boolean checkForUpdates() {
 		try {
-			if (!currentVersion(DIRECTORY.toPath().resolve(FILENAME + ".txt")).equals(latestVersion())) {
+			if (!currentVersion(DIRECTORY.resolve(FILENAME + ".txt")).equals(latestVersion())) {
 				downloadExecutable();
 				return true;
 			}
@@ -111,7 +107,7 @@ public enum Executable {
 			if (SystemUtils.IS_OS_UNIX) {
 				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILEPATH.toString()});
 			}
-			createVersionFile(latestVersion(), FILEPATH.getParent().resolve(FILENAME + ".txt"));
+			createVersionFile(latestVersion(), DIRECTORY.resolve(FILENAME + ".txt"));
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.*;
 import java.net.URI;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,6 +20,7 @@ import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
 public class AudioHandlerClient {
+	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
 	static ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	static ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
@@ -33,12 +35,12 @@ public class AudioHandlerClient {
 			return Executable.YT_DLP.executeCommand(
 					url,
 					"-x", "-q", "--no-progress", "--concat-playlist", "always", "--add-metadata",
-					"-P", VINURLPATH.resolve("client_downloads").toString(),
+					"-P", AUDIO_DIRECTORY.toString(),
 					"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 					"--audio-format", "vorbis",
 					"--audio-quality", VinURLClient.CONFIG.AudioBitrate().getValue(),
 					"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %s", VinURLClient.CONFIG.MaxAudioInMinutes() * 60),
-					"--ffmpeg-location", VINURLPATH.resolve("ffmpeg").toString(),
+					"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 					"-o", String.format("%%(playlist_autonumber&{}|)s%s.%%(ext)s", fileName)
 			);
 
@@ -115,6 +117,6 @@ public class AudioHandlerClient {
 	}
 
 	public static File fileNameToFile(String fileName) {
-		return new File(VINURLPATH.resolve("client_downloads/" + fileName).toString());
+		return new File(AUDIO_DIRECTORY.resolve(fileName).toString());
 	}
 }
