@@ -1,6 +1,6 @@
 package com.vinurl.mixin;
 
-import com.vinurl.client.AudioHandlerClient;
+import com.vinurl.client.AudioHandler;
 import net.minecraft.client.sound.AudioStream;
 import net.minecraft.client.sound.OggAudioStream;
 import net.minecraft.client.sound.RepeatingAudioStream;
@@ -27,8 +27,8 @@ public class SoundLoaderMixin {
 
 		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
 			try {
-				//directly strips out sounds/customsounds (19 chars)
-				InputStream inputStream = AudioHandlerClient.getAudioInputStream(id.getPath().substring(7));
+				//directly strips out sounds/ (7 chars)
+				InputStream inputStream = AudioHandler.getAudioInputStream(id.getPath().substring(7));
 				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);

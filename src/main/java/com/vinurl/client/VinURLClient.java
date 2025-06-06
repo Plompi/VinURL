@@ -41,7 +41,7 @@ public class VinURLClient implements ClientModInitializer {
 			throw new RuntimeException(e);
 		}
 
-		KeyPressListener.register();
+		KeyListener.register();
 		Commands.register();
 
 		ItemTooltipCallback.EVENT.register((ItemStack stack, Item.TooltipContext context, TooltipType type, List<Text> lines) -> {
@@ -50,10 +50,10 @@ public class VinURLClient implements ClientModInitializer {
 
 				if (url.isEmpty()){return;}
 
-				if (AudioHandlerClient.descriptionCache.containsKey(url)) {
-					lines.add(Text.literal(AudioHandlerClient.descriptionCache.get(url)).formatted(Formatting.GRAY));
+				if (AudioHandler.descriptionCache.containsKey(url)) {
+					lines.add(Text.literal(AudioHandler.descriptionCache.get(url)).formatted(Formatting.GRAY));
 				} else {
-					AudioHandlerClient.cacheDescription(url);
+					AudioHandler.cacheDescription(url);
 				}
 			}
 		});
@@ -74,39 +74,40 @@ public class VinURLClient implements ClientModInitializer {
 
 			if (client.player == null) {return;}
 
-			FileSound currentSound = AudioHandlerClient.playingSounds.get(position);
+			FileSound currentSound = AudioHandler.playingSounds.get(position);
 			if (currentSound != null) {
 				client.getSoundManager().stop(currentSound);
 			}
 
 			if (url.isEmpty()) {return;}
 
-			if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandlerClient.fileNameToFile(fileName + ".ogg").exists()) {
+			if (VinURLClient.CONFIG.DownloadEnabled() && !AudioHandler.fileNameToFile(fileName + ".ogg").exists()) {
 
 				List<String> whitelist = CONFIG.urlWhitelist();
-				String baseURL = AudioHandlerClient.getBaseURL(url);
+				String baseURL = AudioHandler.getBaseURL(url);
 
 				if (whitelist.stream().noneMatch(url::startsWith)) {
 					client.player.sendMessage(
 							Text.literal("Press ")
-									.append(KeyPressListener.acceptKey.getBoundKeyLocalizedText().copy().formatted(Formatting.YELLOW))
+									.append(KeyListener.acceptKey.getBoundKeyLocalizedText().copy().formatted(Formatting.YELLOW))
 									.append(Text.literal(" to whitelist "))
 									.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
 							true
 					);
 
-					KeyPressListener.waitForKeyPress().thenAccept(confirmed -> {
+					KeyListener.waitForKeyPress().thenAccept(confirmed -> {
 						if (confirmed) {
-							AudioHandlerClient.downloadSound(client, url, fileName, position, loop);
+							AudioHandler.downloadSound(client, url, fileName, position, loop);
 							whitelist.add(baseURL);
 							CONFIG.save();
 						}
 					});
 				}
-				else {AudioHandlerClient.downloadSound(client, url, fileName, position, loop);}
+				else {
+					AudioHandler.downloadSound(client, url, fileName, position, loop);}
 			}
 			else {
-				AudioHandlerClient.playSound(client, fileName, position, loop);
+				AudioHandler.playSound(client, fileName, position, loop);
 			}
 		});
 

@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
-public class AudioHandlerClient {
+public class AudioHandler {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
 	static ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	static ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
@@ -58,7 +58,7 @@ public class AudioHandlerClient {
 
 	public static void playSound(MinecraftClient client, String fileName, Vec3d position, boolean loop) {
 		FileSound fileSound = new FileSound(fileName, position, loop);
-		AudioHandlerClient.playingSounds.put(position, fileSound);
+		AudioHandler.playingSounds.put(position, fileSound);
 		client.getSoundManager().play(fileSound);
 		client.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileName)));
 	}

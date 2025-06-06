@@ -18,9 +18,9 @@ import java.util.List;
 import static com.vinurl.util.Constants.*;
 import static com.vinurl.util.Networking.*;
 
-public class VinURLDiscItem extends Item {
+public class VinURLDisc extends Item {
 
-	public VinURLDiscItem(Item.Settings settings) {
+	public VinURLDisc(Item.Settings settings) {
 		super(settings);
 	}
 

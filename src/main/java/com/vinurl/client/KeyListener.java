@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.concurrent.CompletableFuture;
 
-public class KeyPressListener {
+public class KeyListener {
 	public static KeyBinding acceptKey;
 
 	public static void register() {
