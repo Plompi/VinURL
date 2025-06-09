@@ -21,8 +21,8 @@ import static com.vinurl.util.Constants.VINURLPATH;
 
 public class AudioHandler {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
-	static ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
-	static ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
 	public static void downloadSound(MinecraftClient client, String url, String fileName, Vec3d position, boolean loop) {
 		if (client.player == null) {
@@ -48,7 +48,7 @@ public class AudioHandler {
 			if (result.success()) {
 				client.player.sendMessage(Text.literal("Downloading complete!").formatted(Formatting.GREEN), true);
 				playSound(client, fileName, position, loop);
-				cacheDescription(url);
+				descriptionToCache(url);
 
 			} else {
 				client.player.sendMessage(Text.literal("Failed to download music!").formatted(Formatting.RED), true);
@@ -58,9 +58,16 @@ public class AudioHandler {
 
 	public static void playSound(MinecraftClient client, String fileName, Vec3d position, boolean loop) {
 		FileSound fileSound = new FileSound(fileName, position, loop);
-		AudioHandler.playingSounds.put(position, fileSound);
+		playingSounds.put(position, fileSound);
 		client.getSoundManager().play(fileSound);
 		client.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileName)));
+	}
+
+	public static void stopSound(MinecraftClient client, Vec3d position) {
+		FileSound currentSound = playingSounds.get(position);
+		if (currentSound != null) {
+			client.getSoundManager().stop(currentSound);
+		}
 	}
 
 	public static String getDescription(String fileName){
@@ -95,8 +102,12 @@ public class AudioHandler {
 		}
 	}
 
-	public static void cacheDescription(String url) {
-		descriptionCache.put(url,getDescription(DigestUtils.sha256Hex(url)));
+	public static void descriptionToCache(String url) {
+		descriptionCache.put(url, getDescription(DigestUtils.sha256Hex(url)));
+	}
+
+	public static String descriptionFromCache(String url){
+		return descriptionCache.get(url);
 	}
 
 	public static InputStream getAudioInputStream(String fileName) {

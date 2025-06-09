@@ -25,11 +25,11 @@ public enum Executable {
 			String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
 			"yt-dlp/yt-dlp"),
 	FFPROBE("ffprobe",
-			String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
-			"Tyrrrz/FFmpegBin"),
+			String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
+			"eugeneware/ffmpeg-static"),
 	FFMPEG("ffmpeg",
-			String.format("ffmpeg-%s-x64.zip", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "osx" : "windows")),
-			"Tyrrrz/FFmpegBin");
+			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
+			"eugeneware/ffmpeg-static");
 
 	private final String FILENAME;
 	private final String REPOSITORY_FILE;
@@ -38,7 +38,7 @@ public enum Executable {
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final Set<Process> activeProcesses = ConcurrentHashMap.newKeySet();
 
-	 Executable(String fileName, String repositoryFile, String repositoryName) {
+	Executable(String fileName, String repositoryFile, String repositoryName) {
 		FILENAME = fileName;
 		REPOSITORY_FILE = repositoryFile;
 		REPOSITORY_NAME = repositoryName;

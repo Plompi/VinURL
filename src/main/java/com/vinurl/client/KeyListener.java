@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.concurrent.CompletableFuture;
 
 public class KeyListener {
-	public static KeyBinding acceptKey;
+	private static KeyBinding acceptKey;
 
 	public static void register() {
 		acceptKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
@@ -37,5 +37,9 @@ public class KeyListener {
 		});
 
 		return future;
+	}
+
+	public static String getHotKey(){
+		return acceptKey.getBoundKeyLocalizedText().getLiteralString();
 	}
 }
