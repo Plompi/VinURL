@@ -2,7 +2,7 @@
   "item.vinurl.custom_record": "Custom Music Disc",
   "item.vinurl.custom_record.desc": "No Song",
   "text.config.VinURLConfig.option.UpdateCheckingOnStartup": "Auto Updates",
-  "text.config.VinURLConfig.option.UpdateCheckingOnStartup.tooltip": "Update checks on startup for the YT-Downloader & FFmpeg",
+  "text.config.VinURLConfig.option.UpdateCheckingOnStartup.tooltip": "Update checks on startup for YT-DLP, FFmpeg, FFprobe",
   "text.config.VinURLConfig.option.DownloadEnabled": "Download Custom Music",
   "text.config.VinURLConfig.option.DownloadEnabled.tooltip": "Whether to download custom music or not",
   "text.config.VinURLConfig.option.ShowDescription": "Disc Description",

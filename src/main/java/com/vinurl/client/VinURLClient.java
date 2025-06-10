@@ -20,11 +20,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.URL_KEY;
+import static com.vinurl.util.Networking.URL_KEY;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
-	public static boolean isAprilFoolsDay = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
+	public static final boolean IS_APRIL_FOOLS_DAY = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 
 	@Override
 	public void onInitializeClient() {
@@ -43,14 +43,14 @@ public class VinURLClient implements ClientModInitializer {
 
 		ItemTooltipCallback.EVENT.register((ItemStack stack, Item.TooltipContext context, TooltipType type, List<Text> lines) -> {
 			if (stack.getItem() == CUSTOM_RECORD && CONFIG.ShowDescription()) {
-				String url = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().get(URL_KEY);
+				String fileName = AudioHandler.hashURL( stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().get(URL_KEY));
 
-				if (url.isEmpty()){return;}
+				if (fileName.isEmpty()){return;}
 
-				if (AudioHandler.descriptionFromCache(url) != null) {
-					lines.add(Text.literal(AudioHandler.descriptionFromCache(url)).formatted(Formatting.GRAY));
+				if (AudioHandler.descriptionFromCache(fileName) != null) {
+					lines.add(Text.literal(AudioHandler.descriptionFromCache(fileName)).formatted(Formatting.GRAY));
 				} else {
-					AudioHandler.descriptionToCache(url);
+					AudioHandler.descriptionToCache(fileName);
 				}
 			}
 		});

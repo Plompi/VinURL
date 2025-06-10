@@ -39,7 +39,7 @@ public class AudioHandler {
 					"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 					"--audio-format", "vorbis",
 					"--audio-quality", VinURLClient.CONFIG.AudioBitrate().getValue(),
-					"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %s", VinURLClient.CONFIG.MaxAudioInMinutes() * 60),
+					"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %d", VinURLClient.CONFIG.MaxAudioInMinutes() * 60),
 					"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 					"-o", String.format("%%(playlist_autonumber&{}|)s%s.%%(ext)s", fileName)
 			);
@@ -48,7 +48,7 @@ public class AudioHandler {
 			if (result.success()) {
 				client.player.sendMessage(Text.literal("Downloading complete!").formatted(Formatting.GREEN), true);
 				playSound(client, fileName, position, loop);
-				descriptionToCache(url);
+				descriptionToCache(fileName);
 
 			} else {
 				client.player.sendMessage(Text.literal("Failed to download music!").formatted(Formatting.RED), true);
@@ -66,6 +66,7 @@ public class AudioHandler {
 	public static void stopSound(MinecraftClient client, Vec3d position) {
 		FileSound currentSound = playingSounds.get(position);
 		if (currentSound != null) {
+			playingSounds.remove(position);
 			client.getSoundManager().stop(currentSound);
 		}
 	}
@@ -79,7 +80,7 @@ public class AudioHandler {
 	private static String getOggAttribute(String fileName, String attribute) {
 		VorbisFile vorbisFile = null;
 		try{
-			vorbisFile = new VorbisFile(fileNameToFile(fileName) + ".ogg");
+			vorbisFile = new VorbisFile(getAudioFile(fileName).toString());
 			String metadata = vorbisFile.getComment(0).toString();
 
 			String filter = "Comment: " + attribute + "=";
@@ -102,17 +103,17 @@ public class AudioHandler {
 		}
 	}
 
-	public static void descriptionToCache(String url) {
-		descriptionCache.put(url, getDescription(DigestUtils.sha256Hex(url)));
+	public static void descriptionToCache(String fileName) {
+		descriptionCache.put(fileName, getDescription(fileName));
 	}
 
-	public static String descriptionFromCache(String url){
-		return descriptionCache.get(url);
+	public static String descriptionFromCache(String fileName){
+		return descriptionCache.get(fileName);
 	}
 
 	public static InputStream getAudioInputStream(String fileName) {
 		try {
-			return new FileInputStream(fileNameToFile(fileName));
+			return new FileInputStream(getAudioFile(fileName));
 		} catch (FileNotFoundException e) {
 			return null;
 		}
@@ -127,7 +128,11 @@ public class AudioHandler {
 		}
 	}
 
-	public static File fileNameToFile(String fileName) {
-		return new File(AUDIO_DIRECTORY.resolve(fileName).toString());
+	public static File getAudioFile(String fileName) {
+		return AUDIO_DIRECTORY.resolve(fileName + ".ogg").toFile();
+	}
+
+	public static String hashURL(String url) {
+		return DigestUtils.sha256Hex(url);
 	}
 }

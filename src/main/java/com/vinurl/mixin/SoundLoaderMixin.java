@@ -27,8 +27,8 @@ public class SoundLoaderMixin {
 
 		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
 			try {
-				//directly strips out sounds/ (7 chars)
-				InputStream inputStream = AudioHandler.getAudioInputStream(id.getPath().substring(7));
+				//strips out sounds/ (7 chars) and .ogg file extension
+				InputStream inputStream = AudioHandler.getAudioInputStream(id.getPath().substring(7).split("\\.")[0]);
 				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);

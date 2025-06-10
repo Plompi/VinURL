@@ -16,38 +16,38 @@ import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
 
-import static com.vinurl.client.VinURLClient.isAprilFoolsDay;
+import static com.vinurl.client.VinURLClient.IS_APRIL_FOOLS_DAY;
 import static com.vinurl.util.Constants.MOD_ID;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+import static com.vinurl.util.Networking.NETWORK_CHANNEL;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
-	private TextBoxComponent url;
-	private LabelComponent placeholder;
-	private SmallCheckboxComponent checkbox;
-	private final String inputDefaultText;
-	private final boolean loop;
+	private TextBoxComponent urlTextbox;
+	private LabelComponent placeholderLabel;
+	private SmallCheckboxComponent loopCheckbox;
+	private final String defaultURL;
+	private final boolean defaultLoop;
 
-	public URLScreen(String inputDefaultText, boolean loop) {
+	public URLScreen(String defaultURL, boolean defaultLoop) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
-		this.inputDefaultText = inputDefaultText;
-		this.loop = loop;
+		this.defaultURL = defaultURL;
+		this.defaultLoop = defaultLoop;
 	}
 
 	@Override
 	protected void build(StackLayout stackLayout) {
-		placeholder = stackLayout.childById(LabelComponent.class,"placeholder");
-		checkbox = stackLayout.childById(SmallCheckboxComponent.class, "loop").checked(loop);
-		url = stackLayout.childById(TextBoxComponent.class, "url");
+		placeholderLabel = stackLayout.childById(LabelComponent.class,"placeholder");
+		loopCheckbox = stackLayout.childById(SmallCheckboxComponent.class, "loop").checked(defaultLoop);
+		urlTextbox = stackLayout.childById(TextBoxComponent.class, "url");
 
-		url.onChanged().subscribe(newText -> placeholder.text(newText.isEmpty() ? Text.literal("URL") : Text.literal("")));
-		url.focusLost().subscribe(() -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,110,16)));
-		url.focusGained().subscribe((focusSource) -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,0,0)));
+		urlTextbox.onChanged().subscribe(newText -> placeholderLabel.text(newText.isEmpty() ? Text.literal("URL") : Text.literal("")));
+		urlTextbox.focusLost().subscribe(() -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,110,16)));
+		urlTextbox.focusGained().subscribe((focusSource) -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,0,0)));
 	}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers){
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new Networking.SetURLRecord(!isAprilFoolsDay ? url.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", checkbox.checked()));
+			NETWORK_CHANNEL.clientHandle().send(new Networking.SetURLRecord(!IS_APRIL_FOOLS_DAY ? urlTextbox.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", loopCheckbox.checked()));
 			MinecraftClient.getInstance().setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -57,9 +57,9 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	protected void init() {
 		super.init();
 
-		if (url.getText().equals("{{placeholder}}")) {
-			Objects.requireNonNull(url.focusHandler()).focus(url, Component.FocusSource.KEYBOARD_CYCLE);
-			url.setText(inputDefaultText);
+		if (urlTextbox.getText().equals("{{placeholder}}")) {
+			Objects.requireNonNull(urlTextbox.focusHandler()).focus(urlTextbox, Component.FocusSource.KEYBOARD_CYCLE);
+			urlTextbox.setText(defaultURL);
 		}
 	}
 }

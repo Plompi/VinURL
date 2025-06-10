@@ -31,11 +31,11 @@ public enum Executable {
 			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
 			"eugeneware/ffmpeg-static");
 
+	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final String FILENAME;
 	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
 	private final Path FILEPATH;
-	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final Set<Process> activeProcesses = ConcurrentHashMap.newKeySet();
 
 	Executable(String fileName, String repositoryFile, String repositoryName) {
@@ -66,7 +66,6 @@ public enum Executable {
 	}
 
 	public void checkForExecutable() throws IOException, URISyntaxException {
-
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILEPATH.toFile().exists()) {
 				downloadExecutable();

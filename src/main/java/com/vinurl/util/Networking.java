@@ -3,6 +3,9 @@ package com.vinurl.util;
 import com.vinurl.client.AudioHandler;
 import com.vinurl.client.KeyListener;
 import com.vinurl.gui.URLScreen;
+import io.wispforest.endec.Endec;
+import io.wispforest.endec.impl.KeyedEndec;
+import io.wispforest.owo.network.OwoNetChannel;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
@@ -14,18 +17,22 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.CUSTOM_RECORD;
+import static com.vinurl.util.Constants.MOD_ID;
 
 public class Networking {
+	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(Identifier.of(MOD_ID, "main"));
+	public static final KeyedEndec<String> URL_KEY = new KeyedEndec<>("music_url", Endec.STRING, "");
+	public static final KeyedEndec<Boolean> LOOP_KEY = new KeyedEndec<>("loop", Endec.BOOLEAN, false);
 
 	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
 
@@ -77,7 +84,7 @@ public class Networking {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
-			String fileName = DigestUtils.sha256Hex(url);
+			String fileName = AudioHandler.hashURL(url);
 			MinecraftClient client = context.runtime();
 
 			if (client.player == null) {return;}
@@ -86,7 +93,7 @@ public class Networking {
 
 			if (url.isEmpty()) {return;}
 
-			if (CONFIG.DownloadEnabled() && !AudioHandler.fileNameToFile(fileName + ".ogg").exists()) {
+			if (CONFIG.DownloadEnabled() && !AudioHandler.getAudioFile(fileName).exists()) {
 
 				List<String> whitelist = CONFIG.urlWhitelist();
 				String baseURL = AudioHandler.getBaseURL(url);

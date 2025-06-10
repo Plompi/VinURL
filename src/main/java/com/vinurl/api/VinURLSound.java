@@ -8,7 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import static com.vinurl.util.Constants.*;
-import static com.vinurl.util.Networking.PlaySoundRecord;
+import static com.vinurl.util.Networking.*;
 
 public class VinURLSound {
 	private static final byte JUKEBOX_RANGE = 64;

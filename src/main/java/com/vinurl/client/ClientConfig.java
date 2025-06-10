@@ -37,18 +37,18 @@ public class ClientConfig {
 
 	@SectionHeader("AudioSettings")
 	@RangeConstraint(min = 1, max = 60)
-	public Byte MaxAudioInMinutes = 60;
+	public byte MaxAudioInMinutes = 60;
 
-	public Choices AudioBitrate = Choices.MEDIUM;
+	public AudioQuality AudioBitrate = AudioQuality.MEDIUM;
 
-	public enum Choices {
+	public enum AudioQuality {
 		LOW("48K"),
 		MEDIUM("96K"),
 		HIGH("128K");
 
 		private final String value;
 
-		Choices(String value) {
+		AudioQuality(String value) {
 			this.value = value;
 		}
 
