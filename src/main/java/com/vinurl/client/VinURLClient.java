@@ -42,13 +42,15 @@ public class VinURLClient implements ClientModInitializer {
 		Networking.registerClientReceivers();
 
 		ItemTooltipCallback.EVENT.register((ItemStack stack, Item.TooltipContext context, TooltipType type, List<Text> lines) -> {
-			if (stack.getItem() == CUSTOM_RECORD && CONFIG.ShowDescription()) {
-				String fileName = AudioHandler.hashURL( stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().get(URL_KEY));
+			if (stack.getItem() == CUSTOM_RECORD && CONFIG.showDescription()) {
+				String fileName = AudioHandler.hashURL(stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().get(URL_KEY));
 
 				if (fileName.isEmpty()){return;}
 
-				if (AudioHandler.descriptionFromCache(fileName) != null) {
-					lines.add(Text.literal(AudioHandler.descriptionFromCache(fileName)).formatted(Formatting.GRAY));
+				String description = AudioHandler.descriptionFromCache(fileName);
+
+				if (description != null) {
+					lines.add(Text.literal(description).formatted(Formatting.GRAY));
 				} else {
 					AudioHandler.descriptionToCache(fileName);
 				}

@@ -9,29 +9,38 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.MOD_ID;
 
 public class FileSound implements SoundInstance {
-	private final String fileName;
+	private final Identifier id;
 	private final Vec3d position;
 	private final boolean loop;
 
 	public FileSound(String fileName, Vec3d position, boolean loop) {
-		this.fileName = fileName;
+		this.id = Identifier.of(MOD_ID, fileName);
 		this.position = position;
 		this.loop = loop;
 	}
 
 	public Identifier getId() {
-		return Identifier.of(MOD_ID, fileName);
+		return id;
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {
-		return new WeightedSoundSet(getId(), null);
+		return new WeightedSoundSet(id, null);
 	}
 
 	public Sound getSound() {
-		return new Sound(getId(), ConstantFloatProvider.create(getVolume()), ConstantFloatProvider.create(getPitch()), 1, Sound.RegistrationType.SOUND_EVENT, true, false, 64);
+		return new Sound(
+				id,
+				ConstantFloatProvider.create(getVolume()),
+				ConstantFloatProvider.create(getPitch()),
+				1,
+				Sound.RegistrationType.SOUND_EVENT,
+				true,
+				false,
+				64
+		);
 	}
 
 	public SoundCategory getCategory() {
@@ -51,11 +60,11 @@ public class FileSound implements SoundInstance {
 	}
 
 	public float getVolume() {
-		return 1;
+		return 1.0f;
 	}
 
 	public float getPitch() {
-		return 1;
+		return 1.0f;
 	}
 
 	public double getX() {
@@ -71,6 +80,6 @@ public class FileSound implements SoundInstance {
 	}
 
 	public AttenuationType getAttenuationType() {
-		return SoundInstance.AttenuationType.LINEAR;
+		return AttenuationType.LINEAR;
 	}
 }

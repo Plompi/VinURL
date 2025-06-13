@@ -14,10 +14,10 @@ import static com.vinurl.util.Constants.*;
 @Config(name = "VinURLConfig", wrapperName = "VinURLConfig")
 public class ClientConfig {
 
-	@SectionHeader("General")
-	public boolean DownloadEnabled = true;
-	public boolean UpdateCheckingOnStartup = true;
-	public boolean ShowDescription = true;
+	@SectionHeader("general")
+	public boolean downloadEnabled = true;
+	public boolean updatesOnStartup = true;
+	public boolean showDescription = true;
 
 	@PredicateConstraint("urlSanitization")
 	public List<String> urlWhitelist =  new ArrayList<>(List.of("https://www.youtube.com", "https://www.soundcloud.com"));
@@ -35,11 +35,11 @@ public class ClientConfig {
 		return true;
 	}
 
-	@SectionHeader("AudioSettings")
+	@SectionHeader("audioSettings")
 	@RangeConstraint(min = 1, max = 60)
-	public byte MaxAudioInMinutes = 60;
+	public byte maxAudioInMinutes = 60;
 
-	public AudioQuality AudioBitrate = AudioQuality.MEDIUM;
+	public AudioQuality audioBitrate = AudioQuality.MEDIUM;
 
 	public enum AudioQuality {
 		LOW("48K"),

@@ -69,7 +69,7 @@ public enum Executable {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILEPATH.toFile().exists()) {
 				downloadExecutable();
-			} else if (CONFIG.UpdateCheckingOnStartup()) {
+			} else if (CONFIG.updatesOnStartup()) {
 				checkForUpdates();
 			}
 		}
@@ -77,7 +77,7 @@ public enum Executable {
 
 	public boolean checkForUpdates() {
 		try {
-			if (!currentVersion(DIRECTORY.resolve(FILENAME + ".txt")).equals(latestVersion())) {
+			if (!currentVersion(DIRECTORY.resolve(FILENAME + ".version")).equals(latestVersion())) {
 				downloadExecutable();
 				return true;
 			}
@@ -106,7 +106,7 @@ public enum Executable {
 			if (SystemUtils.IS_OS_UNIX) {
 				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILEPATH.toString()});
 			}
-			createVersionFile(latestVersion(), DIRECTORY.resolve(FILENAME + ".txt"));
+			createVersionFile(latestVersion(), DIRECTORY.resolve(FILENAME + ".version"));
 		}
 	}
 

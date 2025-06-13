@@ -93,7 +93,7 @@ public class Networking {
 
 			if (url.isEmpty()) {return;}
 
-			if (CONFIG.DownloadEnabled() && !AudioHandler.getAudioFile(fileName).exists()) {
+			if (CONFIG.downloadEnabled() && !AudioHandler.getAudioFile(fileName).exists()) {
 
 				List<String> whitelist = CONFIG.urlWhitelist();
 				String baseURL = AudioHandler.getBaseURL(url);

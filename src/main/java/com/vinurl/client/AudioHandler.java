@@ -30,7 +30,6 @@ public class AudioHandler {
 		}
 		client.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
 
-		// Asynchroner Download
 		CompletableFuture.supplyAsync(() -> {
 			return Executable.YT_DLP.executeCommand(
 					url,
@@ -38,8 +37,8 @@ public class AudioHandler {
 					"-P", AUDIO_DIRECTORY.toString(),
 					"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 					"--audio-format", "vorbis",
-					"--audio-quality", VinURLClient.CONFIG.AudioBitrate().getValue(),
-					"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %d", VinURLClient.CONFIG.MaxAudioInMinutes() * 60),
+					"--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
+					"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %d", VinURLClient.CONFIG.maxAudioInMinutes() * 60),
 					"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 					"-o", String.format("%%(playlist_autonumber&{}|)s%s.%%(ext)s", fileName)
 			);
@@ -64,11 +63,7 @@ public class AudioHandler {
 	}
 
 	public static void stopSound(MinecraftClient client, Vec3d position) {
-		FileSound currentSound = playingSounds.get(position);
-		if (currentSound != null) {
-			playingSounds.remove(position);
-			client.getSoundManager().stop(currentSound);
-		}
+		client.getSoundManager().stop(playingSounds.remove(position));
 	}
 
 	public static String getDescription(String fileName){
@@ -133,6 +128,6 @@ public class AudioHandler {
 	}
 
 	public static String hashURL(String url) {
-		return DigestUtils.sha256Hex(url);
+		return (url == null || url.isEmpty()) ? "" : DigestUtils.sha256Hex(url);
 	}
 }
