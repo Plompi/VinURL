@@ -146,6 +146,10 @@ public enum Executable {
 	}
 
 	public CommandResult executeCommand(String id, String... arguments) {
+		if (activeProcesses.containsKey(id)){
+			return new CommandResult(false, String.format("process with id %s already exists", id));
+		}
+
 		StringBuilder output = new StringBuilder();
 		boolean success = false;
 

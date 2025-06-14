@@ -15,7 +15,6 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-import static com.vinurl.util.Constants.*;
 import static com.vinurl.util.Networking.*;
 
 public class VinURLDisc extends Item {

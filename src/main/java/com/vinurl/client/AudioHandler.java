@@ -47,7 +47,6 @@ public class AudioHandler {
 
 		}).thenAccept((result) -> {
 			if (result.success()) {
-				client.player.sendMessage(Text.literal("Downloading complete!").formatted(Formatting.GREEN), true);
 				playSound(client, fileName, position, loop);
 				descriptionToCache(fileName);
 
