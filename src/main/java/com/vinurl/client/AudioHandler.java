@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.net.URI;
@@ -32,6 +33,7 @@ public class AudioHandler {
 
 		CompletableFuture.supplyAsync(() -> {
 			return Executable.YT_DLP.executeCommand(
+					fileName,
 					url,
 					"-x", "-q", "--no-progress", "--concat-playlist", "always", "--add-metadata",
 					"-P", AUDIO_DIRECTORY.toString(),
@@ -50,9 +52,24 @@ public class AudioHandler {
 				descriptionToCache(fileName);
 
 			} else {
+				deleteSound(fileName);
 				client.player.sendMessage(Text.literal("Failed to download music!").formatted(Formatting.RED), true);
 			}
 		});
+	}
+
+	public static void deleteSound(String fileName) {
+		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles(file -> file.isFile() && file.getName().contains(fileName));
+
+		if (filesToDelete == null) {return;}
+
+		for (File file : filesToDelete) {
+			try {
+				FileUtils.delete(file);
+			} catch (IOException e) {
+				LOGGER.error("Error deleting file {}", file.getName(), e);
+			}
+		}
 	}
 
 	public static void playSound(MinecraftClient client, String fileName, Vec3d position, boolean loop) {

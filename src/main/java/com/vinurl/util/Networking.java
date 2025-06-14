@@ -2,6 +2,7 @@ package com.vinurl.util;
 
 import com.vinurl.client.AudioHandler;
 import com.vinurl.client.KeyListener;
+import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
@@ -36,6 +37,8 @@ public class Networking {
 
 	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
 
+	public record StopSoundRecord(BlockPos position, String url) {}
+
 	public record SetURLRecord(String url, boolean loop) {}
 
 	public record GUIRecord(String url, boolean loop) {}
@@ -43,8 +46,9 @@ public class Networking {
 	public static void registerServerReceivers(){
 		NETWORK_CHANNEL.registerClientboundDeferred(GUIRecord.class);
 		NETWORK_CHANNEL.registerClientboundDeferred(PlaySoundRecord.class);
+		NETWORK_CHANNEL.registerClientboundDeferred(StopSoundRecord.class);
 
-		// Server event handler for setting the URL on the Custom Record
+		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
 			ItemStack stack = Arrays.stream(Hand.values()).map(player::getStackInHand).filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD).findFirst().orElse(null);
@@ -79,7 +83,7 @@ public class Networking {
 	}
 
 	public static void registerClientReceivers(){
-		// Client Music Played Event
+		// Client event for playing sounds
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
@@ -87,11 +91,7 @@ public class Networking {
 			String fileName = AudioHandler.hashURL(url);
 			MinecraftClient client = context.runtime();
 
-			if (client.player == null) {return;}
-
-			AudioHandler.stopSound(client, position);
-
-			if (url.isEmpty()) {return;}
+			if (client.player == null || url.isEmpty()) {return;}
 
 			if (CONFIG.downloadEnabled() && !AudioHandler.getAudioFile(fileName).exists()) {
 
@@ -123,7 +123,14 @@ public class Networking {
 			}
 		});
 
-		// Client Open Record UI Event
+		// Client event for stopping sounds
+		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
+			String fileName = AudioHandler.hashURL(payload.url());
+			AudioHandler.stopSound(context.runtime(), payload.position().toCenterPos());
+			Executable.YT_DLP.killProcess(fileName);
+		});
+
+		// Client event to open record ui
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
 			context.runtime().setScreen(new URLScreen(payload.url(), payload.loop()));
 		});

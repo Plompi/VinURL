@@ -36,7 +36,7 @@ public enum Executable {
 	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
 	private final Path FILEPATH;
-	private final Set<Process> activeProcesses = ConcurrentHashMap.newKeySet();
+	private final ConcurrentHashMap<String, Process> activeProcesses = new ConcurrentHashMap<>();
 
 	Executable(String fileName, String repositoryFile, String repositoryName) {
 		FILENAME = fileName;
@@ -45,25 +45,33 @@ public enum Executable {
 		FILEPATH = DIRECTORY.resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
 	}
 
-	public void registerProcess(Process process) {
-		activeProcesses.add(process);
-		process.onExit().thenAccept(activeProcesses::remove);
+	public void registerProcess(String id, Process process) {
+		activeProcesses.put(id, process);
+		process.onExit().thenAccept(p -> activeProcesses.remove(id));
 	}
 
-	public void killAllProcesses() {
-		activeProcesses.forEach(process -> {
+	public void killProcess(String id) {
+		Process process = activeProcesses.remove(id);
+		if (process != null) {
 			try {
 				process.descendants().forEach(ph -> {
 					ph.destroyForcibly();
 					ph.onExit().join();
 				});
 				process.destroyForcibly();
+				process.onExit().join();
 			} catch (Exception e) {
-				LOGGER.error("Failed to kill process", e);
+				LOGGER.error("Failed to kill process with ID: {} ", id, e);
 			}
-		});
-		activeProcesses.clear();
+		}
 	}
+
+	public void killAllProcesses() {
+		for (String id : Set.copyOf(activeProcesses.keySet())) {
+			killProcess(id);
+		}
+	}
+
 
 	public void checkForExecutable() throws IOException, URISyntaxException {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
@@ -137,7 +145,7 @@ public enum Executable {
 		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE)).toURL().openStream();
 	}
 
-	public CommandResult executeCommand(String... arguments) {
+	public CommandResult executeCommand(String id, String... arguments) {
 		StringBuilder output = new StringBuilder();
 		boolean success = false;
 
@@ -146,7 +154,7 @@ public enum Executable {
 					Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new)
 			);
 
-			registerProcess(process);
+			registerProcess(id, process);
 
 			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
 				for (String line; (line = errorReader.readLine()) != null;) {
@@ -162,8 +170,6 @@ public enum Executable {
 
 			if (process.waitFor() == 0) {
 				success = true;
-			} else {
-				LOGGER.error("Command failed with exit code: {}", process.exitValue());
 			}
 		} catch (IOException | InterruptedException e) {
 			LOGGER.error("Failed to execute command: {}", e.getMessage());

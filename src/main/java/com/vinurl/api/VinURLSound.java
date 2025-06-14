@@ -25,9 +25,11 @@ public class VinURLSound {
 	}
 
 	public static void stop(World world, ItemStack stack, BlockPos position) {
-		if (stack.getItem() != CUSTOM_RECORD || world.isClient) {return;}
+		NbtComponent nbt = stack.get(DataComponentTypes.CUSTOM_DATA);
+		if (stack.getItem() != CUSTOM_RECORD || world.isClient || nbt == null) {return;}
+
 		for (PlayerEntity player : world.getPlayers()) {
-			NETWORK_CHANNEL.serverHandle(player).send(new PlaySoundRecord(position, "",false));
+			NETWORK_CHANNEL.serverHandle(player).send(new StopSoundRecord(position, nbt.copyNbt().get(URL_KEY)));
 		}
 	}
 }
