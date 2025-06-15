@@ -2,7 +2,7 @@ package com.vinurl.client;
 
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
-import com.vinurl.util.Networking;
+import com.vinurl.net.ClientEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Networking.URL_KEY;
+import static com.vinurl.util.Constants.URL_KEY;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
@@ -39,7 +39,7 @@ public class VinURLClient implements ClientModInitializer {
 
 		KeyListener.register();
 		Commands.register();
-		Networking.registerClientReceivers();
+		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((ItemStack stack, Item.TooltipContext context, TooltipType type, List<Text> lines) -> {
 			if (stack.getItem() == CUSTOM_RECORD && CONFIG.showDescription()) {

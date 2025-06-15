@@ -1,6 +1,6 @@
 package com.vinurl.gui;
 
-import com.vinurl.util.Networking;
+import com.vinurl.net.ServerEvent;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.SmallCheckboxComponent;
@@ -18,7 +18,7 @@ import java.util.Objects;
 
 import static com.vinurl.client.VinURLClient.IS_APRIL_FOOLS_DAY;
 import static com.vinurl.util.Constants.MOD_ID;
-import static com.vinurl.util.Networking.NETWORK_CHANNEL;
+import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private TextBoxComponent urlTextbox;
@@ -47,7 +47,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers){
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new Networking.SetURLRecord(!IS_APRIL_FOOLS_DAY ? urlTextbox.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", loopCheckbox.checked()));
+			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(!IS_APRIL_FOOLS_DAY ? urlTextbox.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", loopCheckbox.checked()));
 			MinecraftClient.getInstance().setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);

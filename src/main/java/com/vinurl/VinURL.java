@@ -1,6 +1,6 @@
 package com.vinurl;
 
-import com.vinurl.util.Networking;
+import com.vinurl.net.ServerEvent;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroups;
@@ -23,6 +23,6 @@ public class VinURL implements ModInitializer {
 				PLACEHOLDER_SOUND_IDENTIFIER,
 				SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER));
 
-		Networking.registerServerReceivers();
+		ServerEvent.register();
 	}
 }

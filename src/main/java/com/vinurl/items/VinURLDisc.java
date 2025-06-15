@@ -1,5 +1,6 @@
 package com.vinurl.items;
 
+import com.vinurl.net.ClientEvent;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,7 +16,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-import static com.vinurl.util.Networking.*;
+import static com.vinurl.util.Constants.*;
 
 public class VinURLDisc extends Item {
 
@@ -27,7 +28,7 @@ public class VinURLDisc extends Item {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-			NETWORK_CHANNEL.serverHandle(player).send(new GUIRecord(nbt.get(URL_KEY), nbt.get(LOOP_KEY)));
+			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.get(URL_KEY), nbt.get(LOOP_KEY)));
 		}
 		return TypedActionResult.success(stack);
 	}

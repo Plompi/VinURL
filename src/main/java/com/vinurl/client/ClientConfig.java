@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.MOD_ID;
 
 
 @SuppressWarnings("unused")
