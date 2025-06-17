@@ -10,7 +10,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -71,7 +72,6 @@ public enum Executable {
 			killProcess(id);
 		}
 	}
-
 
 	public void checkForExecutable() throws IOException, URISyntaxException {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
@@ -145,42 +145,72 @@ public enum Executable {
 		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE)).toURL().openStream();
 	}
 
-	public CommandResult executeCommand(String id, String... arguments) {
-		if (activeProcesses.containsKey(id)){
-			return new CommandResult(false, String.format("process with id %s already exists", id));
-		}
-
-		StringBuilder output = new StringBuilder();
-		boolean success = false;
-
-		try {
-			Process process = Runtime.getRuntime().exec(
-					Stream.concat(Stream.of(FILEPATH.toString()), Arrays.stream(arguments)).toArray(String[]::new)
-			);
-
-			registerProcess(id, process);
-
-			try (BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
-				for (String line; (line = errorReader.readLine()) != null;) {
-					LOGGER.warn(line);
-				}
-			}
-
-			try (BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-				for (String line; (line = outputReader.readLine()) != null;) {
-					output.append(line).append("\n");
-				}
-			}
-
-			if (process.waitFor() == 0) {
-				success = true;
-			}
-		} catch (IOException | InterruptedException e) {
-			LOGGER.error("Failed to execute command: {}", e.getMessage());
-		}
-
-		return new CommandResult(success, output.toString().trim());
+	public ProcessStream executeCommand(String id, String... arguments) {
+		return new ProcessStream(id, arguments);
 	}
 
-	public record CommandResult(boolean success, String output) {}
+	public class ProcessStream  {
+		private final String id;
+		private final String[] arguments;
+		private final SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
+
+		public ProcessStream(String id, String... arguments) {
+			this.id = id;
+			this.arguments = arguments;
+			startProcess();
+		}
+
+		public void subscribe(Consumer<String> onOutput, Consumer<Throwable> onError, Runnable onComplete) {
+			publisher.subscribe(new Flow.Subscriber<>() {
+				public void onSubscribe(Flow.Subscription s) { s.request(Long.MAX_VALUE); }
+				public void onNext(String line) { onOutput.accept(line); }
+				public void onError(Throwable t) { onError.accept(t); }
+				public void onComplete() { onComplete.run(); }
+			});
+		}
+
+		private void startProcess() {
+			if (activeProcesses.containsKey(id)) {
+				publisher.closeExceptionally(new IllegalStateException("Process already running: " + id));
+				return;
+			}
+
+			try {
+				Process process = new ProcessBuilder()
+						.command(Stream.concat(Stream.of(FILEPATH.toString()),
+										Arrays.stream(arguments))
+								.toArray(String[]::new))
+						.start();
+
+				registerProcess(id, process);
+
+				CompletableFuture.runAsync(() -> readStream(process.getInputStream(), false));
+				CompletableFuture.runAsync(() -> readStream(process.getErrorStream(), true));
+
+				process.onExit().thenAccept(p -> {
+					if (p.exitValue() == 0) {
+						publisher.close();
+					} else {
+						publisher.closeExceptionally(new IOException("Process failed with code: " + p.exitValue()));
+					}
+				});
+
+			} catch (IOException e) {
+				publisher.closeExceptionally(e);
+			}
+		}
+
+		private void readStream(InputStream input, boolean isError) {
+			try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+				String line;
+				while ((line = reader.readLine()) != null && !publisher.isClosed()) {
+					publisher.submit(isError ? "[ERROR] " + line : line);
+				}
+			} catch (IOException e) {
+				if (!publisher.isClosed()) {
+					publisher.closeExceptionally(e);
+				}
+			}
+		}
+	}
 }
