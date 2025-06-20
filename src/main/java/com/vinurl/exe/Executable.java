@@ -47,8 +47,10 @@ public enum Executable {
 	}
 
 	public void registerProcess(String id, Process process) {
-		activeProcesses.put(id, process);
-		process.onExit().thenAccept(p -> activeProcesses.remove(id));
+		activeProcesses.computeIfAbsent(id, k -> {
+			process.onExit().thenAccept(p -> activeProcesses.remove(id));
+			return process;
+		});
 	}
 
 	public void killProcess(String id) {
@@ -179,13 +181,24 @@ public enum Executable {
 				Process process = new ProcessBuilder()
 						.command(Stream.concat(Stream.of(FILEPATH.toString()),
 										Arrays.stream(arguments))
-								.toArray(String[]::new))
-						.start();
+								.toArray(String[]::new)).
+						redirectErrorStream(true).start();
 
 				registerProcess(id, process);
 
-				CompletableFuture.runAsync(() -> readStream(process.getInputStream(), false));
-				CompletableFuture.runAsync(() -> readStream(process.getErrorStream(), true));
+				CompletableFuture.runAsync(() -> {
+					try (BufferedReader reader = new BufferedReader(
+							new InputStreamReader(process.getInputStream()))) {
+						String line;
+						while ((line = reader.readLine()) != null && !publisher.isClosed()) {
+							publisher.submit(line);
+						}
+					} catch (IOException e) {
+						if (!publisher.isClosed()) {
+							publisher.closeExceptionally(e);
+						}
+					}
+				});
 
 				process.onExit().thenAccept(p -> {
 					if (p.exitValue() == 0) {
@@ -197,19 +210,6 @@ public enum Executable {
 
 			} catch (IOException e) {
 				publisher.closeExceptionally(e);
-			}
-		}
-
-		private void readStream(InputStream input, boolean isError) {
-			try (BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
-				String line;
-				while ((line = reader.readLine()) != null && !publisher.isClosed()) {
-					publisher.submit(isError ? "[ERROR] " + line : line);
-				}
-			} catch (IOException e) {
-				if (!publisher.isClosed()) {
-					publisher.closeExceptionally(e);
-				}
 			}
 		}
 	}

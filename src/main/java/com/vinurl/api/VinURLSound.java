@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import static com.vinurl.util.Constants.*;
 
 public class VinURLSound {
-	private static final byte JUKEBOX_RANGE = 64;
+	private static final int JUKEBOX_RANGE = 64;
 
 	public static void play(World world, ItemStack stack, BlockPos position) {
 		NbtComponent nbt = stack.get(DataComponentTypes.CUSTOM_DATA);

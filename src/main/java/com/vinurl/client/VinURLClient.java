@@ -2,10 +2,12 @@ package com.vinurl.client;
 
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
+import com.vinurl.gui.ProgressOverlay;
 import com.vinurl.net.ClientEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.Item;
@@ -61,6 +63,10 @@ public class VinURLClient implements ClientModInitializer {
 			for (Executable executable : Executable.values()) {
 				executable.killAllProcesses();
 			}
+		});
+
+		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {
+			ProgressOverlay.render(drawContext);
 		});
 	}
 }

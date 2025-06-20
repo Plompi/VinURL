@@ -3,6 +3,7 @@ package com.vinurl.client;
 import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.Executable;
+import com.vinurl.gui.ProgressOverlay;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -32,20 +33,25 @@ public class AudioHandler {
 
 		Executable.YT_DLP.executeCommand(
 			fileName,
-			url, "-x", "-q", "--progress", "--progress-template", "%(progress._percent_str)s",
-			"--concat-playlist", "always", "--add-metadata", "-P", AUDIO_DIRECTORY.toString(),
+			url, "-x", "-q", "--progress", "--concat-playlist", "always", "--add-metadata",
+			"--progress-template", "%(info.playlist_index|1)d/%(info.playlist_count|1)d:%(progress._percent)d",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
 			"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %d", VinURLClient.CONFIG.maxAudioInMinutes() * 60),
-			"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
+			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 			"-o", String.format("%%(playlist_autonumber&{}|)s%s.%%(ext)s", fileName)
 		).subscribe(
-			line -> {},
+			line -> {
+				if (line.trim().isEmpty()) {return;}
+				ProgressOverlay.set(line.split(":")[0], Integer.parseInt((line.split(":")[1])));
+			},
 			error -> {
+				ProgressOverlay.stop();
 				deleteSound(fileName);
 				client.player.sendMessage(Text.literal("Failed to download music!").formatted(Formatting.RED), true);
 			},
 			() -> {
+				ProgressOverlay.stop();
 				playSound(client, fileName, position, loop);
 				descriptionToCache(fileName);
 			}
