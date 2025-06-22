@@ -2,8 +2,8 @@ package com.vinurl.gui;
 
 import com.vinurl.net.ServerEvent;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
+import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.LabelComponent;
-import io.wispforest.owo.ui.component.SmallCheckboxComponent;
 import io.wispforest.owo.ui.component.TextBoxComponent;
 import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.container.StackLayout;
@@ -21,23 +21,34 @@ import static com.vinurl.util.Constants.MOD_ID;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
-	private TextBoxComponent urlTextbox;
 	private LabelComponent placeholderLabel;
-	private SmallCheckboxComponent loopCheckbox;
-	private final String defaultURL;
-	private final boolean defaultLoop;
+	private TextBoxComponent urlTextbox;
+	private ButtonComponent loopButton;
+	private ButtonComponent lockButton;
+	private final String url;
+	private boolean loop;
+	private boolean lock;
 
 	public URLScreen(String defaultURL, boolean defaultLoop) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
-		this.defaultURL = defaultURL;
-		this.defaultLoop = defaultLoop;
+		this.url = defaultURL;
+		this.loop = defaultLoop;
 	}
 
 	@Override
 	protected void build(StackLayout stackLayout) {
 		placeholderLabel = stackLayout.childById(LabelComponent.class,"placeholder");
-		loopCheckbox = stackLayout.childById(SmallCheckboxComponent.class, "loop").checked(defaultLoop);
 		urlTextbox = stackLayout.childById(TextBoxComponent.class, "url");
+		loopButton = stackLayout.childById(ButtonComponent.class, "loop_button");
+		lockButton = stackLayout.childById(ButtonComponent.class, "lock_button");
+
+		loopButton.renderer(ButtonComponent.Renderer.texture(Identifier.of(MOD_ID, "textures/gui/loop.png"), loop ? 16: 0,0,32,16));
+		loopButton.onPress(button -> {
+			loopButton.renderer(ButtonComponent.Renderer.texture(Identifier.of(MOD_ID, "textures/gui/loop.png"), (loop ^= true) ? 16: 0,0,32,16));});
+
+		lockButton.renderer(ButtonComponent.Renderer.texture(Identifier.of(MOD_ID, "textures/gui/lock.png"), lock ? 16: 0,0,32,16));
+		lockButton.onPress(button -> {
+			lockButton.renderer(ButtonComponent.Renderer.texture(Identifier.of(MOD_ID, "textures/gui/lock.png"), (lock ^= true) ? 16: 0,0,32,16));});
 
 		urlTextbox.onChanged().subscribe(newText -> placeholderLabel.text(newText.isEmpty() ? Text.literal("URL") : Text.literal("")));
 		urlTextbox.focusLost().subscribe(() -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,110,16)));
@@ -47,7 +58,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers){
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(!IS_APRIL_FOOLS_DAY ? urlTextbox.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", loopCheckbox.checked()));
+			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(!IS_APRIL_FOOLS_DAY ? urlTextbox.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", loop, lock));
 			MinecraftClient.getInstance().setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -59,7 +70,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 		if (urlTextbox.getText().equals("{{placeholder}}")) {
 			Objects.requireNonNull(urlTextbox.focusHandler()).focus(urlTextbox, Component.FocusSource.KEYBOARD_CYCLE);
-			urlTextbox.setText(defaultURL);
+			urlTextbox.setText(url);
 		}
 	}
 }

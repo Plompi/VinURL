@@ -17,7 +17,7 @@ import static com.vinurl.util.Constants.*;
 
 
 public class ServerEvent {
-	public record SetURLRecord(String url, boolean loop) {}
+	public record SetURLRecord(String url, boolean loop, boolean lock) {}
 
 	public static void register(){
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
@@ -54,6 +54,7 @@ public class ServerEvent {
 			NbtCompound nbt = new NbtCompound();
 			nbt.put(URL_KEY, url);
 			nbt.put(LOOP_KEY, payload.loop());
+			nbt.put(LOCK_KEY, payload.lock());
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 		});
 	}

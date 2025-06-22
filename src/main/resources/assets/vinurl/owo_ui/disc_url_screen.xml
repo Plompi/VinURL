@@ -40,12 +40,25 @@
                             <vertical-alignment>center</vertical-alignment>
 
                         </stack-layout>
-                        <small-checkbox id="loop">
-                            <tooltip-text>loop</tooltip-text>
+                        <button id="loop_button">
+                            <sizing>
+                                <horizontal method="fixed">16</horizontal>
+                                <vertical method="fixed">16</vertical>
+                            </sizing>
                             <margins>
                                 <left>5</left>
                             </margins>
-                        </small-checkbox>
+                        </button>
+
+                        <button id="lock_button">
+                            <sizing>
+                                <horizontal method="fixed">16</horizontal>
+                                <vertical method="fixed">16</vertical>
+                            </sizing>
+                            <margins>
+                                <left>5</left>
+                            </margins>
+                        </button>
 
                     </children>
                     <surface>
