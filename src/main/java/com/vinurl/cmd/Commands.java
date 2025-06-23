@@ -8,7 +8,6 @@ import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import org.apache.commons.io.FileUtils;
 
@@ -16,6 +15,7 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.util.Constants.MOD_ID;
 
 
@@ -59,7 +59,7 @@ public class Commands {
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
 		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null);
-		MinecraftClient.getInstance().send(() -> MinecraftClient.getInstance().setScreen(screen));
+		CLIENT.send(() -> CLIENT.setScreen(screen));
 		return 0;
 	}
 }

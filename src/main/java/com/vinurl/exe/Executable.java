@@ -33,17 +33,19 @@ public enum Executable {
 			"eugeneware/ffmpeg-static");
 
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
-	private final String FILENAME;
+	private final String FILE_NAME;
 	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
-	private final Path FILEPATH;
+	private final Path VERSION_PATH;
+	private final Path FILE_PATH;
 	private final ConcurrentHashMap<String, Process> activeProcesses = new ConcurrentHashMap<>();
 
 	Executable(String fileName, String repositoryFile, String repositoryName) {
-		FILENAME = fileName;
+		FILE_NAME = fileName;
 		REPOSITORY_FILE = repositoryFile;
 		REPOSITORY_NAME = repositoryName;
-		FILEPATH = DIRECTORY.resolve(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
+		FILE_PATH = DIRECTORY.resolve(FILE_NAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
+		VERSION_PATH = DIRECTORY.resolve(FILE_NAME + ".version");
 	}
 
 	public void registerProcess(String id, Process process) {
@@ -75,61 +77,59 @@ public enum Executable {
 		}
 	}
 
-	public void checkForExecutable() throws IOException, URISyntaxException {
+	public boolean checkForExecutable() {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
-			if (!FILEPATH.toFile().exists()) {
-				downloadExecutable();
+			if (!FILE_PATH.toFile().exists()) {
+				 return downloadExecutable();
 			} else if (CONFIG.updatesOnStartup()) {
 				checkForUpdates();
 			}
+			return true;
 		}
+		return false;
 	}
 
 	public boolean checkForUpdates() {
-		try {
-			if (!currentVersion(DIRECTORY.resolve(FILENAME + ".version")).equals(latestVersion())) {
-				downloadExecutable();
-				return true;
-			}
-			return false;
-		} catch (Exception ignored) {
-			return false;
-		}
+		return !currentVersion().equals(latestVersion()) && downloadExecutable();
 	}
 
-	private void downloadExecutable() throws IOException, URISyntaxException {
+	private boolean downloadExecutable() {
 		try (InputStream inputStream = getDownloadInputStream()) {
 			if (REPOSITORY_FILE.endsWith(".zip")) {
 				try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
 					ZipEntry zipEntry = zipInput.getNextEntry();
 					while (zipEntry != null) {
-						if (zipEntry.getName().endsWith(FILENAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""))) {
-							Files.copy(zipInput, FILEPATH, StandardCopyOption.REPLACE_EXISTING);
+						if (zipEntry.getName().endsWith(FILE_NAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""))) {
+							Files.copy(zipInput, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 							break;
 						}
 						zipEntry = zipInput.getNextEntry();
 					}
 				}
 			} else {
-				Files.copy(inputStream, FILEPATH, StandardCopyOption.REPLACE_EXISTING);
+				Files.copy(inputStream, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
 			}
 			if (SystemUtils.IS_OS_UNIX) {
-				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILEPATH.toString()});
+				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILE_PATH.toString()});
 			}
-			createVersionFile(latestVersion(), DIRECTORY.resolve(FILENAME + ".version"));
+			return createVersionFile(latestVersion());
+		} catch (Exception e) {
+			return false;
 		}
 	}
 
-	private void createVersionFile(String version, Path versionFilePath) throws IOException {
-		try (FileWriter writer = new FileWriter(versionFilePath.toFile())) {
-			writer.write(version);
+	private boolean createVersionFile(String version) {
+		try {
+			Files.writeString(VERSION_PATH, version);
+			return true;
+		} catch (IOException ignored) {
+			return false;
 		}
 	}
 
-	private String currentVersion(Path filePath) {
-		try (BufferedReader reader = new BufferedReader(new FileReader(filePath.toFile()))) {
-			String version = reader.readLine();
-			return (version != null ? version : "");
+	private String currentVersion() {
+		try {
+			return Files.readString(VERSION_PATH);
 		} catch (IOException e) {
 			return "";
 		}
@@ -179,7 +179,7 @@ public enum Executable {
 
 			try {
 				Process process = new ProcessBuilder()
-						.command(Stream.concat(Stream.of(FILEPATH.toString()),
+						.command(Stream.concat(Stream.of(FILE_PATH.toString()),
 										Arrays.stream(arguments))
 								.toArray(String[]::new)).
 						redirectErrorStream(true).start();

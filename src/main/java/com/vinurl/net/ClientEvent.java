@@ -49,25 +49,24 @@ public class ClientEvent {
 
 					KeyListener.waitForKeyPress().thenAccept(confirmed -> {
 						if (confirmed) {
-							AudioHandler.downloadSound(client, url, fileName, position, loop);
+							AudioHandler.downloadSound(url, fileName, position, loop);
 							whitelist.add(baseURL);
 							CONFIG.save();
 						}
 					});
 				}
 				else {
-					AudioHandler.downloadSound(client, url, fileName, position, loop);}
+					AudioHandler.downloadSound(url, fileName, position, loop);}
 			}
 			else {
-				AudioHandler.playSound(client, fileName, position, loop);
+				AudioHandler.playSound(fileName, position, loop);
 			}
 		});
 
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
-			String fileName = AudioHandler.hashURL(payload.url());
-			AudioHandler.stopSound(context.runtime(), payload.position().toCenterPos());
-			Executable.YT_DLP.killProcess(fileName);
+			AudioHandler.stopSound(payload.position().toCenterPos());
+			Executable.YT_DLP.killProcess(AudioHandler.hashURL(payload.url()));
 		});
 
 		// Client event to open record ui

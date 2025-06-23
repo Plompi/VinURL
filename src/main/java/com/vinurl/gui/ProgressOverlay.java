@@ -1,10 +1,11 @@
 package com.vinurl.gui;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
+
+import static com.vinurl.client.VinURLClient.CLIENT;
 
 public class ProgressOverlay {
 	private static boolean active;
@@ -22,7 +23,6 @@ public class ProgressOverlay {
 	public static void render(DrawContext context) {
 		if (!active) {return;}
 
-		MinecraftClient client = MinecraftClient.getInstance();
 
 		Text message = Text.literal(info + " ")
 				.append(Text.literal("|".repeat(percent / 5)).formatted(Formatting.GREEN))
@@ -30,10 +30,10 @@ public class ProgressOverlay {
 				.append(" " + percent + "%");
 
 		context.drawTextWithShadow(
-				client.textRenderer,
+				CLIENT.textRenderer,
 				message,
-				(client.getWindow().getScaledWidth() - client.textRenderer.getWidth(message)) / 2,
-				client.getWindow().getScaledHeight() - 72,
+				(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(message)) / 2,
+				CLIENT.getWindow().getScaledHeight() - 72,
 				0xFFFFFF
 		);
 	}

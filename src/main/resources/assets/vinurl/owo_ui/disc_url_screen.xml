@@ -18,7 +18,6 @@
                                     </visible-area>
                                 </texture>
                                 <text-box id="url">
-                                    <text>{{placeholder}}</text>
                                     <max-length>400</max-length>
                                     <margins>
                                         <left>4</left>

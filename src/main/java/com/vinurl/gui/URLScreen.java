@@ -9,13 +9,13 @@ import io.wispforest.owo.ui.component.TextureComponent;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.Component;
 import io.wispforest.owo.ui.core.PositionedRectangle;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import java.util.Objects;
 
+import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.client.VinURLClient.IS_APRIL_FOOLS_DAY;
 import static com.vinurl.util.Constants.MOD_ID;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
@@ -59,16 +59,17 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers){
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
 			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(!IS_APRIL_FOOLS_DAY ? urlTextbox.getText() : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", loop, lock));
-			MinecraftClient.getInstance().setScreen(null);
+			CLIENT.setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
 
 	@Override
 	protected void init() {
+		boolean initial = uiAdapter == null;
 		super.init();
 
-		if (urlTextbox.getText().equals("{{placeholder}}")) {
+		if (initial) {
 			Objects.requireNonNull(urlTextbox.focusHandler()).focus(urlTextbox, Component.FocusSource.KEYBOARD_CYCLE);
 			urlTextbox.setText(url);
 		}
