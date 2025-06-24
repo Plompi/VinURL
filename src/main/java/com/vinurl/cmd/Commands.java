@@ -32,26 +32,28 @@ public class Commands {
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
 			FileUtils.deleteDirectory(AudioHandler.AUDIO_DIRECTORY.toFile());
-			ctx.getSource().sendFeedback(Text.literal("Deleted all Audio Files"));
+			ctx.getSource().sendFeedback(Text.literal("Deleted all audio files"));
 			return 1;
 		} catch (IOException e) {
-			ctx.getSource().sendFeedback(Text.literal("Deleted only non active Audio Files"));
+			ctx.getSource().sendFeedback(Text.literal("Deleted only non active audio files"));
 			return 0;
 		}
 	}
 
 	private static int updateExecutables(CommandContext<FabricClientCommandSource> ctx) {
-		ctx.getSource().sendFeedback(Text.literal("Checking for Updates..."));
+		ctx.getSource().sendFeedback(Text.literal("Checking for updates..."));
 		CompletableFuture.runAsync(() -> {
 			boolean anyUpdate = false;
 			for (Executable executable : Executable.values()) {
+				String currentVersion = executable.currentVersion();
 				if(executable.checkForUpdates()){
-					ctx.getSource().sendFeedback(Text.literal("Successfully updated " + executable.name()));
+					String latestVersion = executable.currentVersion();
+					ctx.getSource().sendFeedback(Text.literal(String.format("%s: %s -> %s", executable, currentVersion, latestVersion)));
 					anyUpdate = true;
 				}
 			}
 			if (!anyUpdate) {
-				ctx.getSource().sendFeedback(Text.literal("No updates found."));
+				ctx.getSource().sendFeedback(Text.literal("Everything is up to date!"));
 			}
 		});
 		return 1;

@@ -127,7 +127,7 @@ public enum Executable {
 		}
 	}
 
-	private String currentVersion() {
+	public String currentVersion() {
 		try {
 			return Files.readString(VERSION_PATH);
 		} catch (IOException e) {

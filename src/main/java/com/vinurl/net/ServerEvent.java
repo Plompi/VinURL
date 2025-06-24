@@ -30,7 +30,7 @@ public class ServerEvent {
 			ItemStack stack = Arrays.stream(Hand.values()).map(player::getStackInHand).filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD).findFirst().orElse(null);
 
 			if (stack == null) {
-				player.sendMessage(Text.literal("VinURL-Disc needed in Hand!"), true);
+				player.sendMessage(Text.literal("VinURL-Disc needed in hand!"), true);
 				return;
 			}
 
