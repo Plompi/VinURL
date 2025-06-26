@@ -33,33 +33,35 @@ public class ClientEvent {
 
 			if (client.player == null || url.isEmpty()) {return;}
 
-			if (CONFIG.downloadEnabled() && !AudioHandler.getAudioFile(fileName).exists()) {
+			if (AudioHandler.getAudioFile(fileName).exists()) {
+				AudioHandler.playSound(fileName, position, loop);
+				return;
+			}
 
+			if (CONFIG.downloadEnabled()){
 				List<String> whitelist = CONFIG.urlWhitelist();
 				String baseURL = AudioHandler.getBaseURL(url);
 
-				if (whitelist.stream().noneMatch(url::startsWith)) {
-					client.player.sendMessage(
-							Text.literal("Press ")
-									.append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
-									.append(" to whitelist ")
-									.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
-							true
-					);
-
-					KeyListener.waitForKeyPress().thenAccept(confirmed -> {
-						if (confirmed) {
-							AudioHandler.downloadSound(url, fileName, position, loop);
-							whitelist.add(baseURL);
-							CONFIG.save();
-						}
-					});
+				if (whitelist.stream().anyMatch(url::startsWith)) {
+					AudioHandler.downloadSound(url, fileName, position, loop);
+					return;
 				}
-				else {
-					AudioHandler.downloadSound(url, fileName, position, loop);}
-			}
-			else {
-				AudioHandler.playSound(fileName, position, loop);
+
+				client.player.sendMessage(
+						Text.literal("Press ")
+								.append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
+								.append(" to whitelist ")
+								.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
+						true
+				);
+
+				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
+					if (confirmed) {
+						whitelist.add(baseURL);
+						CONFIG.save();
+						AudioHandler.downloadSound(url, fileName, position, loop);
+					}
+				});
 			}
 		});
 

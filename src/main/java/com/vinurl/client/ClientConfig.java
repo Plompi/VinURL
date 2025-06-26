@@ -23,16 +23,13 @@ public class ClientConfig {
 	public List<String> urlWhitelist =  new ArrayList<>(List.of("https://www.youtube.com", "https://www.soundcloud.com"));
 
 	public static boolean urlSanitization(List<String> list) {
-		for (String s : list) {
+		return list.stream().allMatch(url -> {
 			try {
-				if (!(new URI(s).toURL().toString().equals(s))) {
-					return false;
-				}
+				return new URI(url).toURL().toString().equals(url);
 			} catch (Exception e) {
 				return false;
 			}
-		}
-		return true;
+		});
 	}
 
 	@SectionHeader("audioSettings")

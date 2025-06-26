@@ -13,8 +13,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.util.Constants.LOGGER;
@@ -59,15 +59,10 @@ public class AudioHandler {
 
 	public static void deleteSound(String fileName) {
 		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles(file -> file.isFile() && file.getName().contains(fileName));
-
 		if (filesToDelete == null) {return;}
 
 		for (File file : filesToDelete) {
-			try {
-				FileUtils.delete(file);
-			} catch (IOException e) {
-				LOGGER.error("Error deleting file {}", file.getName(), e);
-			}
+			FileUtils.deleteQuietly(file);
 		}
 	}
 
@@ -95,7 +90,7 @@ public class AudioHandler {
 			String metadata = vorbisFile.getComment(0).toString();
 
 			String filter = "Comment: " + attribute + "=";
-			return Arrays.stream(metadata.split("\n"))
+			return Stream.of(metadata.split("\n"))
 					.filter(line -> line.startsWith(filter))
 					.map(line -> line.substring(filter.length()))
 					.findFirst()

@@ -2,15 +2,20 @@ package com.vinurl.exe;
 
 import org.apache.commons.lang3.SystemUtils;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Arrays;
 import java.util.Set;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Flow;
+import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
@@ -159,7 +164,7 @@ public enum Executable {
 		public ProcessStream(String id, String... arguments) {
 			this.id = id;
 			this.arguments = arguments;
-			startProcess();
+			CompletableFuture.runAsync(this::startProcess);
 		}
 
 		public void subscribe(Consumer<String> onOutput, Consumer<Throwable> onError, Runnable onComplete) {
@@ -180,7 +185,7 @@ public enum Executable {
 			try {
 				Process process = new ProcessBuilder()
 						.command(Stream.concat(Stream.of(FILE_PATH.toString()),
-										Arrays.stream(arguments))
+										Stream.of(arguments))
 								.toArray(String[]::new)).
 						redirectErrorStream(true).start();
 

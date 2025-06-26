@@ -11,7 +11,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 
 import java.net.URI;
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 import static com.vinurl.util.Constants.*;
 
@@ -27,7 +27,7 @@ public class ServerEvent {
 		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
-			ItemStack stack = Arrays.stream(Hand.values()).map(player::getStackInHand).filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD).findFirst().orElse(null);
+			ItemStack stack = Stream.of(Hand.values()).map(player::getStackInHand).filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD).findFirst().orElse(null);
 
 			if (stack == null) {
 				player.sendMessage(Text.literal("VinURL-Disc needed in hand!"), true);
@@ -51,11 +51,11 @@ public class ServerEvent {
 
 			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
-			NbtCompound nbt = new NbtCompound();
-			nbt.put(URL_KEY, url);
-			nbt.put(LOOP_KEY, payload.loop());
-			nbt.put(LOCK_KEY, payload.lock());
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound() {{
+				put(URL_KEY, url);
+				put(LOOP_KEY, payload.loop());
+				put(LOCK_KEY, payload.lock());
+			}}));
 		});
 	}
 }

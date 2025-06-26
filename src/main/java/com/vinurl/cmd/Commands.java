@@ -3,7 +3,6 @@ package com.vinurl.cmd;
 import com.mojang.brigadier.context.CommandContext;
 import com.vinurl.client.AudioHandler;
 import com.vinurl.exe.Executable;
-import io.wispforest.owo.config.ui.ConfigScreen;
 import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -60,8 +59,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		ConfigScreen screen = (ConfigScreen) Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null);
-		CLIENT.send(() -> CLIENT.setScreen(screen));
+		CLIENT.send(() -> CLIENT.setScreen(Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null)));
 		return 0;
 	}
 }
