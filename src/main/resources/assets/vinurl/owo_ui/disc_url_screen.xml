@@ -7,11 +7,11 @@
                     <children>
                         <stack-layout>
                             <children>
-                                <texture id="text_field" texture="minecraft:textures/gui/sprites/container/anvil/text_field.png" texture-height="16" texture-width="110"
-                                         region-height="16" region-width="110">
+                                <texture id="text_field" texture="minecraft:textures/gui/container/anvil.png" texture-height="256" texture-width="256"
+                                         region-height="16" region-width="110" v="166">
                                 </texture>
-                                <texture id="text_field_disabled" texture="minecraft:textures/gui/sprites/container/anvil/text_field_disabled.png" texture-height="16" texture-width="110"
-                                         region-height="16" region-width="110">
+                                <texture id="text_field_disabled" texture="minecraft:textures/gui/container/anvil.png" texture-height="256" texture-width="256"
+                                         region-height="16" region-width="110" v="182">
                                     <visible-area>
                                         <height>0</height>
                                         <width>0</width>
