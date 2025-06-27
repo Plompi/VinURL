@@ -13,6 +13,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.net.URI;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -51,8 +52,8 @@ public class AudioHandler {
 			},
 			() -> {
 				ProgressOverlay.stop();
-				playSound(fileName, position, loop);
 				descriptionToCache(fileName);
+				playSound(fileName, position, loop);
 			}
 		);
 	}
@@ -77,10 +78,8 @@ public class AudioHandler {
 		CLIENT.getSoundManager().stop(playingSounds.remove(position));
 	}
 
-	public static String getDescription(String fileName){
-		String artist = getOggAttribute(fileName, "artist");
-		String title = getOggAttribute(fileName, "title");
-		return (artist + " - " + title).replaceAll("[︀-️]", "");
+	public static String getDescription(String fileName) {
+		return Optional.ofNullable(descriptionFromCache(fileName)).orElseGet(() -> descriptionToCache(fileName));
 	}
 
 	private static String getOggAttribute(String fileName, String attribute) {
@@ -109,8 +108,12 @@ public class AudioHandler {
 		}
 	}
 
-	public static void descriptionToCache(String fileName) {
-		descriptionCache.put(fileName, getDescription(fileName));
+	public static String descriptionToCache(String fileName) {
+		return descriptionCache.compute(fileName, (k, v) -> {
+			String artist = getOggAttribute(fileName, "artist");
+			String title = getOggAttribute(fileName, "title");
+			return (artist + " - " + title).replaceAll("[︀-️]", "");
+		});
 	}
 
 	public static String descriptionFromCache(String fileName){

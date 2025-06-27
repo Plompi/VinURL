@@ -46,13 +46,7 @@ public class VinURLClient implements ClientModInitializer {
 
 				if (fileName.isEmpty()) {return;}
 
-				String description = AudioHandler.descriptionFromCache(fileName);
-
-				if (description != null) {
-					lines.add(Text.literal(description).formatted(Formatting.GRAY));
-				} else {
-					AudioHandler.descriptionToCache(fileName);
-				}
+				lines.add(Text.literal(AudioHandler.getDescription(fileName)).formatted(Formatting.GRAY));
 			}
 		});
 
