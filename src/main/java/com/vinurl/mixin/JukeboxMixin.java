@@ -3,12 +3,12 @@ package com.vinurl.mixin;
 import com.vinurl.api.VinURLSound;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.block.jukebox.JukeboxManager;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,35 +21,40 @@ import static com.vinurl.util.Constants.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxMixin implements SingleStackInventory {
-	@Shadow
-	private ItemStack recordStack;
+public abstract class JukeboxMixin extends BlockEntity implements SingleStackInventory, Clearable {
+
+	@Shadow private long tickCount;
+
+	@Shadow private long recordStartTick;
 
 	@Shadow
-	public abstract BlockEntity asBlockEntity();
+	private void stopPlaying() {}
+
+	public JukeboxMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+		super(type, pos, state);
+	}
 
 	@Inject(at = @At("HEAD"), method = "dropRecord")
 	public void stopPlaying(CallbackInfo ci) {
-		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.stop(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos(), true);
+		if (getStack().getItem() == CUSTOM_RECORD) {
+			VinURLSound.stop(world, getStack(), getPos(), true);
 		}
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")
-	public void startPlaying(ItemStack stack, CallbackInfo ci) {
-		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.play(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
+	public void startPlaying(int slot, ItemStack stack, CallbackInfo ci) {
+		if (getStack().getItem() == CUSTOM_RECORD) {
+			VinURLSound.play(world, getStack(), getPos());
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "tick")
-	private static void tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity, CallbackInfo ci) {
-		if (blockEntity.getStack().getItem() == CUSTOM_RECORD) {
-			NbtComponent nbt = blockEntity.getStack().getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
-			JukeboxManager manager = blockEntity.getManager();
-			if (manager.getTicksSinceSongStarted() > nbt.copyNbt().get(DURATION_KEY) * 20L) {
-				manager.stopPlaying(world, state);
-				VinURLSound.stop(world, blockEntity.getStack(), pos, false);
+	@Inject(at = @At("HEAD"), method = "tick(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V")
+	private void tick(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
+		if (getStack().getItem() == CUSTOM_RECORD) {
+			NbtCompound nbt = getStack().getOrCreateNbt();
+			if (tickCount > recordStartTick + nbt.getInt(DURATION_KEY) * 20L) {
+				stopPlaying();
+				VinURLSound.stop(world, getStack(), pos, false);
 			}
 		}
 	}

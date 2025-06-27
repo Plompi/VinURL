@@ -9,9 +9,6 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -34,10 +31,9 @@ public class VinURLClient implements ClientModInitializer {
 		Commands.register();
 		ClientEvent.register();
 
-		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
+		ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
 			if (stack.getItem() == CUSTOM_RECORD && CONFIG.showDescription()) {
-				NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-				String fileName = AudioHandler.hashURL(nbt.get(URL_KEY));
+				String fileName = AudioHandler.hashURL(stack.getOrCreateNbt().getString(URL_KEY));
 
 				if (fileName.isEmpty()) {return;}
 

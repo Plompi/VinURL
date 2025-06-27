@@ -82,7 +82,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		});
 		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
-			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
+			durationSlider.value(Math.max(durationSlider.min(), Math.min(durationSlider.max(), durationSlider.value() + amount)));
 			return true;
 		});
 

@@ -33,6 +33,6 @@ public class SoundLoaderMixin {
 			} catch (IOException iOException) {
 				throw new CompletionException(iOException);
 			}
-		}, Util.getDownloadWorkerExecutor()));
+		}, Util.getMainWorkerExecutor()));
 	}
 }

@@ -44,7 +44,7 @@ public class ProgressOverlay {
 	public static void render(DrawContext context) {
 		if (progressQueue.isEmpty()) {return;}
 
-		String currentId = progressQueue.firstEntry().getKey();
+		String currentId = progressQueue.entrySet().iterator().next().getKey();
 		int percent = progressQueue.get(currentId);
 		long now = System.currentTimeMillis();
 

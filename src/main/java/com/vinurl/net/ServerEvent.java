@@ -1,7 +1,5 @@
 package com.vinurl.net;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -53,14 +51,14 @@ public class ServerEvent {
 				return;
 			}
 
-			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+			player.playSound(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
 
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound() {{
-				put(URL_KEY, url);
-				put(DURATION_KEY, payload.duration());
-				put(LOOP_KEY, payload.loop());
-				put(LOCK_KEY, payload.lock());
-			}}));
+			stack.setNbt(new NbtCompound() {{
+				putString(URL_KEY, url);
+				putInt(DURATION_KEY, payload.duration());
+				putBoolean(LOOP_KEY, payload.loop());
+				putBoolean(LOCK_KEY, payload.lock());
+			}});
 		});
 	}
 }
