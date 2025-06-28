@@ -26,10 +26,10 @@ jobs:
           submodules: true
 
       - uses: madhead/read-java-properties@latest
-        id: minecraft_version
+        id: all
         with:
           file: gradle.properties
-          property: mod_minecraft_version_end
+          all: true
 
       - name: Extract version from CHANGELOG.md
         id: extract_version
@@ -43,21 +43,23 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
-          java-version: 21
+          java-version: "${{env.JAVA_VERSION}}"
 
       - name: Make Gradle Wrapper Executable
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
 
       - name: Build
+        if: ${{ steps.all.outputs.pub_fabric == 'true' }}
         run: ./gradlew clean build
 
       - name: Publish Fabric Modrinth
+        if: ${{ steps.all.outputs.pub_fabric == 'true' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.minecraft_version.outputs.value }}"
-          version: "${{ env.mod_version }}+${{ steps.minecraft_version.outputs.value }}-fabric"
+          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.all.outputs.mod_minecraft_version_end }}"
+          version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version_end }}-fabric"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
@@ -71,14 +73,16 @@ jobs:
           java: "${{env.JAVA_VERSION}}"
 
       - name: Build
+        if: ${{ steps.all.outputs.pub_neoforge == 'true' }}
         run: ./gradlew clean build -Pneoforge=true
 
       - name: Publish Neoforge Modrinth
+        if: ${{ steps.all.outputs.pub_neoforge == 'true' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.minecraft_version.outputs.value }}"
-          version: "${{ env.mod_version }}+${{ steps.minecraft_version.outputs.value }}-neoforge"
+          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.all.outputs.mod_minecraft_version_end }}"
+          version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version_end }}-neoforge"
           modrinth-id: 5PsMUIsq
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
 
