@@ -23,18 +23,16 @@ import static com.vinurl.util.Constants.MOD_ID;
 public class SoundLoaderMixin {
 	@Inject(at = @At("HEAD"), method = "loadStreamed", cancellable = true)
 	public void loadStreamed(Identifier id, boolean repeatInstantly, CallbackInfoReturnable<CompletableFuture<AudioStream>> cir) {
-		if (!id.getNamespace().equals(MOD_ID) || id.getPath().contains("placeholder_sound.ogg")) {return;}
-
-		cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
-			try {
-				//strips out sounds/ (7 chars) and .ogg file extension
-				InputStream inputStream = AudioHandler.getAudioInputStream(id.getPath().substring(7).split("\\.")[0]);
-				return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
-			} catch (IOException iOException) {
-				throw new CompletionException(iOException);
-			}
-		}, Util.getDownloadWorkerExecutor()));
-
-		cir.cancel();
+		if (id.getNamespace().equals(MOD_ID)) {
+			cir.setReturnValue(CompletableFuture.supplyAsync(() -> {
+				try {
+					//strips out sounds/ (7 chars) and .ogg file extension
+					InputStream inputStream = AudioHandler.getAudioInputStream(id.getPath().substring(7).split("\\.")[0]);
+					return repeatInstantly ? new RepeatingAudioStream(OggAudioStream::new, inputStream) : new OggAudioStream(inputStream);
+				} catch (IOException iOException) {
+					throw new CompletionException(iOException);
+				}
+			}, Util.getDownloadWorkerExecutor()));
+		}
 	}
 }

@@ -3,6 +3,7 @@ package com.vinurl.mixin;
 import com.vinurl.api.VinURLSound;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static com.vinurl.util.Constants.CUSTOM_RECORD;
 
@@ -33,6 +35,13 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 	public void startPlaying(ItemStack stack, CallbackInfo cir) {
 		if (recordStack.getItem() == CUSTOM_RECORD) {
 			VinURLSound.play((ServerWorld) asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
+		}
+	}
+
+	@Inject(at = @At("HEAD"), method = "canTransferTo", cancellable = true)
+	public void canTransferTo(Inventory hopperInventory, int slot, ItemStack stack, CallbackInfoReturnable<Boolean> cir) {
+		if (recordStack.getItem() == CUSTOM_RECORD) {
+			cir.setReturnValue(false);
 		}
 	}
 }
