@@ -50,6 +50,7 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 			JukeboxManager manager = blockEntity.getManager();
 			if (manager.getTicksSinceSongStarted() > nbt.copyNbt().get(DURATION_KEY) * 20L){
 				manager.stopPlaying(world, state);
+				VinURLSound.stop((ServerWorld) world, blockEntity.getStack(), pos);
 			}
 		}
 	}

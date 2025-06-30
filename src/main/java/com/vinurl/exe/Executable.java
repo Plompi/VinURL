@@ -30,9 +30,6 @@ public enum Executable {
 	YT_DLP("yt-dlp",
 			String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
 			"yt-dlp/yt-dlp"),
-	FFPROBE("ffprobe",
-			String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
-			"eugeneware/ffmpeg-static"),
 	FFMPEG("ffmpeg",
 			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
 			"eugeneware/ffmpeg-static");

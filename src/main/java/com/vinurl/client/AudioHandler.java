@@ -26,32 +26,32 @@ public class AudioHandler {
 	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
-	public static void downloadSound(String url, String fileName, Vec3d position, int duration, boolean loop) {
+	public static void downloadSound(String url, String fileName, Vec3d position, boolean loop) {
 		if (CLIENT.player == null) {return;}
 
 		CLIENT.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
 
 		Executable.YT_DLP.executeCommand(
 			fileName,
-			url, "-x", "-q", "--progress", "--concat-playlist", "always", "--add-metadata",
-			"--progress-template", "%(info.playlist_index|1)d/%(info.playlist_count|1)d:%(progress._percent)d",
+			url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
+			"--progress-template", "%(progress._percent)d",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-			"--postprocessor-args","ffmpeg:-ac 1 -c:a libvorbis", "--download-sections", String.format("*0-%d", duration),
+			"--postprocessor-args","ffmpeg:-ac 1 -c:a libvorbis",
 			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
-			"-o", String.format("%%(playlist_autonumber&{}|)s%s.%%(ext)s", fileName)
+			"-o", fileName + ".%(ext)s"
 		).subscribe(
 			line -> {
 				if (line.trim().isEmpty()) {return;}
-				ProgressOverlay.set(line.split(":")[0], Integer.parseInt((line.split(":")[1])));
+				ProgressOverlay.set(fileName, Integer.parseInt(line));
 			},
 			error -> {
-				ProgressOverlay.stop();
+				ProgressOverlay.stop(fileName);
 				deleteSound(fileName);
 				CLIENT.player.sendMessage(Text.literal("Failed to download music!").formatted(Formatting.RED), true);
 			},
 			() -> {
-				ProgressOverlay.stop();
+				ProgressOverlay.stop(fileName);
 				descriptionToCache(fileName);
 				playSound(fileName, position, loop);
 			}

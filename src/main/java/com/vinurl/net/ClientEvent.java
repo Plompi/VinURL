@@ -16,7 +16,7 @@ import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class ClientEvent {
-	public record PlaySoundRecord(BlockPos position, String url, int duration, boolean loop) {}
+	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
 
 	public record StopSoundRecord(BlockPos position, String url) {}
 
@@ -28,7 +28,6 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
-			int duration = payload.duration();
 			String fileName = AudioHandler.hashURL(url);
 			MinecraftClient client = context.runtime();
 
@@ -44,7 +43,7 @@ public class ClientEvent {
 				String baseURL = AudioHandler.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
-					AudioHandler.downloadSound(url, fileName, position, duration, loop);
+					AudioHandler.downloadSound(url, fileName, position, loop);
 					return;
 				}
 
@@ -60,7 +59,7 @@ public class ClientEvent {
 					if (confirmed) {
 						whitelist.add(baseURL);
 						CONFIG.save();
-						AudioHandler.downloadSound(url, fileName, position, duration, loop);
+						AudioHandler.downloadSound(url, fileName, position, loop);
 					}
 				});
 			}

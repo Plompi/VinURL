@@ -75,7 +75,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		simulateButton.renderer(SIMULATE_BUTTON_TEXTURE);
 		simulateButton.onPress(button -> {
 			button.active(false);
-			Executable.YT_DLP.executeCommand(AudioHandler.hashURL(url + System.currentTimeMillis()), url, "--print", "duration").subscribe(
+			Executable.YT_DLP.executeCommand(AudioHandler.hashURL(url + System.currentTimeMillis()), url, "--print", "duration", "--no-playlist").subscribe(
 					line -> {durationSlider.value(Integer.parseInt(line));},
 					error -> {button.active(true);},
 					() -> {button.active(true);});
