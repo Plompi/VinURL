@@ -13,8 +13,6 @@
   "text.config.VinURLConfig.option.audioBitrate.value.low": "Low",
   "text.config.VinURLConfig.option.audioBitrate.value.medium": "Medium",
   "text.config.VinURLConfig.option.audioBitrate.value.high": "High",
-  "text.config.VinURLConfig.option.maxAudioInMinutes": "Audio Length",
-  "text.config.VinURLConfig.option.maxAudioInMinutes.tooltip": "Maximum length of audio files in minutes",
   "text.config.VinURLConfig.title": "VinURL Config",
   "text.config.VinURLConfig.section.general": "General",
   "text.config.VinURLConfig.section.audioSettings": "Audio Settings",

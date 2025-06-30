@@ -59,7 +59,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		ButtonComponent simulateButton = stackLayout.childById(ButtonComponent.class, "simulate_button");
 
 		durationSlider.value(duration);
-		durationSlider.tooltipSupplier(slider -> {return Text.literal(slider.intValue() + "s");});
+		durationSlider.tooltipSupplier(slider -> {return Text.literal(String.format("%02d:%02d", slider.intValue() / 60, slider.intValue() % 60));});
 		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));

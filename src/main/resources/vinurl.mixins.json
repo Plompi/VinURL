@@ -6,6 +6,7 @@
     "JukeboxMixin"
   ],
   "client": [
+    "InGameHudMixin",
     "SoundLoaderMixin"
   ],
   "injectors": {
