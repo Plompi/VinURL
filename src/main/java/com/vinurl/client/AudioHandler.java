@@ -26,7 +26,7 @@ public class AudioHandler {
 	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
-	public static void downloadSound(String url, String fileName, Vec3d position, boolean loop) {
+	public static void downloadSound(String url, String fileName, Vec3d position, int duration, boolean loop) {
 		if (CLIENT.player == null) {return;}
 
 		CLIENT.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
@@ -37,7 +37,7 @@ public class AudioHandler {
 			"--progress-template", "%(info.playlist_index|1)d/%(info.playlist_count|1)d:%(progress._percent)d",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-			"--postprocessor-args", String.format("ffmpeg:-ac 1 -t %d", VinURLClient.CONFIG.maxAudioInMinutes() * 60),
+			"--postprocessor-args","ffmpeg:-ac 1 -c:a libvorbis", "--download-sections", String.format("*0-%d", duration),
 			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 			"-o", String.format("%%(playlist_autonumber&{}|)s%s.%%(ext)s", fileName)
 		).subscribe(

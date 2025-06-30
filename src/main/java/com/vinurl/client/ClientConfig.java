@@ -33,8 +33,6 @@ public class ClientConfig {
 	}
 
 	@SectionHeader("audioSettings")
-	@RangeConstraint(min = 1, max = 60)
-	public int maxAudioInMinutes = 60;
 
 	public AudioQuality audioBitrate = AudioQuality.MEDIUM;
 

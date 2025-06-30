@@ -3,62 +3,85 @@
     <components>
         <stack-layout>
             <children>
-                <flow-layout direction="horizontal">
+                <flow-layout direction="vertical">
                     <children>
-                        <stack-layout>
+                        <flow-layout direction="horizontal">
                             <children>
-                                <texture id="text_field" texture="minecraft:textures/gui/sprites/container/anvil/text_field.png" texture-height="16" texture-width="110"
-                                         region-height="16" region-width="110">
-                                </texture>
-                                <texture id="text_field_disabled" texture="minecraft:textures/gui/sprites/container/anvil/text_field_disabled.png" texture-height="16" texture-width="110"
-                                         region-height="16" region-width="110">
-                                    <visible-area>
-                                        <height>0</height>
-                                        <width>0</width>
-                                    </visible-area>
-                                </texture>
-                                <text-box id="url">
-                                    <max-length>400</max-length>
-                                    <margins>
-                                        <left>4</left>
-                                    </margins>
+                                <stack-layout>
+                                    <children>
+                                        <texture id="text_field" texture="vinurl:textures/gui/text_field.png" texture-height="16" texture-width="110"
+                                                 region-height="16" region-width="110">
+                                        </texture>
+                                        <texture id="text_field_disabled" texture="vinurl:textures/gui/text_field_disabled.png" texture-height="16" texture-width="110"
+                                                 region-height="16" region-width="110">
+                                        </texture>
+                                        <label id="placeholder_label">
+                                            <text>URL</text>
+                                            <shadow>true</shadow>
+                                            <color>gray</color>
+                                            <margins>
+                                                <left>5</left>
+                                            </margins>
+                                        </label>
+                                        <text-box id="url_textbox">
+                                            <max-length>400</max-length>
+                                            <margins>
+                                                <left>4</left>
+                                            </margins>
+                                            <sizing>
+                                                <horizontal method="fixed">100</horizontal>
+                                            </sizing>
+                                            <show-background>false</show-background>
+                                        </text-box>
+                                    </children>
+                                    <vertical-alignment>center</vertical-alignment>
+                                </stack-layout>
+
+                                <button id="simulate_button">
+                                    <tooltip-text>automatic duration</tooltip-text>
                                     <sizing>
-                                        <horizontal method="fixed">100</horizontal>
+                                        <horizontal method="fixed">16</horizontal>
+                                        <vertical method="fixed">16</vertical>
                                     </sizing>
-                                    <show-background>false</show-background>
-                                </text-box>
-                                <label id="placeholder">
-                                    <text>URL</text>
-                                    <shadow>true</shadow>
-                                    <color>gray</color>
                                     <margins>
                                         <left>5</left>
                                     </margins>
-                                </label>
+                                </button>
+
+                                <button id="loop_button">
+                                    <tooltip-text>loop</tooltip-text>
+                                    <sizing>
+                                        <horizontal method="fixed">16</horizontal>
+                                        <vertical method="fixed">16</vertical>
+                                    </sizing>
+                                    <margins>
+                                        <left>5</left>
+                                    </margins>
+                                </button>
+
+                                <button id="lock_button">
+                                    <tooltip-text>lock</tooltip-text>
+                                    <sizing>
+                                        <horizontal method="fixed">16</horizontal>
+                                        <vertical method="fixed">16</vertical>
+                                    </sizing>
+                                    <margins>
+                                        <left>5</left>
+                                    </margins>
+                                </button>
                             </children>
-                            <vertical-alignment>center</vertical-alignment>
-
-                        </stack-layout>
-                        <button id="loop_button">
-                            <sizing>
-                                <horizontal method="fixed">16</horizontal>
-                                <vertical method="fixed">16</vertical>
-                            </sizing>
-                            <margins>
-                                <left>5</left>
-                            </margins>
-                        </button>
-
-                        <button id="lock_button">
-                            <sizing>
-                                <horizontal method="fixed">16</horizontal>
-                                <vertical method="fixed">16</vertical>
-                            </sizing>
-                            <margins>
-                                <left>5</left>
-                            </margins>
-                        </button>
-
+                        </flow-layout>
+                        <flow-layout direction="horizontal">
+                            <children>
+                                <slim-slider id="duration_slider" direction="horizontal">
+                                    <min>0</min>
+                                    <max>3600</max>
+                                    <sizing>
+                                        <horizontal method="fixed">173</horizontal>
+                                    </sizing>
+                                </slim-slider>
+                            </children>
+                        </flow-layout>
                     </children>
                     <surface>
                         <panel/>
