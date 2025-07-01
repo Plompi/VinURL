@@ -18,7 +18,7 @@ import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 public class ClientEvent {
 	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
 
-	public record StopSoundRecord(BlockPos position, String url) {}
+	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
 
 	public record GUIRecord(String url, int duration, boolean loop) {}
 
@@ -33,17 +33,19 @@ public class ClientEvent {
 
 			if (client.player == null || url.isEmpty()) {return;}
 
+			AudioHandler.addSound(fileName, position, loop);
+
 			if (AudioHandler.getAudioFile(fileName).exists()) {
-				AudioHandler.playSound(fileName, position, loop);
+				AudioHandler.playSound(position);
 				return;
 			}
 
-			if (CONFIG.downloadEnabled()){
+			if (CONFIG.downloadEnabled() && !Executable.YT_DLP.isProcessRunning(fileName + "?download")){
 				List<String> whitelist = CONFIG.urlWhitelist();
 				String baseURL = AudioHandler.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
-					AudioHandler.downloadSound(url, fileName, position, loop);
+					AudioHandler.downloadSound(url, fileName, position);
 					return;
 				}
 
@@ -59,7 +61,7 @@ public class ClientEvent {
 					if (confirmed) {
 						whitelist.add(baseURL);
 						CONFIG.save();
-						AudioHandler.downloadSound(url, fileName, position, loop);
+						AudioHandler.downloadSound(url, fileName, position);
 					}
 				});
 			}
@@ -68,7 +70,9 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			AudioHandler.stopSound(payload.position().toCenterPos());
-			Executable.YT_DLP.killProcess(AudioHandler.hashURL(payload.url()));
+			if (payload.canceled()) {
+				Executable.YT_DLP.killProcess(AudioHandler.hashURL(payload.url()) + "?download");
+			}
 		});
 
 		// Client event to open record ui

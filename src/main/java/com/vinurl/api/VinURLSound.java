@@ -25,7 +25,7 @@ public class VinURLSound {
 	public static void stop(ServerWorld world, ItemStack stack, BlockPos position) {
 		NbtComponent nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
 		for (PlayerEntity player : world.getPlayers()) {
-			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.StopSoundRecord(position, nbt.copyNbt().get(URL_KEY)));
+			NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.StopSoundRecord(position, nbt.copyNbt().get(URL_KEY), stack != ItemStack.EMPTY));
 		}
 	}
 }

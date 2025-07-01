@@ -5,7 +5,6 @@ import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
@@ -26,12 +25,12 @@ public class AudioHandler {
 	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
-	public static void downloadSound(String url, String fileName, Vec3d position, boolean loop) {
+	public static void downloadSound(String url, String fileName, Vec3d position) {
 		if (CLIENT.player == null) {return;}
 		ProgressOverlay.set(fileName, 0);
 
 		Executable.YT_DLP.executeCommand(
-			fileName,
+			fileName + "?download",
 			url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
 			"--progress-template", "%(progress._percent)d",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
@@ -45,14 +44,13 @@ public class AudioHandler {
 				ProgressOverlay.set(fileName, Integer.parseInt(line));
 			},
 			error -> {
-				ProgressOverlay.stop(fileName);
+				ProgressOverlay.stopFailed(fileName);
 				deleteSound(fileName);
-				CLIENT.player.sendMessage(Text.literal("Failed to download music!").formatted(Formatting.RED), true);
 			},
 			() -> {
 				ProgressOverlay.stop(fileName);
 				descriptionToCache(fileName);
-				playSound(fileName, position, loop);
+				playSound(position);
 			}
 		);
 	}
@@ -66,11 +64,16 @@ public class AudioHandler {
 		}
 	}
 
-	public static void playSound(String fileName, Vec3d position, boolean loop) {
-		FileSound fileSound = new FileSound(fileName, position, loop);
-		playingSounds.put(position, fileSound);
-		CLIENT.getSoundManager().play(fileSound);
-		CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileName)));
+	public static void playSound(Vec3d position) {
+		FileSound fileSound = playingSounds.get(position);
+		if (fileSound != null) {
+			CLIENT.getSoundManager().play(fileSound);
+			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileSound.getId().getPath())));
+		}
+	}
+
+	public static void addSound(String fileName, Vec3d position, boolean loop) {
+		playingSounds.put(position, new FileSound(fileName, position, loop));
 	}
 
 	public static void stopSound(Vec3d position) {

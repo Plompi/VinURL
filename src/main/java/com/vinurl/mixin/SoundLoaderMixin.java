@@ -34,7 +34,5 @@ public class SoundLoaderMixin {
 				throw new CompletionException(iOException);
 			}
 		}, Util.getDownloadWorkerExecutor()));
-
-		cir.cancel();
 	}
 }

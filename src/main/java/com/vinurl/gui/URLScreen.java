@@ -29,7 +29,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = !simulate ? (button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered") : Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
+		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered") : Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
@@ -54,7 +54,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	@Override
 	protected void build(StackLayout stackLayout) {
-		LabelComponent placeholderLabel = stackLayout.childById(LabelComponent.class,"placeholder_label");
+		LabelComponent placeholderLabel = stackLayout.childById(LabelComponent.class, "placeholder_label");
 		TextBoxComponent urlTextbox = stackLayout.childById(TextBoxComponent.class, "url_textbox");
 		SlimSliderComponent durationSlider = stackLayout.childById(SlimSliderComponent.class, "duration_slider");
 		ButtonComponent loopButton = stackLayout.childById(ButtonComponent.class, "loop_button");
@@ -63,8 +63,16 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 		durationSlider.value(duration);
 		durationSlider.tooltipSupplier(slider -> Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
-		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> sliderDragged = true);
-		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> sliderDragged = false);
+		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> {
+			sliderDragged = true;
+			lockButton.active = loopButton.active = simulateButton.active = false;
+			return true;
+		});
+		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> {
+			sliderDragged = false;
+			lockButton.active = loopButton.active = simulateButton.active = true;
+			return true;
+		});
 		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
@@ -95,7 +103,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers){
+	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
 			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(!IS_APRIL_FOOLS_DAY ? url : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", duration, loop, lock));
 			CLIENT.setScreen(null);
@@ -104,7 +112,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta){
+	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
 		if (sliderDragged){

@@ -60,6 +60,10 @@ public enum Executable {
 		});
 	}
 
+	public boolean isProcessRunning(String id) {
+		return activeProcesses.containsKey(id);
+	}
+
 	public void killProcess(String id) {
 		Process process = activeProcesses.remove(id);
 		if (process != null) {
@@ -177,7 +181,7 @@ public enum Executable {
 		}
 
 		private void startProcess() {
-			if (activeProcesses.containsKey(id)) {
+			if (isProcessRunning(id)) {
 				publisher.closeExceptionally(new IllegalStateException("Process already running: " + id));
 				return;
 			}

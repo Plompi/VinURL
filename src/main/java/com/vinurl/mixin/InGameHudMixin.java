@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class InGameHudMixin {
 
 	@Inject(method = "setRecordPlayingOverlay", at = @At("HEAD"), cancellable = true)
-	private void disableRecordOverlay(Text description, CallbackInfo cir) {
+	private void disableRecordOverlay(Text description, CallbackInfo ci) {
 		if (description.getString().equals("No Song")) {
-			cir.cancel();
+			ci.cancel();
 		}
 	}
 }
