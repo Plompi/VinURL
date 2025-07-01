@@ -9,6 +9,7 @@ import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
@@ -22,6 +23,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
 	private boolean loop;
 	private boolean lock;
+	private boolean sliderDragged;
 	private int duration;
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
@@ -59,7 +61,9 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		ButtonComponent simulateButton = stackLayout.childById(ButtonComponent.class, "simulate_button");
 
 		durationSlider.value(duration);
-		durationSlider.tooltipSupplier(slider -> {return Text.literal(String.format("%02d:%02d", slider.intValue() / 60, slider.intValue() % 60));});
+		durationSlider.tooltipSupplier(slider -> Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
+		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> sliderDragged = true);
+		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> sliderDragged = false);
 		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
@@ -94,5 +98,18 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			CLIENT.setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
+	}
+
+	@Override
+	public void render(DrawContext context, int mouseX, int mouseY, float delta){
+		super.render(context, mouseX, mouseY, delta);
+
+		if (sliderDragged){
+			context.drawTooltip(
+					CLIENT.textRenderer,
+					Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
+					mouseX, mouseY
+			);
+		}
 	}
 }
