@@ -38,7 +38,7 @@
                                 </stack-layout>
 
                                 <button id="simulate_button">
-                                    <tooltip-text>automatic duration</tooltip-text>
+                                    <tooltip-text>Automatic Duration</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>
@@ -49,7 +49,7 @@
                                 </button>
 
                                 <button id="loop_button">
-                                    <tooltip-text>loop</tooltip-text>
+                                    <tooltip-text>Loop</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>
@@ -60,7 +60,7 @@
                                 </button>
 
                                 <button id="lock_button">
-                                    <tooltip-text>lock</tooltip-text>
+                                    <tooltip-text>Lock</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>

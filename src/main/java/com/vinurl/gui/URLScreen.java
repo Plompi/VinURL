@@ -24,23 +24,24 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private boolean loop;
 	private boolean lock;
 	private boolean sliderDragged;
+	private boolean simulate;
 	private int duration;
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		var texture = button.active ? (button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered") : Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
+		Identifier texture = !simulate ? (button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered") : Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		var texture = loop ? Identifier.of(MOD_ID, "loop_button") : Identifier.of(MOD_ID, "loop_button_disabled");
+		Identifier texture = loop ? Identifier.of(MOD_ID, "loop_button") : Identifier.of(MOD_ID, "loop_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		var texture = lock ? Identifier.of(MOD_ID, "lock_button") : Identifier.of(MOD_ID, "lock_button_disabled");
+		Identifier texture = lock ? Identifier.of(MOD_ID, "lock_button") : Identifier.of(MOD_ID, "lock_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
@@ -78,11 +79,13 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 		simulateButton.renderer(SIMULATE_BUTTON_TEXTURE);
 		simulateButton.onPress(button -> {
-			button.active(false);
-			Executable.YT_DLP.executeCommand(AudioHandler.hashURL(url + System.currentTimeMillis()), url, "--print", "duration", "--no-playlist").subscribe(
-					line -> {durationSlider.value(Integer.parseInt(line));},
-					error -> {button.active(true);},
-					() -> {button.active(true);});
+			if (simulate) {return;}
+			simulate = true;
+			button.tooltip(Text.literal("Calculating..."));
+			Executable.YT_DLP.executeCommand(AudioHandler.hashURL(url) + "?duration", url, "--print", "duration", "--no-playlist").subscribe(
+					line -> {durationSlider.value((int) Math.ceil(Double.parseDouble(line)));},
+					error -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;},
+					() -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;});
 		});
 
 		urlTextbox.onChanged().subscribe(newText -> placeholderLabel.text((url = newText).isEmpty() ? Text.literal("URL") : Text.literal("")));

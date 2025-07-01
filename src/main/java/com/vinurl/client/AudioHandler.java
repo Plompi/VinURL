@@ -28,8 +28,7 @@ public class AudioHandler {
 
 	public static void downloadSound(String url, String fileName, Vec3d position, boolean loop) {
 		if (CLIENT.player == null) {return;}
-
-		CLIENT.player.sendMessage(Text.literal("Downloading music, please wait a moment..."), true);
+		ProgressOverlay.set(fileName, 0);
 
 		Executable.YT_DLP.executeCommand(
 			fileName,
