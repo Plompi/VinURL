@@ -12,27 +12,29 @@ import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import static com.vinurl.util.Constants.MOD_ID;
 
 public class FileSound implements SoundInstance {
-	private final Identifier id;
+	private final String fileName;
 	private final Vec3d position;
 	private final boolean loop;
+	private long startTimeInSeconds;
 
-	public FileSound(String fileName, Vec3d position, boolean loop) {
-		this.id = Identifier.of(MOD_ID, fileName);
+	public FileSound(String fileName, Vec3d position, boolean loop, long startTimeInSeconds ) {
+		this.fileName = fileName;
 		this.position = position;
 		this.loop = loop;
+		this.startTimeInSeconds = startTimeInSeconds;
 	}
 
 	public Identifier getId() {
-		return id;
+		return Identifier.of(MOD_ID, fileName + "/" + startTimeInSeconds);
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {
-		return new WeightedSoundSet(id, null);
+		return new WeightedSoundSet(getId(), null);
 	}
 
 	public Sound getSound() {
 		return new Sound(
-			id,
+			getId(),
 			ConstantFloatProvider.create(getVolume()),
 			ConstantFloatProvider.create(getPitch()),
 			1,
@@ -81,5 +83,13 @@ public class FileSound implements SoundInstance {
 
 	public AttenuationType getAttenuationType() {
 		return AttenuationType.LINEAR;
+	}
+
+	public void setStartTimeInSeconds(long startTimeInSeconds) {
+		this.startTimeInSeconds = startTimeInSeconds;
+	}
+
+	public long getStartTimeInSeconds() {
+		return startTimeInSeconds;
 	}
 }
