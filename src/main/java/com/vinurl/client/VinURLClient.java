@@ -11,20 +11,14 @@ import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import java.time.LocalDate;
-import java.util.List;
 
 import static com.vinurl.util.Constants.*;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
-	public static final boolean IS_APRIL_FOOLS_DAY = LocalDate.now().getMonthValue() == 4 && LocalDate.now().getDayOfMonth() == 1;
 	public static final MinecraftClient CLIENT = MinecraftClient.getInstance();
 
 	@Override
@@ -40,9 +34,10 @@ public class VinURLClient implements ClientModInitializer {
 		Commands.register();
 		ClientEvent.register();
 
-		ItemTooltipCallback.EVENT.register((ItemStack stack, Item.TooltipContext context, TooltipType type, List<Text> lines) -> {
+		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			if (stack.getItem() == CUSTOM_RECORD && CONFIG.showDescription()) {
-				String fileName = AudioHandler.hashURL(stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt().get(URL_KEY));
+				NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
+				String fileName = AudioHandler.hashURL(nbt.get(URL_KEY));
 
 				if (fileName.isEmpty()) {return;}
 

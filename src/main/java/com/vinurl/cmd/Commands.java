@@ -21,11 +21,13 @@ import static com.vinurl.util.Constants.MOD_ID;
 public class Commands {
 
 	public static void register() {
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal(MOD_ID)
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) ->
+			dispatcher.register(ClientCommandManager.literal(MOD_ID)
 				.then(ClientCommandManager.literal("delete").executes(Commands::deleteAudioFiles))
 				.then(ClientCommandManager.literal("update").executes(Commands::updateExecutables))
 				.then(ClientCommandManager.literal("config").executes(Commands::openConfig))
-		));
+			)
+		);
 	}
 
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
@@ -44,10 +46,10 @@ public class Commands {
 		CompletableFuture.runAsync(() -> {
 			boolean anyUpdate = false;
 			for (Executable executable : Executable.values()) {
-				String currentVersion = executable.currentVersion();
+				String current = executable.currentVersion();
 				if(executable.checkForUpdates()){
-					String latestVersion = executable.currentVersion();
-					ctx.getSource().sendFeedback(Text.literal(String.format("%s: %s -> %s", executable, currentVersion, latestVersion)));
+					String latest = executable.currentVersion();
+					ctx.getSource().sendFeedback(Text.literal(String.format("%s: %s -> %s", executable, current, latest)));
 					anyUpdate = true;
 				}
 			}

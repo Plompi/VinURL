@@ -13,10 +13,10 @@ public class KeyListener {
 
 	public static void register() {
 		acceptKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-				"key.vinurl.accept",
-				InputUtil.Type.KEYSYM,
-				GLFW.GLFW_KEY_Y,
-				"category.vinurl"
+			"key.vinurl.accept",
+			InputUtil.Type.KEYSYM,
+			GLFW.GLFW_KEY_Y,
+			"category.vinurl"
 		));
 	}
 

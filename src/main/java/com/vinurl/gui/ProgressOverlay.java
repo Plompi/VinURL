@@ -76,22 +76,24 @@ public class ProgressOverlay {
 				lastAnimationTime = now;
 			}
 			progress = Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(Text.literal("|".repeat(animationStep)).formatted(Formatting.GRAY))
-					.append(Text.literal("|").formatted(Formatting.BLUE))
-					.append(Text.literal("|".repeat(19 - animationStep)).formatted(Formatting.GRAY));
+				.append(Text.literal("|".repeat(animationStep)).formatted(Formatting.GRAY))
+				.append(Text.literal("|").formatted(Formatting.BLUE))
+				.append(Text.literal("|".repeat(19 - animationStep)).formatted(Formatting.GRAY));
 		} else {
 			status = "Downloading";
 			progress = Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(Text.literal("|".repeat(percent / 5)).formatted(Formatting.GREEN))
-					.append(Text.literal("|".repeat(20 - percent / 5)).formatted(Formatting.GRAY));
+				.append(Text.literal("|".repeat(percent / 5)).formatted(Formatting.GREEN))
+				.append(Text.literal("|".repeat(20 - percent / 5)).formatted(Formatting.GRAY));
 		}
 
 		context.drawTextWithShadow(CLIENT.textRenderer, status,
-				(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(status)) / 2,
-				CLIENT.getWindow().getScaledHeight() - 72, 0xFFFFFF);
+			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(status)) / 2,
+			CLIENT.getWindow().getScaledHeight() - 72, 0xFFFFFF
+		);
 
 		context.drawTextWithShadow(CLIENT.textRenderer, progress,
-				(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(progress)) / 2,
-				CLIENT.getWindow().getScaledHeight() - 62, 0xFFFFFF);
+			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(progress)) / 2,
+			CLIENT.getWindow().getScaledHeight() - 62, 0xFFFFFF
+		);
 	}
 }

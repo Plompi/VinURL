@@ -32,14 +32,14 @@ public class FileSound implements SoundInstance {
 
 	public Sound getSound() {
 		return new Sound(
-				id,
-				ConstantFloatProvider.create(getVolume()),
-				ConstantFloatProvider.create(getPitch()),
-				1,
-				Sound.RegistrationType.SOUND_EVENT,
-				true,
-				false,
-				64
+			id,
+			ConstantFloatProvider.create(getVolume()),
+			ConstantFloatProvider.create(getPitch()),
+			1,
+			Sound.RegistrationType.SOUND_EVENT,
+			true,
+			false,
+			64
 		);
 	}
 

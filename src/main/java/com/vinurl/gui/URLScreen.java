@@ -15,7 +15,6 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.client.VinURLClient.IS_APRIL_FOOLS_DAY;
 import static com.vinurl.util.Constants.MOD_ID;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
@@ -29,19 +28,26 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = !simulate ? (button.active && button.isHovered() ? Identifier.of(MOD_ID, "simulate_button_hovered") : Identifier.of(MOD_ID, "simulate_button")) : Identifier.of(MOD_ID, "simulate_button_disabled");
+		Identifier texture = !simulate ? (button.active && button.isHovered() ?
+			Identifier.of(MOD_ID, "simulate_button_hovered") :
+			Identifier.of(MOD_ID, "simulate_button")) :
+			Identifier.of(MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = loop ? Identifier.of(MOD_ID, "loop_button") : Identifier.of(MOD_ID, "loop_button_disabled");
+		Identifier texture = loop ?
+			Identifier.of(MOD_ID, "loop_button") :
+			Identifier.of(MOD_ID, "loop_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = lock ? Identifier.of(MOD_ID, "lock_button") : Identifier.of(MOD_ID, "lock_button_disabled");
+		Identifier texture = lock ?
+			Identifier.of(MOD_ID, "lock_button") :
+			Identifier.of(MOD_ID, "lock_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
@@ -60,6 +66,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		ButtonComponent loopButton = stackLayout.childById(ButtonComponent.class, "loop_button");
 		ButtonComponent lockButton = stackLayout.childById(ButtonComponent.class, "lock_button");
 		ButtonComponent simulateButton = stackLayout.childById(ButtonComponent.class, "simulate_button");
+		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
 
 		durationSlider.value(duration);
 		durationSlider.tooltipSupplier(slider -> Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
@@ -90,22 +97,25 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			if (simulate) {return;}
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
-			Executable.YT_DLP.executeCommand(AudioHandler.hashURL(url) + "?duration", url, "--print", "duration", "--no-playlist").subscribe(
-					line -> {durationSlider.value((int) Math.ceil(Double.parseDouble(line)));},
-					error -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;},
-					() -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;});
+			Executable.YT_DLP.executeCommand(
+				AudioHandler.hashURL(url) + "/duration", url, "--print", "duration", "--no-playlist"
+			).subscribe("duration")
+				.onOutput(line -> {durationSlider.value((int) Math.ceil(Double.parseDouble(line)));})
+				.onError(error -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
+				.onComplete(() -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
+			.start();
 		});
 
 		urlTextbox.onChanged().subscribe(newText -> placeholderLabel.text((url = newText).isEmpty() ? Text.literal("URL") : Text.literal("")));
 		urlTextbox.text(url);
-		urlTextbox.focusLost().subscribe(() -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,110,16)));
-		urlTextbox.focusGained().subscribe((focusSource) -> stackLayout.childById(TextureComponent.class, "text_field_disabled").visibleArea(PositionedRectangle.of(0,0,0,0)));
+		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0,0,110,16)));
+		urlTextbox.focusGained().subscribe((source) -> textFieldTexture.visibleArea(PositionedRectangle.of(0,0,0,0)));
 	}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(!IS_APRIL_FOOLS_DAY ? url : "https://www.youtube.com/watch?v=dQw4w9WgXcQ", duration, loop, lock));
+			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, loop, lock));
 			CLIENT.setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
@@ -117,9 +127,9 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 		if (sliderDragged){
 			context.drawTooltip(
-					CLIENT.textRenderer,
-					Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
-					mouseX, mouseY
+				CLIENT.textRenderer,
+				Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
+				mouseX, mouseY
 			);
 		}
 	}

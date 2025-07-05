@@ -35,33 +35,40 @@ public class ClientEvent {
 
 			AudioHandler.addSound(fileName, position, loop);
 
+			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")){
+				AudioHandler.queueSound(fileName, position);
+				return;
+			}
+
 			if (AudioHandler.getAudioFile(fileName).exists()) {
 				AudioHandler.playSound(position);
 				return;
 			}
 
-			if (CONFIG.downloadEnabled() && !Executable.YT_DLP.isProcessRunning(fileName + "?download")){
+			if (CONFIG.downloadEnabled()){
 				List<String> whitelist = CONFIG.urlWhitelist();
 				String baseURL = AudioHandler.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
-					AudioHandler.downloadSound(url, fileName, position);
+					AudioHandler.downloadSound(url, fileName);
+					AudioHandler.queueSound(fileName, position);
 					return;
 				}
 
 				client.player.sendMessage(
-						Text.literal("Press ")
-								.append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
-								.append(" to whitelist ")
-								.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
-						true
+					Text.literal("Press ")
+						.append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
+						.append(" to whitelist ")
+						.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
+					true
 				);
 
 				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
 					if (confirmed) {
 						whitelist.add(baseURL);
 						CONFIG.save();
-						AudioHandler.downloadSound(url, fileName, position);
+						AudioHandler.downloadSound(url, fileName);
+						AudioHandler.queueSound(fileName, position);
 					}
 				});
 			}
@@ -69,9 +76,14 @@ public class ClientEvent {
 
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
-			AudioHandler.stopSound(payload.position().toCenterPos());
-			if (payload.canceled()) {
-				Executable.YT_DLP.killProcess(AudioHandler.hashURL(payload.url()) + "?download");
+			Vec3d position = payload.position().toCenterPos();
+			String id = AudioHandler.hashURL(payload.url()) + "/download";
+			AudioHandler.stopSound(position);
+			if (Executable.YT_DLP.isProcessRunning(id)) {
+				Executable.YT_DLP.getProcessStream(id).unsubscribe(position.toString());
+				if (payload.canceled() && Executable.YT_DLP.getProcessStream(id).subscriberCount() <= 1) {
+					Executable.YT_DLP.killProcess(id);
+				}
 			}
 		});
 

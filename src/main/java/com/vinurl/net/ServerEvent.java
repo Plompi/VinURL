@@ -27,7 +27,11 @@ public class ServerEvent {
 		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
 			PlayerEntity player = context.player();
-			ItemStack stack = Stream.of(Hand.values()).map(player::getStackInHand).filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD).findFirst().orElse(null);
+			ItemStack stack = Stream.of(Hand.values())
+				.map(player::getStackInHand)
+				.filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD)
+				.findFirst()
+				.orElse(null);
 
 			if (stack == null) {
 				player.sendMessage(Text.literal("VinURL-Disc needed in hand!"), true);

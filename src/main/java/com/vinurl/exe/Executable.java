@@ -27,55 +27,56 @@ import static com.vinurl.util.Constants.VINURLPATH;
 
 public enum Executable {
 
-	YT_DLP("yt-dlp",
-			String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
-			"yt-dlp/yt-dlp"),
-	FFPROBE("ffprobe",
-			String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
-			"eugeneware/ffmpeg-static"),
-	FFMPEG("ffmpeg",
-			String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
-			"eugeneware/ffmpeg-static");
+	YT_DLP("yt-dlp", "yt-dlp/yt-dlp",
+		String.format("yt-dlp%s", (SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe"))),
+	FFPROBE("ffprobe", "eugeneware/ffmpeg-static",
+		String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
+	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static",
+		String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")));
 
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final String FILE_NAME;
-	private final String REPOSITORY_FILE;
 	private final String REPOSITORY_NAME;
-	private final Path VERSION_PATH;
+	private final String REPOSITORY_FILE;
 	private final Path FILE_PATH;
-	private final ConcurrentHashMap<String, Process> activeProcesses = new ConcurrentHashMap<>();
+	private final Path VERSION_PATH;
+	private final ConcurrentHashMap<String, ProcessStream> activeProcesses = new ConcurrentHashMap<>();
 
-	Executable(String fileName, String repositoryFile, String repositoryName) {
+	Executable(String fileName, String repositoryName, String repositoryFile) {
 		FILE_NAME = fileName;
-		REPOSITORY_FILE = repositoryFile;
 		REPOSITORY_NAME = repositoryName;
+		REPOSITORY_FILE = repositoryFile;
 		FILE_PATH = DIRECTORY.resolve(FILE_NAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""));
 		VERSION_PATH = DIRECTORY.resolve(FILE_NAME + ".version");
 	}
 
-	public void registerProcess(String id, Process process) {
-		activeProcesses.computeIfAbsent(id, k -> {
-			process.onExit().thenAccept(p -> activeProcesses.remove(id));
-			return process;
-		});
+	public boolean registerProcess(String id, ProcessStream processStream) {
+		return activeProcesses.computeIfAbsent(id, k -> {
+			processStream.onExit(() -> activeProcesses.remove(id));
+			return processStream;
+		}) == processStream;
 	}
 
 	public boolean isProcessRunning(String id) {
 		return activeProcesses.containsKey(id);
 	}
 
+	public ProcessStream getProcessStream(String id) {
+		return activeProcesses.get(id);
+	}
+
 	public void killProcess(String id) {
-		Process process = activeProcesses.remove(id);
-		if (process != null) {
+		ProcessStream stream = activeProcesses.remove(id);
+		if (stream != null && stream.process != null) {
 			try {
-				process.descendants().forEach(ph -> {
+				stream.process.descendants().forEach(ph -> {
 					ph.destroyForcibly();
 					ph.onExit().join();
 				});
-				process.destroyForcibly();
-				process.onExit().join();
+				stream.process.destroyForcibly();
+				stream.process.onExit().join();
 			} catch (Exception e) {
-				LOGGER.error("Failed to kill process with ID: {} ", id, e);
+				LOGGER.error("Failed to kill process with ID: {}", id, e);
 			}
 		}
 	}
@@ -89,7 +90,7 @@ public enum Executable {
 	public boolean checkForExecutable() {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILE_PATH.toFile().exists()) {
-				 return downloadExecutable();
+				return downloadExecutable();
 			} else if (CONFIG.updatesOnStartup()) {
 				checkForUpdates();
 			}
@@ -145,7 +146,8 @@ public enum Executable {
 	}
 
 	private String latestVersion() {
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME)).toURL().openStream()))) {
+		String url= String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME);
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()))) {
 			return reader.readLine().split("\"tag_name\":\"")[1].split("\",\"target_commitish\"")[0];
 		} catch (IOException | ArrayIndexOutOfBoundsException | URISyntaxException e) {
 			return "";
@@ -153,72 +155,131 @@ public enum Executable {
 	}
 
 	private InputStream getDownloadInputStream() throws IOException, URISyntaxException {
-		return new URI(String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE)).toURL().openStream();
+		String url = String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE);
+		return new URI(url).toURL().openStream();
 	}
 
 	public ProcessStream executeCommand(String id, String... arguments) {
 		return new ProcessStream(id, arguments);
 	}
 
-	public class ProcessStream  {
+	public class ProcessStream {
 		private final String id;
 		private final String[] arguments;
+		private Process process;
 		private final SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
+		private final ConcurrentHashMap<String, Flow.Subscription> subscriptions = new ConcurrentHashMap<>();
 
 		public ProcessStream(String id, String... arguments) {
 			this.id = id;
 			this.arguments = arguments;
-			CompletableFuture.runAsync(this::startProcess);
+			if (registerProcess(id, this)) {
+				CompletableFuture.runAsync(this::startProcess);
+			}
 		}
 
-		public void subscribe(Consumer<String> onOutput, Consumer<Throwable> onError, Runnable onComplete) {
-			publisher.subscribe(new Flow.Subscriber<>() {
-				public void onSubscribe(Flow.Subscription s) { s.request(Long.MAX_VALUE); }
-				public void onNext(String line) { onOutput.accept(line); }
-				public void onError(Throwable t) { onError.accept(t); }
-				public void onComplete() { onComplete.run(); }
-			});
+		public SubscriberBuilder subscribe(String subscriberId) {
+			return new SubscriberBuilder(subscriberId);
+		}
+
+		public class SubscriberBuilder {
+			private final String subscriberId;
+			private Consumer<String> onOutput = s -> {};
+			private Consumer<Throwable> onError = t -> {};
+			private Runnable onComplete = () -> {};
+
+			public SubscriberBuilder(String subscriberId) {
+				this.subscriberId = subscriberId;
+			}
+
+			public SubscriberBuilder onOutput(Consumer<String> consumer) {
+				this.onOutput = consumer;
+				return this;
+			}
+
+			public SubscriberBuilder onError(Consumer<Throwable> consumer) {
+				this.onError = consumer;
+				return this;
+			}
+
+			public SubscriberBuilder onComplete(Runnable runnable) {
+				this.onComplete = runnable;
+				return this;
+			}
+
+			public void start() {
+				publisher.subscribe(new Flow.Subscriber<>() {
+					@Override
+					public void onSubscribe(Flow.Subscription subscription) {
+						subscriptions.put(subscriberId, subscription);
+						subscription.request(Long.MAX_VALUE);
+					}
+
+					@Override
+					public void onNext(String item) {
+						onOutput.accept(item);
+					}
+
+					@Override
+					public void onError(Throwable throwable) {
+						subscriptions.remove(subscriberId);
+						onError.accept(throwable);
+					}
+
+					@Override
+					public void onComplete() {
+						subscriptions.remove(subscriberId);
+						onComplete.run();
+					}
+				});
+			}
+		}
+
+		public int subscriberCount() {
+			return subscriptions.size();
+		}
+
+		public void unsubscribe(String subscriberId) {
+			Flow.Subscription subscription = subscriptions.remove(subscriberId);
+			if (subscription != null) {
+				subscription.cancel();
+			}
+		}
+
+		public void onExit(Runnable callback) {
+			if (process != null) {
+				process.onExit().thenRun(() -> {
+					subscriptions.keySet().forEach(this::unsubscribe);
+					callback.run();
+				});
+			}
 		}
 
 		private void startProcess() {
-			if (isProcessRunning(id)) {
-				publisher.closeExceptionally(new IllegalStateException("Process already running: " + id));
-				return;
-			}
-
 			try {
-				Process process = new ProcessBuilder()
-						.command(Stream.concat(Stream.of(FILE_PATH.toString()),
-										Stream.of(arguments))
-								.toArray(String[]::new)).
-						redirectErrorStream(true).start();
+				process = new ProcessBuilder()
+					.command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new))
+					.redirectErrorStream(true)
+					.start();
 
-				registerProcess(id, process);
-
-				CompletableFuture.runAsync(() -> {
-					try (BufferedReader reader = new BufferedReader(
-							new InputStreamReader(process.getInputStream()))) {
-						String line;
-						while ((line = reader.readLine()) != null && !publisher.isClosed()) {
-							publisher.submit(line);
-						}
-					} catch (IOException e) {
-						if (!publisher.isClosed()) {
-							publisher.closeExceptionally(e);
-						}
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+					String line;
+					while ((line = reader.readLine()) != null && !publisher.isClosed()) {
+						publisher.submit(line);
 					}
-				});
+				}
 
-				process.onExit().thenAccept(p -> {
-					if (p.exitValue() == 0) {
-						publisher.close();
-					} else {
-						publisher.closeExceptionally(new IOException("Process failed with code: " + p.exitValue()));
-					}
-				});
+				int exitCode = process.waitFor();
 
-			} catch (IOException e) {
+				if (exitCode == 0) {
+					publisher.close();
+				} else {
+					publisher.closeExceptionally(new IOException("Process failed with code: " + exitCode));
+				}
+			} catch (IOException | InterruptedException e) {
 				publisher.closeExceptionally(e);
+			} finally {
+				killProcess(id);
 			}
 		}
 	}

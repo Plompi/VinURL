@@ -9,7 +9,7 @@ import net.minecraft.registry.Registry;
 import net.minecraft.sound.SoundEvent;
 
 import static com.vinurl.util.Constants.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_IDENTIFIER;
+import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 public class VinURL implements ModInitializer {
 
@@ -19,9 +19,10 @@ public class VinURL implements ModInitializer {
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(CUSTOM_RECORD));
 
 		Registry.register(
-				Registries.SOUND_EVENT,
-				PLACEHOLDER_SOUND_IDENTIFIER,
-				SoundEvent.of(PLACEHOLDER_SOUND_IDENTIFIER));
+			Registries.SOUND_EVENT,
+			PLACEHOLDER_SOUND_ID,
+			SoundEvent.of(PLACEHOLDER_SOUND_ID)
+		);
 
 		ServerEvent.register();
 	}
