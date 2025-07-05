@@ -29,8 +29,8 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 	@Shadow
 	public abstract BlockEntity asBlockEntity();
 
-	@Inject(at = @At("HEAD"), method = "setStack")
-	public void stopPlaying(ItemStack stack, CallbackInfo ci) {
+	@Inject(at = @At("HEAD"), method = "dropRecord")
+	public void stopPlaying(CallbackInfo ci) {
 		if (recordStack.getItem() == CUSTOM_RECORD) {
 			VinURLSound.stop((ServerWorld) asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
 		}
