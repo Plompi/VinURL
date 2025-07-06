@@ -146,7 +146,7 @@ public enum Executable {
 	}
 
 	private String latestVersion() {
-		String url= String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME);
+		String url = String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME);
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()))) {
 			return reader.readLine().split("\"tag_name\":\"")[1].split("\",\"target_commitish\"")[0];
 		} catch (IOException | ArrayIndexOutOfBoundsException | URISyntaxException e) {
@@ -166,9 +166,9 @@ public enum Executable {
 	public class ProcessStream {
 		private final String id;
 		private final String[] arguments;
-		private Process process;
 		private final SubmissionPublisher<String> publisher = new SubmissionPublisher<>();
 		private final ConcurrentHashMap<String, Flow.Subscription> subscriptions = new ConcurrentHashMap<>();
+		private Process process;
 
 		public ProcessStream(String id, String... arguments) {
 			this.id = id;
@@ -180,6 +180,51 @@ public enum Executable {
 
 		public SubscriberBuilder subscribe(String subscriberId) {
 			return new SubscriberBuilder(subscriberId);
+		}
+
+		public int subscriberCount() {
+			return subscriptions.size();
+		}
+
+		public void unsubscribe(String subscriberId) {
+			Flow.Subscription subscription = subscriptions.remove(subscriberId);
+			if (subscription != null) {
+				subscription.cancel();
+			}
+		}
+
+		public void onExit(Runnable callback) {
+			if (process != null) {
+				process.onExit().thenRun(() -> {
+					subscriptions.keySet().forEach(this::unsubscribe);
+					callback.run();
+				});
+			}
+		}
+
+		private void startProcess() {
+			try {
+				process = new ProcessBuilder().command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new)).redirectErrorStream(true).start();
+
+				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+					String line;
+					while ((line = reader.readLine()) != null && !publisher.isClosed()) {
+						publisher.submit(line);
+					}
+				}
+
+				int exitCode = process.waitFor();
+
+				if (exitCode == 0) {
+					publisher.close();
+				} else {
+					publisher.closeExceptionally(new IOException("Process failed with code: " + exitCode));
+				}
+			} catch (IOException | InterruptedException e) {
+				publisher.closeExceptionally(e);
+			} finally {
+				killProcess(id);
+			}
 		}
 
 		public class SubscriberBuilder {
@@ -232,54 +277,6 @@ public enum Executable {
 						onComplete.run();
 					}
 				});
-			}
-		}
-
-		public int subscriberCount() {
-			return subscriptions.size();
-		}
-
-		public void unsubscribe(String subscriberId) {
-			Flow.Subscription subscription = subscriptions.remove(subscriberId);
-			if (subscription != null) {
-				subscription.cancel();
-			}
-		}
-
-		public void onExit(Runnable callback) {
-			if (process != null) {
-				process.onExit().thenRun(() -> {
-					subscriptions.keySet().forEach(this::unsubscribe);
-					callback.run();
-				});
-			}
-		}
-
-		private void startProcess() {
-			try {
-				process = new ProcessBuilder()
-					.command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new))
-					.redirectErrorStream(true)
-					.start();
-
-				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-					String line;
-					while ((line = reader.readLine()) != null && !publisher.isClosed()) {
-						publisher.submit(line);
-					}
-				}
-
-				int exitCode = process.waitFor();
-
-				if (exitCode == 0) {
-					publisher.close();
-				} else {
-					publisher.closeExceptionally(new IOException("Process failed with code: " + exitCode));
-				}
-			} catch (IOException | InterruptedException e) {
-				publisher.closeExceptionally(e);
-			} finally {
-				killProcess(id);
 			}
 		}
 	}

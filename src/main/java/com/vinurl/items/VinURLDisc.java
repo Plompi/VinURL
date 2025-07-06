@@ -34,10 +34,9 @@ public class VinURLDisc extends Item {
 		ItemStack stack = player.getStackInHand(hand);
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-			if (!nbt.get(LOCK_KEY)){
+			if (!nbt.get(LOCK_KEY)) {
 				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.get(URL_KEY), nbt.get(DURATION_KEY), nbt.get(LOOP_KEY)));
-			}
-			else{
+			} else {
 				player.sendMessage(Text.literal("Locked 🔒"), true);
 			}
 		}
@@ -50,7 +49,7 @@ public class VinURLDisc extends Item {
 		if (nbt == null) {return;}
 
 		tooltip.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
-		if (nbt.copyNbt().get(LOCK_KEY)){
+		if (nbt.copyNbt().get(LOCK_KEY)) {
 			tooltip.add(Text.literal("Locked 🔒").formatted(Formatting.GRAY));
 		}
 	}

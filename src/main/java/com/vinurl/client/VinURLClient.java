@@ -25,7 +25,7 @@ public class VinURLClient implements ClientModInitializer {
 	public void onInitializeClient() {
 		// Downloads FFmpeg, FFprobe and YT-DLP if they do not exist and checks for updates.
 		for (Executable executable : Executable.values()) {
-			if (!executable.checkForExecutable()){
+			if (!executable.checkForExecutable()) {
 				LOGGER.error("Failed to load executable {}", executable);
 			}
 		}

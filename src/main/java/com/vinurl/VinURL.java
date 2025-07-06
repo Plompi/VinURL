@@ -18,11 +18,7 @@ public class VinURL implements ModInitializer {
 		// Register the Custom Record to the Tools Item Group
 		ItemGroupEvents.modifyEntriesEvent(ItemGroups.TOOLS).register((content) -> content.add(CUSTOM_RECORD));
 
-		Registry.register(
-			Registries.SOUND_EVENT,
-			PLACEHOLDER_SOUND_ID,
-			SoundEvent.of(PLACEHOLDER_SOUND_ID)
-		);
+		Registry.register(Registries.SOUND_EVENT, PLACEHOLDER_SOUND_ID, SoundEvent.of(PLACEHOLDER_SOUND_ID));
 
 		ServerEvent.register();
 	}

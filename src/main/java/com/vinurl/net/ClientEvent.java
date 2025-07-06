@@ -35,7 +35,7 @@ public class ClientEvent {
 
 			AudioHandler.addSound(fileName, position, loop);
 
-			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")){
+			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
 				AudioHandler.queueSound(fileName, position);
 				return;
 			}
@@ -45,7 +45,7 @@ public class ClientEvent {
 				return;
 			}
 
-			if (CONFIG.downloadEnabled()){
+			if (CONFIG.downloadEnabled()) {
 				List<String> whitelist = CONFIG.urlWhitelist();
 				String baseURL = AudioHandler.getBaseURL(url);
 

@@ -89,7 +89,7 @@ public class AudioHandler {
 
 	private static String getOggAttribute(String fileName, String attribute) {
 		VorbisFile vorbisFile = null;
-		try{
+		try {
 			vorbisFile = new VorbisFile(getAudioFile(fileName).toString());
 			String metadata = vorbisFile.getComment(0).toString();
 
@@ -101,9 +101,8 @@ public class AudioHandler {
 				.orElse("N/A");
 		} catch (JOrbisException e) {
 			return "N/A";
-		}
-		finally {
-			if (vorbisFile != null){
+		} finally {
+			if (vorbisFile != null) {
 				try {
 					vorbisFile.close();
 				} catch (IOException e) {
@@ -121,7 +120,7 @@ public class AudioHandler {
 		});
 	}
 
-	public static String descriptionFromCache(String fileName){
+	public static String descriptionFromCache(String fileName) {
 		return descriptionCache.get(fileName);
 	}
 

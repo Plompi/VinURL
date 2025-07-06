@@ -47,7 +47,7 @@ public class Commands {
 			boolean anyUpdate = false;
 			for (Executable executable : Executable.values()) {
 				String current = executable.currentVersion();
-				if(executable.checkForUpdates()){
+				if (executable.checkForUpdates()) {
 					String latest = executable.currentVersion();
 					ctx.getSource().sendFeedback(Text.literal(String.format("%s: %s -> %s", executable, current, latest)));
 					anyUpdate = true;

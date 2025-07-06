@@ -39,7 +39,7 @@ public class KeyListener {
 		return future;
 	}
 
-	public static String getHotKey(){
+	public static String getHotKey() {
 		return acceptKey.getBoundKeyLocalizedText().getLiteralString();
 	}
 }
