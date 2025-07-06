@@ -106,7 +106,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			.start();
 		});
 
-		urlTextbox.onChanged().subscribe(newText -> placeholderLabel.text((url = newText).isEmpty() ? Text.literal("URL") : Text.literal("")));
+		urlTextbox.onChanged().subscribe(text -> placeholderLabel.text(Text.literal((url = text).isEmpty() ? "URL" : "")));
 		urlTextbox.text(url);
 		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0,0,110,16)));
 		urlTextbox.focusGained().subscribe((source) -> textFieldTexture.visibleArea(PositionedRectangle.of(0,0,0,0)));

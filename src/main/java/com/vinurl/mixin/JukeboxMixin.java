@@ -32,7 +32,7 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 	@Inject(at = @At("HEAD"), method = "dropRecord")
 	public void stopPlaying(CallbackInfo ci) {
 		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.stop((ServerWorld) asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
+			VinURLSound.stop((ServerWorld) asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos(), true);
 		}
 	}
 
@@ -50,7 +50,7 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 			JukeboxManager manager = blockEntity.getManager();
 			if (manager.getTicksSinceSongStarted() > nbt.copyNbt().get(DURATION_KEY) * 20L){
 				manager.stopPlaying(world, state);
-				VinURLSound.stop((ServerWorld) world, ItemStack.EMPTY, pos);
+				VinURLSound.stop((ServerWorld) world, blockEntity.getStack(), pos, false);
 			}
 		}
 	}

@@ -20,7 +20,7 @@ public class ClientConfig {
 	public boolean showDescription = true;
 
 	@PredicateConstraint("urlSanitization")
-	public List<String> urlWhitelist =  new ArrayList<>(List.of("https://www.youtube.com", "https://www.soundcloud.com"));
+	public List<String> urlWhitelist =  new ArrayList<>(List.of("https://www.youtube.com", "https://soundcloud.com"));
 
 	public static boolean urlSanitization(List<String> list) {
 		return list.stream().allMatch(url -> {
