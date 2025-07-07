@@ -48,17 +48,6 @@
                                     </margins>
                                 </button>
 
-                                <button id="loop_button">
-                                    <tooltip-text>Loop</tooltip-text>
-                                    <sizing>
-                                        <horizontal method="fixed">16</horizontal>
-                                        <vertical method="fixed">16</vertical>
-                                    </sizing>
-                                    <margins>
-                                        <left>5</left>
-                                    </margins>
-                                </button>
-
                                 <button id="lock_button">
                                     <tooltip-text>Lock</tooltip-text>
                                     <sizing>
@@ -77,7 +66,7 @@
                                     <min>0</min>
                                     <max>3600</max>
                                     <sizing>
-                                        <horizontal method="fixed">173</horizontal>
+                                        <horizontal method="fixed">152</horizontal>
                                     </sizing>
                                 </slim-slider>
                             </children>

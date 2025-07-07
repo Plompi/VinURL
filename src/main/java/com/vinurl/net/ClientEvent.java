@@ -16,24 +16,23 @@ import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class ClientEvent {
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
+	public record PlaySoundRecord(BlockPos position, String url) {}
 
 	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
 
-	public record GUIRecord(String url, int duration, boolean loop) {}
+	public record GUIRecord(String url, int duration) {}
 
 	public static void register(){
 		// Client event for playing sounds
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
-			boolean loop = payload.loop();
 			String fileName = AudioHandler.hashURL(url);
 			MinecraftClient client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {return;}
 
-			AudioHandler.addSound(fileName, position, loop);
+			AudioHandler.addSound(fileName, position);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")){
 				AudioHandler.queueSound(fileName, position);
@@ -89,7 +88,7 @@ public class ClientEvent {
 
 		// Client event to open record ui
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop()));
+			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration()));
 		});
 	}
 }

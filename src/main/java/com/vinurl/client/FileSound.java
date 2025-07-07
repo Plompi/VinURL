@@ -12,29 +12,25 @@ import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 import static com.vinurl.util.Constants.MOD_ID;
 
 public class FileSound implements SoundInstance {
-	private final String fileName;
+	private final Identifier id;
 	private final Vec3d position;
-	private final boolean loop;
-	private long startTimeInSeconds;
 
-	public FileSound(String fileName, Vec3d position, boolean loop, long startTimeInSeconds ) {
-		this.fileName = fileName;
+	public FileSound(String fileName, Vec3d position) {
+		this.id = Identifier.of(MOD_ID, fileName + "/" + System.currentTimeMillis());
 		this.position = position;
-		this.loop = loop;
-		this.startTimeInSeconds = startTimeInSeconds;
 	}
 
 	public Identifier getId() {
-		return Identifier.of(MOD_ID, fileName + "/" + startTimeInSeconds);
+		return id;
 	}
 
 	public WeightedSoundSet getSoundSet(SoundManager soundManager) {
-		return new WeightedSoundSet(getId(), null);
+		return new WeightedSoundSet(id, null);
 	}
 
 	public Sound getSound() {
 		return new Sound(
-			getId(),
+			id,
 			ConstantFloatProvider.create(getVolume()),
 			ConstantFloatProvider.create(getPitch()),
 			1,
@@ -50,7 +46,7 @@ public class FileSound implements SoundInstance {
 	}
 
 	public boolean isRepeatable() {
-		return loop;
+		return false;
 	}
 
 	public boolean isRelative() {
@@ -83,13 +79,5 @@ public class FileSound implements SoundInstance {
 
 	public AttenuationType getAttenuationType() {
 		return AttenuationType.LINEAR;
-	}
-
-	public void setStartTimeInSeconds(long startTimeInSeconds) {
-		this.startTimeInSeconds = startTimeInSeconds;
-	}
-
-	public long getStartTimeInSeconds() {
-		return startTimeInSeconds;
 	}
 }

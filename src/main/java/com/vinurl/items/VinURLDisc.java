@@ -35,7 +35,7 @@ public class VinURLDisc extends Item {
 		if (!world.isClient) {
 			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
 			if (!nbt.get(LOCK_KEY)){
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.get(URL_KEY), nbt.get(DURATION_KEY), nbt.get(LOOP_KEY)));
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.get(URL_KEY), nbt.get(DURATION_KEY)));
 			}
 			else{
 				player.sendMessage(Text.literal("Locked 🔒"), true);

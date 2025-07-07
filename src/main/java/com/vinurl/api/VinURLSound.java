@@ -18,7 +18,7 @@ public class VinURLSound {
 		NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
 		for (PlayerEntity player : world.getPlayers()) {
 			if (player.getPos().distanceTo(position.toCenterPos()) <= JUKEBOX_RANGE) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position, nbt.get(URL_KEY), nbt.get(LOOP_KEY)));
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.PlaySoundRecord(position, nbt.get(URL_KEY)));
 			}
 		}
 	}

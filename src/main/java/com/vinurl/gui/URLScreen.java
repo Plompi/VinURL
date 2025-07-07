@@ -20,7 +20,6 @@ import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
-	private boolean loop;
 	private boolean lock;
 	private boolean sliderDragged;
 	private boolean simulate;
@@ -35,14 +34,6 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
-	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		RenderSystem.enableDepthTest();
-		Identifier texture = loop ?
-			Identifier.of(MOD_ID, "loop_button") :
-			Identifier.of(MOD_ID, "loop_button_disabled");
-		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
-	};
-
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
 		Identifier texture = lock ?
@@ -51,10 +42,9 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
-	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop) {
+	public URLScreen(String defaultURL, int defaultDuration) {
 		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
 		this.url = defaultURL;
-		this.loop = defaultLoop;
 		this.duration = defaultDuration;
 	}
 
@@ -63,7 +53,6 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		LabelComponent placeholderLabel = stackLayout.childById(LabelComponent.class, "placeholder_label");
 		TextBoxComponent urlTextbox = stackLayout.childById(TextBoxComponent.class, "url_textbox");
 		SlimSliderComponent durationSlider = stackLayout.childById(SlimSliderComponent.class, "duration_slider");
-		ButtonComponent loopButton = stackLayout.childById(ButtonComponent.class, "loop_button");
 		ButtonComponent lockButton = stackLayout.childById(ButtonComponent.class, "lock_button");
 		ButtonComponent simulateButton = stackLayout.childById(ButtonComponent.class, "simulate_button");
 		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
@@ -72,12 +61,12 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		durationSlider.tooltipSupplier(slider -> Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
 		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> {
 			sliderDragged = true;
-			lockButton.active = loopButton.active = simulateButton.active = false;
+			lockButton.active = simulateButton.active = false;
 			return true;
 		});
 		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> {
 			sliderDragged = false;
-			lockButton.active = loopButton.active = simulateButton.active = true;
+			lockButton.active = simulateButton.active = true;
 			return true;
 		});
 		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
@@ -85,9 +74,6 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
 			return true;
 		});
-
-		loopButton.renderer(LOOP_BUTTON_TEXTURE);
-		loopButton.onPress(button -> loop = !loop);
 
 		lockButton.renderer(LOCK_BUTTON_TEXTURE);
 		lockButton.onPress(button -> lock = !lock);
@@ -115,7 +101,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, loop, lock));
+			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, lock));
 			CLIENT.setScreen(null);
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
