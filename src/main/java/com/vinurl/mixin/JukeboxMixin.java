@@ -9,7 +9,6 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.inventory.SingleStackInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,14 +31,14 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 	@Inject(at = @At("HEAD"), method = "dropRecord")
 	public void stopPlaying(CallbackInfo ci) {
 		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.stop((ServerWorld) asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos(), true);
+			VinURLSound.stop(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos(), true);
 		}
 	}
 
 	@Inject(at = @At("TAIL"), method = "setStack")
 	public void startPlaying(ItemStack stack, CallbackInfo ci) {
 		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.play((ServerWorld) asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
+			VinURLSound.play(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
 		}
 	}
 
@@ -50,7 +49,7 @@ public abstract class JukeboxMixin implements SingleStackInventory {
 			JukeboxManager manager = blockEntity.getManager();
 			if (manager.getTicksSinceSongStarted() > nbt.copyNbt().get(DURATION_KEY) * 20L) {
 				manager.stopPlaying(world, state);
-				VinURLSound.stop((ServerWorld) world, blockEntity.getStack(), pos, false);
+				VinURLSound.stop(world, blockEntity.getStack(), pos, false);
 			}
 		}
 	}
