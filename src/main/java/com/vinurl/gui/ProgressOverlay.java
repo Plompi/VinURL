@@ -66,7 +66,7 @@ public class ProgressOverlay {
 		if (percent == -1) {
 			status = "Interrupted";
 			progress = Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(Text.literal("|".repeat(20)).formatted(Formatting.RED));
+				.append(Text.literal("|".repeat(20)).formatted(Formatting.RED));
 		} else if (percent == 100 && now - completedTime >= 1000) {
 			status = "Transcoding";
 			if (now - lastAnimationTime >= 100) {

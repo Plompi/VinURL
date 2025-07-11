@@ -125,7 +125,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
-		if (sliderDragged){
+		if (sliderDragged) {
 			context.drawTooltip(
 				CLIENT.textRenderer,
 				Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)),

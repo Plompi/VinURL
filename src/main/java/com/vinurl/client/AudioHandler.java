@@ -35,7 +35,7 @@ public class AudioHandler {
 			"--progress-template", "%(progress._percent)d", "--newline",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-			"--postprocessor-args","ffmpeg:-ac 1 -c:a libvorbis",
+			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
 			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 			"-o", fileName + ".%(ext)s"
 		).subscribe("main")
@@ -66,7 +66,7 @@ public class AudioHandler {
 		FileSound fileSound = playingSounds.get(position);
 		if (fileSound != null) {
 			CLIENT.getSoundManager().play(fileSound);
-			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileSound.getId().getPath())));
+			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileSound.fileName)));
 		}
 	}
 
@@ -122,14 +122,6 @@ public class AudioHandler {
 
 	public static String descriptionFromCache(String fileName) {
 		return descriptionCache.get(fileName);
-	}
-
-	public static InputStream getAudioInputStream(String fileName) {
-		try {
-			return new FileInputStream(getAudioFile(fileName));
-		} catch (FileNotFoundException e) {
-			return null;
-		}
 	}
 
 	public static String getBaseURL(String url) {

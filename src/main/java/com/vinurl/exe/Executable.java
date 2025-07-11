@@ -204,7 +204,10 @@ public enum Executable {
 
 		private void startProcess() {
 			try {
-				process = new ProcessBuilder().command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new)).redirectErrorStream(true).start();
+				process = new ProcessBuilder()
+					.command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new))
+					.redirectErrorStream(true)
+					.start();
 
 				try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
 					String line;

@@ -1,85 +1,43 @@
 package com.vinurl.client;
 
-import net.minecraft.client.sound.Sound;
-import net.minecraft.client.sound.SoundInstance;
-import net.minecraft.client.sound.SoundManager;
-import net.minecraft.client.sound.WeightedSoundSet;
+import net.minecraft.client.sound.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.floatprovider.ConstantFloatProvider;
 
-import static com.vinurl.util.Constants.MOD_ID;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
-public class FileSound implements SoundInstance {
-	private final Identifier id;
-	private final Vec3d position;
-	private final boolean loop;
+import static com.vinurl.client.AudioHandler.getAudioFile;
+import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
+
+public class FileSound extends AbstractSoundInstance {
+	public final String fileName;
 
 	public FileSound(String fileName, Vec3d position, boolean loop) {
-		this.id = Identifier.of(MOD_ID, fileName);
-		this.position = position;
-		this.loop = loop;
+		super(PLACEHOLDER_SOUND_ID, SoundCategory.RECORDS, SoundInstance.createRandom());
+		this.fileName = fileName;
+		this.repeat = loop;
+		this.x = position.x;
+		this.y = position.y;
+		this.z = position.z;
 	}
 
-	public Identifier getId() {
-		return id;
-	}
-
-	public WeightedSoundSet getSoundSet(SoundManager soundManager) {
-		return new WeightedSoundSet(id, null);
-	}
-
-	public Sound getSound() {
-		return new Sound(
-			id,
-			ConstantFloatProvider.create(getVolume()),
-			ConstantFloatProvider.create(getPitch()),
-			1,
-			Sound.RegistrationType.SOUND_EVENT,
-			true,
-			false,
-			64
-		);
-	}
-
-	public SoundCategory getCategory() {
-		return SoundCategory.RECORDS;
-	}
-
-	public boolean isRepeatable() {
-		return loop;
-	}
-
-	public boolean isRelative() {
-		return false;
-	}
-
-	public int getRepeatDelay() {
-		return 0;
-	}
-
-	public float getVolume() {
-		return 1.0f;
-	}
-
-	public float getPitch() {
-		return 1.0f;
-	}
-
-	public double getX() {
-		return position.x;
-	}
-
-	public double getY() {
-		return position.y;
-	}
-
-	public double getZ() {
-		return position.z;
-	}
-
-	public AttenuationType getAttenuationType() {
-		return AttenuationType.LINEAR;
+	@Override
+	public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
+		return CompletableFuture.supplyAsync(() -> {
+			try {
+				InputStream inputStream = new FileInputStream(getAudioFile(fileName));
+				return repeatInstantly
+					? new RepeatingAudioStream(OggAudioStream::new, inputStream)
+					: new OggAudioStream(inputStream);
+			} catch (IOException e) {
+				throw new CompletionException(e);
+			}
+		}, Util.getDownloadWorkerExecutor());
 	}
 }
