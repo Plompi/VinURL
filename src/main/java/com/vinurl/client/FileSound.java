@@ -17,6 +17,7 @@ import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 public class FileSound extends AbstractSoundInstance {
 	public final String fileName;
+	public final long startTimeMillis = System.currentTimeMillis();
 
 	public FileSound(String fileName, Vec3d position, boolean loop) {
 		super(PLACEHOLDER_SOUND_ID, SoundCategory.RECORDS, SoundInstance.createRandom());
@@ -34,7 +35,7 @@ public class FileSound extends AbstractSoundInstance {
 				InputStream inputStream = new FileInputStream(getAudioFile(fileName));
 				return repeatInstantly
 					? new RepeatingAudioStream(OggAudioStream::new, inputStream)
-					: new OggAudioStream(inputStream);
+					: new SkippableAudioStream(new OggAudioStream(inputStream), System.currentTimeMillis() - startTimeMillis) ;
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}
