@@ -32,7 +32,7 @@ public class AudioHandler {
 		Executable.YT_DLP.executeCommand(
 			fileName + "/download",
 			url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
-			"--progress-template", "%(progress._percent)d", "--newline",
+			"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
 			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
@@ -40,7 +40,15 @@ public class AudioHandler {
 			"-o", fileName + ".%(ext)s"
 		).subscribe("main")
 			.onOutput(line -> {
-				ProgressOverlay.set(fileName, Integer.parseInt(line));
+				String type = line.substring(0, line.indexOf(':') + 1);
+				String message = line.substring(type.length()).trim();
+
+				switch (type) {
+					case "PROGRESS:" -> ProgressOverlay.set(fileName, Integer.parseInt(message));
+					case "WARNING:" -> LOGGER.warn(message);
+					case "ERROR:" -> LOGGER.error(message);
+					default -> LOGGER.info(line);
+				}
 			})
 			.onError(error -> {
 				ProgressOverlay.stopFailed(fileName);
