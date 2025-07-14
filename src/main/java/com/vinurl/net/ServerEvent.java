@@ -17,9 +17,9 @@ import static com.vinurl.util.Constants.*;
 
 
 public class ServerEvent {
-	public record SetURLRecord(String url, int duration, boolean loop, boolean lock) {}
+	public static final int URL_LENGTH = 400;
 
-	public static void register(){
+	public static void register() {
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.PlaySoundRecord.class);
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.StopSoundRecord.class);
@@ -48,12 +48,12 @@ public class ServerEvent {
 				return;
 			}
 
-			if (url.length() > 400) {
+			if (url.length() > URL_LENGTH) {
 				player.sendMessage(Text.literal("Song URL is too long!"), true);
 				return;
 			}
 
-			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.BLOCKS, 1.0f, 1.0f);
+			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.MASTER, 1.0f, 1.0f);
 
 			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound() {{
 				put(URL_KEY, url);
@@ -63,4 +63,6 @@ public class ServerEvent {
 			}}));
 		});
 	}
+
+	public record SetURLRecord(String url, int duration, boolean loop, boolean lock) {}
 }

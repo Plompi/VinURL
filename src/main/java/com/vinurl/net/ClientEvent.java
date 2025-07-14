@@ -16,13 +16,8 @@ import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class ClientEvent {
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
 
-	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
-
-	public record GUIRecord(String url, int duration, boolean loop) {}
-
-	public static void register(){
+	public static void register() {
 		// Client event for playing sounds
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
@@ -92,4 +87,10 @@ public class ClientEvent {
 			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop()));
 		});
 	}
+
+	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
+
+	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
+
+	public record GUIRecord(String url, int duration, boolean loop) {}
 }
