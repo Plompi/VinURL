@@ -15,8 +15,8 @@ import net.minecraft.util.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.MOD_ID;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.LOGGER;
 
 public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
@@ -98,9 +98,19 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
 			Executable.YT_DLP.executeCommand(
-				AudioHandler.hashURL(url) + "/duration", url, "--print", "duration", "--no-playlist"
+				AudioHandler.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
 			).subscribe("duration")
-				.onOutput(line -> {durationSlider.value((int) Math.ceil(Double.parseDouble(line)));})
+				.onOutput(line -> {
+					String type = line.substring(0, line.indexOf(':') + 1);
+					String message = line.substring(type.length()).trim();
+
+					switch (type) {
+						case "DURATION:" -> durationSlider.value(Integer.parseInt(message));
+						case "WARNING:" -> LOGGER.warn(message);
+						case "ERROR:" -> LOGGER.error(message);
+						default -> LOGGER.info(line);
+					}
+				})
 				.onError(error -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
 				.onComplete(() -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
 			.start();
