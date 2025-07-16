@@ -17,7 +17,7 @@ import static com.vinurl.util.Constants.*;
 
 
 public class ServerEvent {
-	public static final int URL_LENGTH = 400;
+	public static final int MAX_URL_LENGTH = 400;
 
 	public static void register() {
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
@@ -48,7 +48,7 @@ public class ServerEvent {
 				return;
 			}
 
-			if (url.length() > URL_LENGTH) {
+			if (url.length() > MAX_URL_LENGTH) {
 				player.sendMessage(Text.literal("Song URL is too long!"), true);
 				return;
 			}

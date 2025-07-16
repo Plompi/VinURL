@@ -12,7 +12,7 @@ public class InGameHudMixin {
 
 	@Inject(method = "setRecordPlayingOverlay", at = @At("HEAD"), cancellable = true)
 	private void disableRecordOverlay(Text description, CallbackInfo ci) {
-		if (description.getString().equals("No Song")) {
+		if (description.equals(Text.translatable("item.vinurl.custom_record.desc"))) {
 			ci.cancel();
 		}
 	}

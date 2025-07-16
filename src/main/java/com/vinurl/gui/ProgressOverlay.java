@@ -3,97 +3,74 @@ package com.vinurl.gui;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
 
 public class ProgressOverlay {
-	private static final LinkedHashMap<String, Integer> progressQueue = new LinkedHashMap<>();
-	private static int animationStep;
-	private static long lastAnimationTime;
-	private static long completedTime;
-	private static int batchSize;
-	private static long failedDisplayTime;
+	private static final int BAR_SIZE = 20;
+	private static int batchSize = 0;
+	private static final LinkedHashMap<String, ProgressEntry> progressQueue = new LinkedHashMap<>();
 
 	public static void set(String id, int progressPercent) {
-		if (progressQueue.put(id, MathHelper.clamp(progressPercent, 0, 100)) == null) {
-			batchSize++;
-		}
+		progressQueue.put(id, new ProgressEntry(progressPercent));
 	}
 
 	public static void stop(String id) {
-		progressQueue.remove(id);
-		if (progressQueue.isEmpty()) {
+		if (progressQueue.remove(id) != null && progressQueue.isEmpty()) {
 			batchSize = 0;
-			animationStep = 0;
-			completedTime = 0;
-			lastAnimationTime = 0;
-			failedDisplayTime = 0;
 		}
 	}
 
 	public static void stopFailed(String id) {
-		if (progressQueue.containsKey(id)) {
-			progressQueue.put(id, -1);
-			failedDisplayTime = System.currentTimeMillis();
-		}
+		progressQueue.put(id, new ProgressEntry(-1));
 	}
 
 	public static void render(DrawContext context) {
 		if (progressQueue.isEmpty()) {return;}
 
-		String currentId = progressQueue.firstEntry().getKey();
-		int percent = progressQueue.get(currentId);
 		long now = System.currentTimeMillis();
+		Map.Entry<String, ProgressEntry> firstEntry = progressQueue.entrySet().iterator().next();
+		String currentId = firstEntry.getKey();
+		ProgressEntry entry = firstEntry.getValue();
 
-		if (percent == -1 && now - failedDisplayTime >= 2000) {
+		if (entry.shouldRemove(now)) {
 			stop(currentId);
 			return;
 		}
 
-		if (percent == 100 && completedTime == 0) {
-			completedTime = now;
-		} else if (percent < 100 && percent != -1) {
-			completedTime = 0;
-			lastAnimationTime = 0;
-		}
-
-		String status;
-		Text progress;
-
-		if (percent == -1) {
-			status = "Interrupted";
-			progress = Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-				.append(Text.literal("|".repeat(20)).formatted(Formatting.RED));
-		} else if (percent == 100 && now - completedTime >= 1000) {
-			status = "Transcoding";
-			if (now - lastAnimationTime >= 100) {
-				if (lastAnimationTime != 0) {
-					animationStep = (animationStep + 1) % 20;
-				}
-				lastAnimationTime = now;
+		Text progress = switch (entry.state) {
+			case INTERRUPTED ->
+				Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(20, Formatting.RED));
+			case TRANSCODING -> {
+				int animationStep = (int) ((now - entry.stateChangeTime) / 100) % BAR_SIZE;
+				yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(animationStep, Formatting.GRAY))
+					.append(createProgressText(1, Formatting.BLUE))
+					.append(createProgressText(BAR_SIZE - 1 - animationStep, Formatting.GRAY));
 			}
-			progress = Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-				.append(Text.literal("|".repeat(animationStep)).formatted(Formatting.GRAY))
-				.append(Text.literal("|").formatted(Formatting.BLUE))
-				.append(Text.literal("|".repeat(19 - animationStep)).formatted(Formatting.GRAY));
-		} else {
-			status = "Downloading";
-			progress = Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-				.append(Text.literal("|".repeat(percent / 5)).formatted(Formatting.GREEN))
-				.append(Text.literal("|".repeat(20 - percent / 5)).formatted(Formatting.GRAY));
-		}
+			default -> {
+				int progressBars = BAR_SIZE * entry.progress / 100;
+				yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(progressBars, Formatting.GREEN))
+					.append(createProgressText(BAR_SIZE - progressBars, Formatting.GRAY));
+			}
+		};
 
-		context.drawTextWithShadow(CLIENT.textRenderer, status,
-			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(status)) / 2,
-			CLIENT.getWindow().getScaledHeight() - 72, 0xFFFFFF
-		);
+		renderText(context, Text.literal(entry.state.toString()), 72);
+		renderText(context, progress, 62);
+	}
 
-		context.drawTextWithShadow(CLIENT.textRenderer, progress,
-			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(progress)) / 2,
-			CLIENT.getWindow().getScaledHeight() - 62, 0xFFFFFF
-		);
+	private static Text createProgressText(int count, Formatting formatting) {
+		return Text.literal("|".repeat(count)).formatted(formatting);
+	}
+
+	private static void renderText(DrawContext context, Text text, int offset) {
+		context.drawTextWithShadow(CLIENT.textRenderer, text,
+			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(text)) / 2,
+			CLIENT.getWindow().getScaledHeight() - offset, 0xFFFFFF);
 	}
 }

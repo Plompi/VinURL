@@ -9,7 +9,7 @@ import org.lwjgl.glfw.GLFW;
 import java.util.concurrent.CompletableFuture;
 
 public class KeyListener {
-	private static final int KEY_PRESS_TIMEOUT = 5000;
+	private static final int KEY_PRESS_TIMEOUT_MILLIS = 5000;
 	private static KeyBinding acceptKey;
 
 	public static void register() {
@@ -23,7 +23,7 @@ public class KeyListener {
 
 	public static CompletableFuture<Boolean> waitForKeyPress() {
 		CompletableFuture<Boolean> future = new CompletableFuture<>();
-		long timeout = System.currentTimeMillis() + KEY_PRESS_TIMEOUT;
+		long timeout = System.currentTimeMillis() + KEY_PRESS_TIMEOUT_MILLIS;
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (future.isDone()) return;
