@@ -1,9 +1,9 @@
 plugins {
-	id "fabric-loom" version "1.10-SNAPSHOT"
-	id "org.moddedmc.wiki.toolkit" version "0.2.7"
+	id "fabric-loom" version "1.11-SNAPSHOT"
+	id "org.moddedmc.wiki.toolkit" version "0.2.8"
 }
 
-def mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
+var mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
 version = "${mod_version}+mc${mod_minecraft_version_end}"
 
 base {
@@ -15,11 +15,11 @@ repositories {
 }
 
 dependencies {
-	annotationProcessor modImplementation("io.wispforest:owo-lib:${project.run_owo_version}")
-	minecraft "com.mojang:minecraft:${project.run_minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.run_yarn_mappings}:v2"
-	modImplementation "net.fabricmc:fabric-loader:${project.run_fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.run_fabric_version}"
+	annotationProcessor modImplementation("io.wispforest:owo-lib:${run_owo_version}")
+	minecraft "com.mojang:minecraft:${run_minecraft_version}"
+	mappings "net.fabricmc:yarn:${run_yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${run_fabric_loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${run_fabric_version}"
 }
 
 processResources {
@@ -36,8 +36,8 @@ processResources {
 			mod_minecraft_version_start		: mod_minecraft_version_start,
 			mod_minecraft_version_end		: mod_minecraft_version_end,
 
-			mod_fabric_loader_version		: mod_fabric_loader_version,
-			mod_neoforge_loader_version		: mod_neoforge_loader_version
+			mod_loader_fabric_version		: mod_loader_fabric_version,
+			mod_loader_neoforge_version		: mod_loader_neoforge_version
 	]
 	inputs.properties replaceProperties
 	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
