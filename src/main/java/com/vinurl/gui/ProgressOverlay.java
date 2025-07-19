@@ -15,7 +15,9 @@ public class ProgressOverlay {
 	private static final LinkedHashMap<String, ProgressEntry> progressQueue = new LinkedHashMap<>();
 
 	public static void set(String id, int progressPercent) {
-		progressQueue.put(id, new ProgressEntry(progressPercent));
+		if(progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
+			batchSize++;
+		}
 	}
 
 	public static void stop(String id) {
