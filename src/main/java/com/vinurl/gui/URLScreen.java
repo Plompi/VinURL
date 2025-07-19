@@ -143,4 +143,9 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			);
 		}
 	}
+
+	@Override
+	public boolean shouldPause() {
+		return false;
+	}
 }
