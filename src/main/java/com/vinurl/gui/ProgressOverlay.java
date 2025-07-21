@@ -27,7 +27,7 @@ public class ProgressOverlay {
 	}
 
 	public static void stopFailed(String id) {
-		progressQueue.put(id, new ProgressEntry(-1));
+		progressQueue.put(id, new ProgressEntry(ProgressEntry.ERROR));
 	}
 
 	public static void render(DrawContext context) {
