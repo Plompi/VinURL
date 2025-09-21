@@ -1,10 +1,5 @@
-Version: 2.0.0
-- bugfix: audio files that are already ogg now get correctly converted to mono
-- enhancement: added redstone compatibility
-- enhancement: added a button to automatically retrieve the song duration of the set url
-- enhancement: removed "No Song" hud showing when inserting a custom disc into jukebox
-- enhancement: revamped how multiple discs with same url are handled. They now subscribe to the download event
-- enhancement: download of a song will only be cancelled if all discs with this song url are extracted
-- enhancement: hoppers now dont cancel the downloading process
-- breaking change: removed playlist support in favor of vanilla automatic jukeboxes
-- breaking change: API stop endpoint now expects a boolean whether to stop the download process
+Version: 2.1.0
+- bugfix: verbose information's from yt-dlp sometimes caused failure of download and automatic duration retrieval
+- bugfix: hopper minecarts now correctly extract and stop music discs
+- enhancement: disc ui now doesnt pause anymore the game in singleplayer
+- enhancement: improved logging of external executables
