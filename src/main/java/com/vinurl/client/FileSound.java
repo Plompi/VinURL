@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-import static com.vinurl.client.AudioHandler.getAudioFile;
+import static com.vinurl.client.SoundManager.getAudioFile;
 import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 public class FileSound extends AbstractSoundInstance {

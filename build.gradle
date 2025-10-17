@@ -1,6 +1,6 @@
 plugins {
-	id "fabric-loom" version "1.11-SNAPSHOT"
-	id "org.moddedmc.wiki.toolkit" version "0.2.8"
+	id "fabric-loom" version "${plg_fabric_loom}"
+	id "org.moddedmc.wiki.toolkit" version "${plg_moddedmc_wiki}"
 }
 
 var mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }

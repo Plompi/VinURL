@@ -1,6 +1,6 @@
 package com.vinurl.net;
 
-import com.vinurl.client.AudioHandler;
+import com.vinurl.client.SoundManager;
 import com.vinurl.client.KeyListener;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
@@ -23,30 +23,30 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
-			String fileName = AudioHandler.hashURL(url);
+			String fileName = SoundManager.hashURL(url);
 			MinecraftClient client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {return;}
 
-			AudioHandler.addSound(fileName, position, loop);
+			SoundManager.addSound(fileName, position, loop);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
-				AudioHandler.queueSound(fileName, position);
+				SoundManager.queueSound(fileName, position);
 				return;
 			}
 
-			if (AudioHandler.getAudioFile(fileName).exists()) {
-				AudioHandler.playSound(position);
+			if (SoundManager.getAudioFile(fileName).exists()) {
+				SoundManager.playSound(position);
 				return;
 			}
 
 			if (CONFIG.downloadEnabled()) {
 				List<String> whitelist = CONFIG.urlWhitelist();
-				String baseURL = AudioHandler.getBaseURL(url);
+				String baseURL = SoundManager.getBaseURL(url);
 
 				if (whitelist.stream().anyMatch(url::startsWith)) {
-					AudioHandler.downloadSound(url, fileName);
-					AudioHandler.queueSound(fileName, position);
+					SoundManager.downloadSound(url, fileName);
+					SoundManager.queueSound(fileName, position);
 					return;
 				}
 
@@ -62,8 +62,8 @@ public class ClientEvent {
 					if (confirmed) {
 						whitelist.add(baseURL);
 						CONFIG.save();
-						AudioHandler.downloadSound(url, fileName);
-						AudioHandler.queueSound(fileName, position);
+						SoundManager.downloadSound(url, fileName);
+						SoundManager.queueSound(fileName, position);
 					}
 				});
 			}
@@ -72,8 +72,8 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
-			String id = AudioHandler.hashURL(payload.url()) + "/download";
-			AudioHandler.stopSound(position);
+			String id = SoundManager.hashURL(payload.url()) + "/download";
+			SoundManager.stopSound(position);
 			if (Executable.YT_DLP.isProcessRunning(id)) {
 				Executable.YT_DLP.getProcessStream(id).unsubscribe(position.toString());
 				if (payload.canceled() && Executable.YT_DLP.getProcessStream(id).subscriberCount() <= 1) {

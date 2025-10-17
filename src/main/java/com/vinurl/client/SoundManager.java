@@ -21,7 +21,7 @@ import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
-public class AudioHandler {
+public class SoundManager {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
 	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();

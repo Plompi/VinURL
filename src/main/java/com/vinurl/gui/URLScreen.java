@@ -1,7 +1,7 @@
 package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.client.AudioHandler;
+import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
@@ -98,7 +98,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
 			Executable.YT_DLP.executeCommand(
-				AudioHandler.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
+				SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
 			).subscribe("duration")
 				.onOutput(line -> {
 					String type = line.substring(0, line.indexOf(':') + 1);

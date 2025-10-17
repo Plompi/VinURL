@@ -37,11 +37,11 @@ public class VinURLClient implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			if (stack.getItem() == CUSTOM_RECORD && CONFIG.showDescription()) {
 				NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-				String fileName = AudioHandler.hashURL(nbt.get(URL_KEY));
+				String fileName = SoundManager.hashURL(nbt.get(URL_KEY));
 
 				if (fileName.isEmpty()) {return;}
 
-				lines.add(Text.literal(AudioHandler.getDescription(fileName)).formatted(Formatting.GRAY));
+				lines.add(Text.literal(SoundManager.getDescription(fileName)).formatted(Formatting.GRAY));
 			}
 		});
 
