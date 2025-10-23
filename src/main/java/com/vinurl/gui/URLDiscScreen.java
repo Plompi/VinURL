@@ -1,6 +1,5 @@
 package com.vinurl.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;
@@ -26,7 +25,6 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private int duration;
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		RenderSystem.enableDepthTest();
 		ResourceLocation texture = !simulate ? (button.active && button.isHovered() ?
 			SIMULATE_BUTTON_HOVER_ID :
 			SIMULATE_BUTTON_ID) :
@@ -35,7 +33,6 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		RenderSystem.enableDepthTest();
 		ResourceLocation texture = loop ?
 			LOOP_BUTTON_ID :
 			LOOP_BUTTON_DISABLED_ID;
@@ -43,7 +40,6 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		RenderSystem.enableDepthTest();
 		ResourceLocation texture = lock ?
 			LOCK_BUTTON_ID :
 			LOCK_BUTTON_DISABLED_ID;
