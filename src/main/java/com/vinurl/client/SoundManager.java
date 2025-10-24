@@ -122,6 +122,7 @@ public class SoundManager {
 	}
 
 	public static String descriptionToCache(String fileName) {
+		descriptionCache.remove(fileName);
 		return descriptionCache.compute(fileName, (k, v) -> {
 			String artist = getOggAttribute(fileName, "artist");
 			String title = getOggAttribute(fileName, "title");
