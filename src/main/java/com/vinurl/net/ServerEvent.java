@@ -55,12 +55,13 @@ public class ServerEvent {
 
 			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.MASTER, 1.0f, 1.0f);
 
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(new NbtCompound() {{
-				put(URL_KEY, url);
-				put(DURATION_KEY, payload.duration());
-				put(LOOP_KEY, payload.loop());
-				put(LOCK_KEY, payload.lock());
-			}}));
+			NbtCompound nbt = new NbtCompound();
+			nbt.put(URL_KEY, url);
+			nbt.put(DURATION_KEY, payload.duration());
+			nbt.put(LOOP_KEY, payload.loop());
+			nbt.put(LOCK_KEY, payload.lock());
+
+			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
 		});
 	}
 

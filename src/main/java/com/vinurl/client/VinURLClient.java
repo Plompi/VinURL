@@ -35,17 +35,18 @@ public class VinURLClient implements ClientModInitializer {
 		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
-			if (stack.getItem() != CUSTOM_RECORD) {return;}
+			if (stack.getItem() != CUSTOM_RECORD || !stack.contains(DataComponentTypes.CUSTOM_DATA)) {return;}
 
-			lines.remove(Text.translatable("item.vinurl.custom_record.desc").formatted(Formatting.GRAY));
+			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
+
+			lines.clear();
+			lines.add(Text.translatable("item.vinurl.custom_record").formatted(Formatting.AQUA));
+			lines.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
 
 			if (CONFIG.showDescription()) {
-				NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-				String fileName = SoundManager.hashURL(nbt.get(URL_KEY));
-
-				if (!fileName.isEmpty()) {
-					lines.add(Text.literal(SoundManager.getDescription(fileName)).formatted(Formatting.GRAY));
-				}
+				String description = SoundManager.getDescription(SoundManager.hashURL(nbt.get(URL_KEY)));
+				String locked = nbt.get(LOCK_KEY) ? "🔒 " : "";
+				lines.add(Text.literal(locked + description).formatted(Formatting.GRAY));
 			}
 		});
 
