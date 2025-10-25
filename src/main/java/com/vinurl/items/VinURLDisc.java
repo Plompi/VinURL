@@ -2,14 +2,12 @@ package com.vinurl.items;
 
 import com.vinurl.net.ClientEvent;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.JukeboxPlayableComponent;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryPair;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -27,7 +25,7 @@ public class VinURLDisc extends Item {
 		super(new Item.Settings()
 			.maxCount(1)
 			.rarity(Rarity.RARE)
-			.component(DataComponentTypes.JUKEBOX_PLAYABLE, new JukeboxPlayableComponent(new RegistryPair<>(SONG), false)));
+			.jukeboxPlayable(SONG));
 	}
 
 	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
