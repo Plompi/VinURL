@@ -11,7 +11,6 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -134,20 +133,11 @@ public class SoundManager {
 		return descriptionCache.get(fileName);
 	}
 
-	public static String getBaseURL(String url) {
-		try {
-			URI baseURL = new URI(url);
-			return baseURL.getScheme() + "://" + baseURL.getHost();
-		} catch (Exception e) {
-			return "";
-		}
-	}
-
 	public static File getAudioFile(String fileName) {
 		return AUDIO_DIRECTORY.resolve(fileName + ".ogg").toFile();
 	}
 
-	public static String hashURL(String url) {
+	public static String getFileName(String url) {
 		return (url == null || url.isEmpty()) ? "" : DigestUtils.sha256Hex(url);
 	}
 }

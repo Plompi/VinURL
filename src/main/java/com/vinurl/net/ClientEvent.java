@@ -1,7 +1,7 @@
 package com.vinurl.net;
 
-import com.vinurl.client.SoundManager;
 import com.vinurl.client.KeyListener;
+import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
 import net.minecraft.client.MinecraftClient;
@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 
-import java.util.List;
+import java.net.URI;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
@@ -23,7 +23,7 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
-			String fileName = SoundManager.hashURL(url);
+			String fileName = SoundManager.getFileName(url);
 			MinecraftClient client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {return;}
@@ -41,10 +41,9 @@ public class ClientEvent {
 			}
 
 			if (CONFIG.downloadEnabled()) {
-				List<String> whitelist = CONFIG.urlWhitelist();
-				String baseURL = SoundManager.getBaseURL(url);
+				String baseURL = URI.create(url).getScheme() + "://" + URI.create(url).getHost();
 
-				if (whitelist.stream().anyMatch(url::startsWith)) {
+				if (CONFIG.urlWhitelist().stream().anyMatch(url::startsWith)) {
 					SoundManager.downloadSound(url, fileName);
 					SoundManager.queueSound(fileName, position);
 					return;
@@ -60,7 +59,7 @@ public class ClientEvent {
 
 				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
 					if (confirmed) {
-						whitelist.add(baseURL);
+						CONFIG.urlWhitelist().add(baseURL);
 						CONFIG.save();
 						SoundManager.downloadSound(url, fileName);
 						SoundManager.queueSound(fileName, position);
@@ -72,7 +71,7 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
-			String id = SoundManager.hashURL(payload.url()) + "/download";
+			String id = SoundManager.getFileName(payload.url()) + "/download";
 			SoundManager.stopSound(position);
 			if (Executable.YT_DLP.isProcessRunning(id)) {
 				Executable.YT_DLP.getProcessStream(id).unsubscribe(position.toString());

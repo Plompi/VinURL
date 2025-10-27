@@ -42,7 +42,6 @@ public class ServerEvent {
 
 			try {
 				url = new URI(payload.url()).toURL().toString();
-
 			} catch (Exception e) {
 				player.sendMessage(Text.literal("Song URL is invalid!"), true);
 				return;

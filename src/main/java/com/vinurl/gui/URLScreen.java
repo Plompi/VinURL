@@ -98,7 +98,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 			simulate = true;
 			button.tooltip(Text.literal("Calculating..."));
 			Executable.YT_DLP.executeCommand(
-				SoundManager.hashURL(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
+				SoundManager.getFileName(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
 			).subscribe("duration")
 				.onOutput(line -> {
 					String type = line.substring(0, line.indexOf(':') + 1);

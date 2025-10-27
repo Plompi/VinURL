@@ -44,7 +44,7 @@ public class VinURLClient implements ClientModInitializer {
 			lines.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
 
 			if (CONFIG.showDescription()) {
-				String description = SoundManager.getDescription(SoundManager.hashURL(nbt.get(URL_KEY)));
+				String description = SoundManager.getDescription(SoundManager.getFileName(nbt.get(URL_KEY)));
 				String locked = nbt.get(LOCK_KEY) ? "🔒 " : "";
 				lines.add(Text.literal(locked + description).formatted(Formatting.GRAY));
 			}
