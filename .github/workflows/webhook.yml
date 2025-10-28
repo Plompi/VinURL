@@ -1,0 +1,50 @@
+name: Discord Webhook
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "CHANGELOG.md"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  discord-webhook:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Extract title and description
+        id: changelog
+        run: |
+          TITLE=$(grep -oP '(?<=Version: )\d+\.\d+\.\d+' CHANGELOG.md | head -n 1)
+          DESCRIPTION=$(tail -n +2 CHANGELOG.md | jq -Rs .)
+          
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "description=$DESCRIPTION" >> $GITHUB_OUTPUT
+
+      - name: Send to Discord Webhook
+        uses: joelwmale/webhook-action@master
+        with:
+          url: ${{ secrets.WEBHOOK_URL }}
+          body: >-
+            {
+              "content": "<@&1430902357540995282>",
+              "embeds": [
+                {
+                  "title": "V${{ steps.changelog.outputs.title }}",
+                  "description": ${{ steps.changelog.outputs.description }},
+                  "color": 8506771,
+                  "footer": {
+                    "text": "This mod update is brought to you by Plompii",
+                    "icon_url": "https://cdn.modrinth.com/data/5PsMUIsq/bffa8784b1a2acc4783577d7e1dde5d06cada131_96.webp"
+                  },
+                  "url": "https://modrinth.com/mod/vinurl/versions"
+                }
+              ]
+            }
+          github_event_payload: true
