@@ -87,8 +87,21 @@ public class SoundManager {
 	}
 
 	public static void queueSound(String fileName, Vec3d position) {
-		Executable.YT_DLP.getProcessStream(fileName + "/download").subscribe(position.toString())
-			.onComplete(() -> {playSound(position);}).start();
+		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
+		if (processStream != null) {
+			processStream.subscribe(position.toString())
+				.onComplete(() -> {playSound(position);}).start();
+		}
+	}
+
+	public static void unqueueSound(String fileName, Vec3d position, boolean canceled) {
+		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
+		if (processStream != null) {
+			processStream.unsubscribe(position.toString());
+			if (canceled && processStream.subscriberCount() <= 1) {
+				Executable.YT_DLP.killProcess(processStream.getId());
+			}
+		}
 	}
 
 	public static String getDescription(String fileName) {

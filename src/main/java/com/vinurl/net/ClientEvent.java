@@ -71,14 +71,8 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
 			Vec3d position = payload.position().toCenterPos();
-			String id = SoundManager.getFileName(payload.url()) + "/download";
 			SoundManager.stopSound(position);
-			if (Executable.YT_DLP.isProcessRunning(id)) {
-				Executable.YT_DLP.getProcessStream(id).unsubscribe(position.toString());
-				if (payload.canceled() && Executable.YT_DLP.getProcessStream(id).subscriberCount() <= 1) {
-					Executable.YT_DLP.killProcess(id);
-				}
-			}
+			SoundManager.unqueueSound(SoundManager.getFileName(payload.url()), position, payload.canceled());
 		});
 
 		// Client event to open record ui

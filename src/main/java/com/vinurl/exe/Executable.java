@@ -178,12 +178,12 @@ public enum Executable {
 			}
 		}
 
-		public SubscriberBuilder subscribe(String subscriberId) {
-			return new SubscriberBuilder(subscriberId);
+		public String getId() {
+			return id;
 		}
 
-		public int subscriberCount() {
-			return subscriptions.size();
+		public SubscriberBuilder subscribe(String subscriberId) {
+			return new SubscriberBuilder(subscriberId);
 		}
 
 		public void unsubscribe(String subscriberId) {
@@ -191,6 +191,10 @@ public enum Executable {
 			if (subscription != null) {
 				subscription.cancel();
 			}
+		}
+
+		public int subscriberCount() {
+			return subscriptions.size();
 		}
 
 		public void onExit(Runnable callback) {
