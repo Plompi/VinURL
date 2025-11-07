@@ -9,9 +9,9 @@ import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -28,31 +28,31 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = !simulate ? (button.active && button.isHovered() ?
-			Identifier.of(MOD_ID, "simulate_button_hovered") :
-			Identifier.of(MOD_ID, "simulate_button")) :
-			Identifier.of(MOD_ID, "simulate_button_disabled");
+		ResourceLocation texture = !simulate ? (button.active && button.isHovered() ?
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered") :
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button")) :
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = loop ?
-			Identifier.of(MOD_ID, "loop_button") :
-			Identifier.of(MOD_ID, "loop_button_disabled");
+		ResourceLocation texture = loop ?
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button") :
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
-		Identifier texture = lock ?
-			Identifier.of(MOD_ID, "lock_button") :
-			Identifier.of(MOD_ID, "lock_button_disabled");
+		ResourceLocation texture = lock ?
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button") :
+			ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop) {
-		super(StackLayout.class, DataSource.asset(Identifier.of(MOD_ID, "disc_url_screen")));
+		super(StackLayout.class, DataSource.asset(ResourceLocation.fromNamespaceAndPath(MOD_ID, "disc_url_screen")));
 		this.url = defaultURL;
 		this.loop = defaultLoop;
 		this.duration = defaultDuration;
@@ -69,7 +69,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
 
 		durationSlider.value(duration);
-		durationSlider.tooltipSupplier(slider -> Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
+		durationSlider.tooltipSupplier(slider -> Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
 		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> {
 			sliderDragged = true;
 			lockButton.active = loopButton.active = simulateButton.active = false;
@@ -96,7 +96,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		simulateButton.onPress(button -> {
 			if (simulate) {return;}
 			simulate = true;
-			button.tooltip(Text.literal("Calculating..."));
+			button.tooltip(Component.literal("Calculating..."));
 			Executable.YT_DLP.executeCommand(
 				SoundManager.getFileName(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
 			).subscribe("duration")
@@ -111,12 +111,12 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 						default -> LOGGER.info(line);
 					}
 				})
-				.onError(error -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
-				.onComplete(() -> {button.tooltip(Text.literal("Automatic Duration")); simulate = false;})
+				.onError(error -> {button.tooltip(Component.literal("Automatic Duration")); simulate = false;})
+				.onComplete(() -> {button.tooltip(Component.literal("Automatic Duration")); simulate = false;})
 			.start();
 		});
 
-		urlTextbox.onChanged().subscribe(text -> placeholderLabel.text(Text.literal((url = text).isEmpty() ? "URL" : "")));
+		urlTextbox.onChanged().subscribe(text -> placeholderLabel.text(Component.literal((url = text).isEmpty() ? "URL" : "")));
 		urlTextbox.text(url);
 		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 110, 16)));
 		urlTextbox.focusGained().subscribe((source) -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 0, 0)));
@@ -132,20 +132,20 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 	}
 
 	@Override
-	public void render(DrawContext context, int mouseX, int mouseY, float delta) {
+	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
 		super.render(context, mouseX, mouseY, delta);
 
 		if (sliderDragged) {
-			context.drawTooltip(
-				CLIENT.textRenderer,
-				Text.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
+			context.renderTooltip(
+				CLIENT.font,
+				Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
 				mouseX, mouseY
 			);
 		}
 	}
 
 	@Override
-	public boolean shouldPause() {
+	public boolean isPauseScreen() {
 		return false;
 	}
 }

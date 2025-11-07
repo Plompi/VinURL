@@ -7,7 +7,7 @@ import io.wispforest.owo.config.ui.ConfigScreenProviders;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.minecraft.text.Text;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
@@ -33,35 +33,35 @@ public class Commands {
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
 			FileUtils.deleteDirectory(SoundManager.AUDIO_DIRECTORY.toFile());
-			ctx.getSource().sendFeedback(Text.literal("Deleted all audio files"));
+			ctx.getSource().sendFeedback(Component.literal("Deleted all audio files"));
 			return 1;
 		} catch (IOException e) {
-			ctx.getSource().sendFeedback(Text.literal("Deleted only non active audio files"));
+			ctx.getSource().sendFeedback(Component.literal("Deleted only non active audio files"));
 			return 0;
 		}
 	}
 
 	private static int updateExecutables(CommandContext<FabricClientCommandSource> ctx) {
-		ctx.getSource().sendFeedback(Text.literal("Checking for updates..."));
+		ctx.getSource().sendFeedback(Component.literal("Checking for updates..."));
 		CompletableFuture.runAsync(() -> {
 			boolean anyUpdate = false;
 			for (Executable executable : Executable.values()) {
 				String current = executable.currentVersion();
 				if (executable.checkForUpdates()) {
 					String latest = executable.currentVersion();
-					ctx.getSource().sendFeedback(Text.literal(String.format("%s: %s -> %s", executable, current, latest)));
+					ctx.getSource().sendFeedback(Component.literal(String.format("%s: %s -> %s", executable, current, latest)));
 					anyUpdate = true;
 				}
 			}
 			if (!anyUpdate) {
-				ctx.getSource().sendFeedback(Text.literal("Everything is up to date!"));
+				ctx.getSource().sendFeedback(Component.literal("Everything is up to date!"));
 			}
 		});
 		return 1;
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		CLIENT.send(() -> CLIENT.setScreen(Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null)));
+		CLIENT.tell(() -> CLIENT.setScreen(Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null)));
 		return 0;
 	}
 }

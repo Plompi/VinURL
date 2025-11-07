@@ -1,14 +1,14 @@
 package com.vinurl.net;
 
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 import java.net.URI;
 import java.util.stream.Stream;
@@ -26,15 +26,15 @@ public class ServerEvent {
 
 		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
-			PlayerEntity player = context.player();
-			ItemStack stack = Stream.of(Hand.values())
-				.map(player::getStackInHand)
+			Player player = context.player();
+			ItemStack stack = Stream.of(InteractionHand.values())
+				.map(player::getItemInHand)
 				.filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD)
 				.findFirst()
 				.orElse(null);
 
 			if (stack == null) {
-				player.sendMessage(Text.literal("VinURL-Disc needed in hand!"), true);
+				player.displayClientMessage(Component.literal("VinURL-Disc needed in hand!"), true);
 				return;
 			}
 
@@ -43,24 +43,24 @@ public class ServerEvent {
 			try {
 				url = new URI(payload.url()).toURL().toString();
 			} catch (Exception e) {
-				player.sendMessage(Text.literal("Song URL is invalid!"), true);
+				player.displayClientMessage(Component.literal("Song URL is invalid!"), true);
 				return;
 			}
 
 			if (url.length() > MAX_URL_LENGTH) {
-				player.sendMessage(Text.literal("Song URL is too long!"), true);
+				player.displayClientMessage(Component.literal("Song URL is too long!"), true);
 				return;
 			}
 
-			player.playSoundToPlayer(SoundEvents.ENTITY_VILLAGER_WORK_CARTOGRAPHER, SoundCategory.MASTER, 1.0f, 1.0f);
+			player.playNotifySound(SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
 
-			NbtCompound nbt = new NbtCompound();
-			nbt.put(URL_KEY, url);
-			nbt.put(DURATION_KEY, payload.duration());
-			nbt.put(LOOP_KEY, payload.loop());
-			nbt.put(LOCK_KEY, payload.lock());
+			CompoundTag tag = new CompoundTag();
+			tag.put(URL_KEY, url);
+			tag.put(DURATION_KEY, payload.duration());
+			tag.put(LOOP_KEY, payload.loop());
+			tag.put(LOCK_KEY, payload.lock());
 
-			stack.set(DataComponentTypes.CUSTOM_DATA, NbtComponent.of(nbt));
+			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 		});
 	}
 

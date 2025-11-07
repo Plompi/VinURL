@@ -1,11 +1,10 @@
 package com.vinurl.gui;
 
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
 
@@ -30,7 +29,7 @@ public class ProgressOverlay {
 		progressQueue.put(id, new ProgressEntry(ProgressEntry.ERROR));
 	}
 
-	public static void render(DrawContext context) {
+	public static void render(GuiGraphics context) {
 		if (progressQueue.isEmpty()) {return;}
 
 		long now = System.currentTimeMillis();
@@ -43,36 +42,36 @@ public class ProgressOverlay {
 			return;
 		}
 
-		Text progress = switch (entry.state) {
+		Component progress = switch (entry.state) {
 			case INTERRUPTED ->
-				Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(createProgressText(20, Formatting.RED));
+				Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(20, ChatFormatting.RED));
 			case TRANSCODING -> {
 				int animationStep = (int) ((now - entry.stateChangeTime) / 100) % BAR_SIZE;
-				yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(createProgressText(animationStep, Formatting.GRAY))
-					.append(createProgressText(1, Formatting.BLUE))
-					.append(createProgressText(BAR_SIZE - 1 - animationStep, Formatting.GRAY));
+				yield Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(animationStep, ChatFormatting.GRAY))
+					.append(createProgressText(1, ChatFormatting.BLUE))
+					.append(createProgressText(BAR_SIZE - 1 - animationStep, ChatFormatting.GRAY));
 			}
 			default -> {
 				int progressBars = BAR_SIZE * entry.progress / 100;
-				yield Text.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(createProgressText(progressBars, Formatting.GREEN))
-					.append(createProgressText(BAR_SIZE - progressBars, Formatting.GRAY));
+				yield Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+					.append(createProgressText(progressBars, ChatFormatting.GREEN))
+					.append(createProgressText(BAR_SIZE - progressBars, ChatFormatting.GRAY));
 			}
 		};
 
-		renderText(context, Text.literal(entry.state.toString()), 72);
+		renderText(context, Component.literal(entry.state.toString()), 72);
 		renderText(context, progress, 62);
 	}
 
-	private static Text createProgressText(int count, Formatting formatting) {
-		return Text.literal("|".repeat(count)).formatted(formatting);
+	private static Component createProgressText(int count, ChatFormatting formatting) {
+		return Component.literal("|".repeat(count)).withStyle(formatting);
 	}
 
-	private static void renderText(DrawContext context, Text text, int offset) {
-		context.drawTextWithShadow(CLIENT.textRenderer, text,
-			(CLIENT.getWindow().getScaledWidth() - CLIENT.textRenderer.getWidth(text)) / 2,
-			CLIENT.getWindow().getScaledHeight() - offset, 0xFFFFFF);
+	private static void renderText(GuiGraphics context, Component text, int offset) {
+		context.drawString(CLIENT.font, text,
+			(CLIENT.getWindow().getGuiScaledWidth() - CLIENT.font.width(text)) / 2,
+			CLIENT.getWindow().getGuiScaledHeight() - offset, 0xFFFFFF);
 	}
 }

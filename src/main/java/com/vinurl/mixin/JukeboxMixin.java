@@ -1,16 +1,17 @@
 package com.vinurl.mixin;
 
 import com.vinurl.api.VinURLSound;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.block.jukebox.JukeboxManager;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.inventory.SingleStackInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.JukeboxSongPlayer;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.ticks.ContainerSingleItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,42 +22,42 @@ import static com.vinurl.util.Constants.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxMixin implements SingleStackInventory {
+public abstract class JukeboxMixin implements ContainerSingleItem {
 	@Shadow
-	private ItemStack recordStack;
+	private ItemStack item;
 
 	@Shadow
-	public abstract BlockEntity asBlockEntity();
+	public abstract BlockEntity getContainerBlockEntity();
 
-	@Inject(at = @At("HEAD"), method = "setStack")
+	@Inject(at = @At("HEAD"), method = "setTheItem")
 	public void stopPlaying(ItemStack stack, CallbackInfo ci) {
-		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.stop(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos(), false);
+		if (item.getItem() == CUSTOM_RECORD) {
+			VinURLSound.stop(getContainerBlockEntity().getLevel(), item, getContainerBlockEntity().getBlockPos(), false);
 		}
 	}
 
-	@Inject(at = @At("TAIL"), method = "setStack")
+	@Inject(at = @At("TAIL"), method = "setTheItem")
 	public void startPlaying(ItemStack stack, CallbackInfo ci) {
-		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.play(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos());
+		if (item.getItem() == CUSTOM_RECORD) {
+			VinURLSound.play(getContainerBlockEntity().getLevel(), item, getContainerBlockEntity().getBlockPos());
 		}
 	}
 
-	@Inject(at = @At("HEAD"), method = "dropRecord")
+	@Inject(at = @At("HEAD"), method = "popOutTheItem")
 	public void cancelDownload(CallbackInfo ci) {
-		if (recordStack.getItem() == CUSTOM_RECORD) {
-			VinURLSound.stop(asBlockEntity().getWorld(), recordStack, asBlockEntity().getPos(), true);
+		if (item.getItem() == CUSTOM_RECORD) {
+			VinURLSound.stop(getContainerBlockEntity().getLevel(), item, getContainerBlockEntity().getBlockPos(), true);
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")
-	private static void tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity, CallbackInfo ci) {
-		if (blockEntity.getStack().getItem() == CUSTOM_RECORD) {
-			NbtComponent nbt = blockEntity.getStack().getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT);
-			JukeboxManager manager = blockEntity.getManager();
-			if (manager.getTicksSinceSongStarted() > nbt.copyNbt().get(DURATION_KEY) * 20L) {
-				manager.stopPlaying(world, state);
-				VinURLSound.stop(world, blockEntity.getStack(), pos, false);
+	private static void tick(Level level, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity, CallbackInfo ci) {
+		if (blockEntity.getTheItem().getItem() == CUSTOM_RECORD) {
+			CompoundTag tag = blockEntity.getTheItem().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+			JukeboxSongPlayer manager = blockEntity.getSongPlayer();
+			if (manager.getTicksSinceSongStarted() > tag.get(DURATION_KEY) * 20L) {
+				manager.stop(level, state);
+				VinURLSound.stop(level, blockEntity.getTheItem(), pos, false);
 			}
 		}
 	}

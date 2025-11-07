@@ -1,10 +1,15 @@
 package com.vinurl.client;
 
-import net.minecraft.client.sound.*;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.Util;
+import net.minecraft.client.resources.sounds.AbstractSoundInstance;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.AudioStream;
+import net.minecraft.client.sounds.JOrbisAudioStream;
+import net.minecraft.client.sounds.LoopingAudioStream;
+import net.minecraft.client.sounds.SoundBufferLibrary;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -18,26 +23,26 @@ import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 public class FileSound extends AbstractSoundInstance {
 	public final String fileName;
 
-	public FileSound(String fileName, Vec3d position, boolean loop) {
-		super(PLACEHOLDER_SOUND_ID, SoundCategory.RECORDS, SoundInstance.createRandom());
+	public FileSound(String fileName, BlockPos pos, boolean loop) {
+		super(PLACEHOLDER_SOUND_ID, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.fileName = fileName;
-		this.repeat = loop;
-		this.x = position.x;
-		this.y = position.y;
-		this.z = position.z;
+		this.looping = loop;
+		this.x = pos.getCenter().x;
+		this.y = pos.getCenter().y;
+		this.z = pos.getCenter().z;
 	}
 
 	@Override
-	public CompletableFuture<AudioStream> getAudioStream(SoundLoader loader, Identifier id, boolean repeatInstantly) {
+	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, ResourceLocation id, boolean repeatInstantly) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(getAudioFile(fileName));
 				return repeatInstantly
-					? new RepeatingAudioStream(OggAudioStream::new, inputStream)
-					: new OggAudioStream(inputStream);
+					? new LoopingAudioStream(JOrbisAudioStream::new, inputStream)
+					: new JOrbisAudioStream(inputStream);
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}
-		}, Util.getDownloadWorkerExecutor());
+		}, Util.nonCriticalIoPool());
 	}
 }

@@ -4,8 +4,8 @@ import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
-import net.minecraft.text.Text;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 
@@ -22,7 +22,7 @@ import static com.vinurl.util.Constants.VINURLPATH;
 
 public class SoundManager {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
-	private static final ConcurrentHashMap<Vec3d, FileSound> playingSounds = new ConcurrentHashMap<>();
+	private static final ConcurrentHashMap<BlockPos, FileSound> playingSounds = new ConcurrentHashMap<>();
 	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
 
 	public static void downloadSound(String url, String fileName) {
@@ -70,35 +70,35 @@ public class SoundManager {
 		}
 	}
 
-	public static void playSound(Vec3d position) {
-		FileSound fileSound = playingSounds.get(position);
+	public static void playSound(BlockPos pos) {
+		FileSound fileSound = playingSounds.get(pos);
 		if (fileSound != null) {
 			CLIENT.getSoundManager().play(fileSound);
-			CLIENT.inGameHud.setRecordPlayingOverlay(Text.literal(getDescription(fileSound.fileName)));
+			CLIENT.gui.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
 		}
 	}
 
-	public static void stopSound(Vec3d position) {
-		CLIENT.getSoundManager().stop(playingSounds.remove(position));
+	public static void stopSound(BlockPos pos) {
+		CLIENT.getSoundManager().stop(playingSounds.remove(pos));
 	}
 
-	public static void addSound(String fileName, Vec3d position, boolean loop) {
-		playingSounds.put(position, new FileSound(fileName, position, loop));
+	public static void addSound(String fileName, BlockPos pos, boolean loop) {
+		playingSounds.put(pos, new FileSound(fileName, pos, loop));
 	}
 
-	public static void queueSound(String fileName, Vec3d position) {
+	public static void queueSound(String fileName, BlockPos pos) {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
-			processStream.subscribe(position.toString())
-				.onComplete(() -> {playSound(position);}).start();
+			processStream.subscribe(pos.toString())
+				.onComplete(() -> {playSound(pos);}).start();
 		}
 	}
 
-	public static void unqueueSound(String fileName, Vec3d position, boolean canceled) {
+	public static void unqueueSound(String fileName, BlockPos pos, boolean cancel) {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
-			processStream.unsubscribe(position.toString());
-			if (canceled && processStream.subscriberCount() <= 1) {
+			processStream.unsubscribe(pos.toString());
+			if (cancel && processStream.subscriberCount() <= 1) {
 				Executable.YT_DLP.killProcess(processStream.getId());
 			}
 		}

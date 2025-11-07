@@ -4,11 +4,10 @@ import com.vinurl.client.KeyListener;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
 
 import java.net.URI;
 
@@ -20,23 +19,23 @@ public class ClientEvent {
 	public static void register() {
 		// Client event for playing sounds
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
-			Vec3d position = payload.position().toCenterPos();
+			BlockPos pos = payload.pos();
 			String url = payload.url();
 			boolean loop = payload.loop();
 			String fileName = SoundManager.getFileName(url);
-			MinecraftClient client = context.runtime();
+			Minecraft client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {return;}
 
-			SoundManager.addSound(fileName, position, loop);
+			SoundManager.addSound(fileName, pos, loop);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
-				SoundManager.queueSound(fileName, position);
+				SoundManager.queueSound(fileName, pos);
 				return;
 			}
 
 			if (SoundManager.getAudioFile(fileName).exists()) {
-				SoundManager.playSound(position);
+				SoundManager.playSound(pos);
 				return;
 			}
 
@@ -45,15 +44,15 @@ public class ClientEvent {
 
 				if (CONFIG.urlWhitelist().stream().anyMatch(url::startsWith)) {
 					SoundManager.downloadSound(url, fileName);
-					SoundManager.queueSound(fileName, position);
+					SoundManager.queueSound(fileName, pos);
 					return;
 				}
 
-				client.player.sendMessage(
-					Text.literal("Press ")
-						.append(Text.literal(KeyListener.getHotKey()).formatted(Formatting.YELLOW))
+				client.player.displayClientMessage(
+					Component.literal("Press ")
+						.append(Component.literal(KeyListener.getHotKey()).withStyle(ChatFormatting.YELLOW))
 						.append(" to whitelist ")
-						.append(Text.literal(baseURL).formatted(Formatting.YELLOW)),
+						.append(Component.literal(baseURL).withStyle(ChatFormatting.YELLOW)),
 					true
 				);
 
@@ -62,7 +61,7 @@ public class ClientEvent {
 						CONFIG.urlWhitelist().add(baseURL);
 						CONFIG.save();
 						SoundManager.downloadSound(url, fileName);
-						SoundManager.queueSound(fileName, position);
+						SoundManager.queueSound(fileName, pos);
 					}
 				});
 			}
@@ -70,9 +69,9 @@ public class ClientEvent {
 
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
-			Vec3d position = payload.position().toCenterPos();
-			SoundManager.stopSound(position);
-			SoundManager.unqueueSound(SoundManager.getFileName(payload.url()), position, payload.canceled());
+			BlockPos pos = payload.pos();
+			SoundManager.stopSound(pos);
+			SoundManager.unqueueSound(SoundManager.getFileName(payload.url()), pos, payload.cancel());
 		});
 
 		// Client event to open record ui
@@ -81,9 +80,9 @@ public class ClientEvent {
 		});
 	}
 
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
+	public record PlaySoundRecord(BlockPos pos, String url, boolean loop) {}
 
-	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
+	public record StopSoundRecord(BlockPos pos, String url, boolean cancel) {}
 
 	public record GUIRecord(String url, int duration, boolean loop) {}
 }

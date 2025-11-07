@@ -1,39 +1,40 @@
 package com.vinurl.items;
 
 import com.vinurl.net.ClientEvent;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rarity;
-import net.minecraft.util.TypedActionResult;
-import net.minecraft.world.World;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.level.Level;
 
 import static com.vinurl.util.Constants.*;
 
 public class VinURLDisc extends Item {
 
 	public VinURLDisc() {
-		super(new Item.Settings()
-			.maxCount(1)
+		super(new Item.Properties()
+			.stacksTo(1)
 			.rarity(Rarity.RARE)
 			.jukeboxPlayable(SONG));
 	}
 
-	public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand) {
-		ItemStack stack = player.getStackInHand(hand);
-		if (!world.isClient) {
-			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
-			if (!nbt.get(LOCK_KEY)) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(nbt.get(URL_KEY), nbt.get(DURATION_KEY), nbt.get(LOOP_KEY)));
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+		ItemStack stack = player.getItemInHand(hand);
+		if (!level.isClientSide) {
+			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+			if (!tag.get(LOCK_KEY)) {
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(tag.get(URL_KEY), tag.get(DURATION_KEY), tag.get(LOOP_KEY)));
 			} else {
-				player.sendMessage(Text.literal("Locked 🔒"), true);
+				player.displayClientMessage(Component.literal("Locked 🔒"), true);
 			}
 		}
-		return TypedActionResult.success(stack);
+		return InteractionResultHolder.success(stack);
 	}
 }

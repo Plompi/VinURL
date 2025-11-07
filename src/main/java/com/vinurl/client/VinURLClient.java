@@ -8,18 +8,18 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.NbtComponent;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.component.CustomData;
 
 import static com.vinurl.util.Constants.*;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
-	public static final MinecraftClient CLIENT = MinecraftClient.getInstance();
+	public static final Minecraft CLIENT = Minecraft.getInstance();
 
 	@Override
 	public void onInitializeClient() {
@@ -35,18 +35,18 @@ public class VinURLClient implements ClientModInitializer {
 		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
-			if (stack.getItem() != CUSTOM_RECORD || !stack.contains(DataComponentTypes.CUSTOM_DATA)) {return;}
+			if (stack.getItem() != CUSTOM_RECORD || !stack.has(DataComponents.CUSTOM_DATA)) {return;}
 
-			NbtCompound nbt = stack.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT).copyNbt();
+			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
 			lines.clear();
-			lines.add(Text.translatable("item.vinurl.custom_record").formatted(Formatting.AQUA));
-			lines.add(Text.translatable("itemGroup.tools").formatted(Formatting.BLUE));
+			lines.add(Component.translatable("item.vinurl.custom_record").withStyle(ChatFormatting.AQUA));
+			lines.add(Component.translatable("itemGroup.tools").withStyle(ChatFormatting.BLUE));
 
 			if (CONFIG.showDescription()) {
-				String description = SoundManager.getDescription(SoundManager.getFileName(nbt.get(URL_KEY)));
-				String locked = nbt.get(LOCK_KEY) ? "🔒 " : "";
-				lines.add(Text.literal(locked + description).formatted(Formatting.GRAY));
+				String description = SoundManager.getDescription(SoundManager.getFileName(tag.get(URL_KEY)));
+				String locked = tag.get(LOCK_KEY) ? "🔒 " : "";
+				lines.add(Component.literal(locked + description).withStyle(ChatFormatting.GRAY));
 			}
 		});
 

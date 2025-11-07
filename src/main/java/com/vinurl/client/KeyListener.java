@@ -2,22 +2,21 @@ package com.vinurl.client;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.minecraft.client.option.KeyBinding;
-import net.minecraft.client.util.InputUtil;
+import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.concurrent.CompletableFuture;
 
 public class KeyListener {
 	private static final int KEY_PRESS_TIMEOUT_MILLIS = 5000;
-	private static KeyBinding acceptKey;
+	private static KeyMapping acceptKey;
 	private static CompletableFuture<Boolean> waitingFuture;
 	private static long timeout;
 
 	public static void register() {
-		acceptKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+		acceptKey = KeyBindingHelper.registerKeyBinding(new KeyMapping(
 			"key.vinurl.accept",
-			InputUtil.Type.KEYSYM,
+			InputConstants.Type.KEYSYM,
 			GLFW.GLFW_KEY_Y,
 			"category.vinurl"
 		));
@@ -25,7 +24,7 @@ public class KeyListener {
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
 			if (waitingFuture == null || waitingFuture.isDone()) return;
 
-			if (acceptKey.isPressed()) {
+			if (acceptKey.isDown()) {
 				waitingFuture.complete(true);
 				waitingFuture = null;
 			} else if (System.currentTimeMillis() > timeout) {
@@ -42,6 +41,6 @@ public class KeyListener {
 	}
 
 	public static String getHotKey() {
-		return acceptKey.getBoundKeyLocalizedText().getLiteralString();
+		return acceptKey.getTranslatedKeyMessage().tryCollapseToString();
 	}
 }
