@@ -2,8 +2,9 @@ package com.vinurl.cmd;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.vinurl.client.SoundManager;
+import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
-import io.wispforest.owo.config.ui.ConfigScreenProviders;
+import io.wispforest.owo.config.ui.ConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
@@ -11,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -61,7 +61,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		CLIENT.tell(() -> CLIENT.setScreen(Objects.requireNonNull(ConfigScreenProviders.get(MOD_ID)).apply(null)));
-		return 0;
+		CLIENT.tell(() -> CLIENT.setScreen(ConfigScreen.create(VinURLClient.CONFIG, null)));
+		return 1;
 	}
 }

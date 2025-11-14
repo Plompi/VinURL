@@ -22,7 +22,7 @@ public class KeyListener {
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {
-			if (waitingFuture == null || waitingFuture.isDone()) return;
+			if (waitingFuture == null || waitingFuture.isDone()) {return;}
 
 			if (acceptKey.isDown()) {
 				waitingFuture.complete(true);
@@ -35,9 +35,8 @@ public class KeyListener {
 	}
 
 	public static CompletableFuture<Boolean> waitForKeyPress() {
-		waitingFuture = new CompletableFuture<>();
 		timeout = System.currentTimeMillis() + KEY_PRESS_TIMEOUT_MILLIS;
-		return waitingFuture;
+		return (waitingFuture = new CompletableFuture<>());
 	}
 
 	public static String getHotKey() {
