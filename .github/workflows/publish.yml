@@ -1,4 +1,4 @@
-name: Publish on Modrinth
+name: Build and Publish
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 env:
   JAVA_VERSION: 21
-  MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
 
 permissions:
   contents: write
@@ -53,15 +52,19 @@ jobs:
         if: ${{ steps.all.outputs.pub_fabric == 'true' }}
         run: ./gradlew clean build
 
-      - name: Publish Fabric Modrinth
+      - name: Publish Fabric
         if: ${{ steps.all.outputs.pub_fabric == 'true' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.all.outputs.mod_minecraft_version_end }}"
           version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version_end }}-fabric"
+
           modrinth-id: 5PsMUIsq
-          modrinth-token: "${{env.MODRINTH_TOKEN}}"
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1326616
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           dependencies: |
             fabric-api
@@ -76,15 +79,19 @@ jobs:
         if: ${{ steps.all.outputs.pub_neoforge == 'true' }}
         run: ./gradlew clean build -Pneoforge=true
 
-      - name: Publish Neoforge Modrinth
+      - name: Publish Neoforge
         if: ${{ steps.all.outputs.pub_neoforge == 'true' }}
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.all.outputs.mod_minecraft_version_end }}"
           version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version_end }}-neoforge"
+
           modrinth-id: 5PsMUIsq
-          modrinth-token: "${{env.MODRINTH_TOKEN}}"
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+
+          curseforge-id: 1326616
+          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           dependencies: |
             forgified-fabric-api
