@@ -49,10 +49,11 @@ public class ClientEvent {
 				}
 
 				client.player.displayClientMessage(
-					Component.literal("Press ")
-						.append(Component.literal(KeyListener.getHotKey()).withStyle(ChatFormatting.YELLOW))
-						.append(" to whitelist ")
-						.append(Component.literal(baseURL).withStyle(ChatFormatting.YELLOW)),
+					Component.translatable(
+						"message.vinurl.custom_record.whitelist",
+						Component.literal(KeyListener.getHotKey()).withStyle(ChatFormatting.YELLOW),
+						Component.literal(baseURL).withStyle(ChatFormatting.YELLOW)
+					),
 					true
 				);
 

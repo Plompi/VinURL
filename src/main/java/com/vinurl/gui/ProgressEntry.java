@@ -23,8 +23,8 @@ public class ProgressEntry {
 		};
 	}
 
-	boolean shouldRemove(long now) {
-		return state == ProgressState.INTERRUPTED && now - stateChangeTime >= ERROR_TIMEOUT_MILLIS;
+	boolean shouldRemove() {
+		return state == ProgressState.INTERRUPTED && System.currentTimeMillis() - stateChangeTime >= ERROR_TIMEOUT_MILLIS;
 	}
 
 	public enum ProgressState {

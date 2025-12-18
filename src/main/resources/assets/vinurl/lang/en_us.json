@@ -1,6 +1,7 @@
 {
   "item.vinurl.custom_record": "Custom Music Disc",
   "item.vinurl.custom_record.desc": "No Song",
+  "item.vinurl.custom_record.message.locked": "Locked 🔒" ,
   "text.config.VinURLConfig.option.updatesOnStartup": "Auto Updates",
   "text.config.VinURLConfig.option.updatesOnStartup.tooltip": "Update checks on startup for YT-DLP, FFmpeg, FFprobe",
   "text.config.VinURLConfig.option.downloadEnabled": "Download Custom Music",
@@ -17,5 +18,15 @@
   "text.config.VinURLConfig.section.general": "General",
   "text.config.VinURLConfig.section.audioSettings": "Audio Settings",
   "category.vinurl": "VinURL",
-  "key.vinurl.accept": "Add Provider"
+  "key.vinurl.accept": "Add Provider",
+  "message.vinurl.custom_record.missing" : "VinURL-Disc needed in hand!",
+  "message.vinurl.custom_record.url.invalid" : "Song URL is invalid!",
+  "message.vinurl.custom_record.url.long" : "Song URL is too long!",
+  "message.vinurl.custom_record.whitelist" : "Press %s to whitelist %s",
+  "command.vinurl.delete.success": "Deleted all audio files",
+  "command.vinurl.delete.exception": "Deleted only non active audio files",
+  "command.vinurl.update.check": "Checking for updates...",
+  "command.vinurl.update.latest": "Everything is up to date!",
+  "gui.vinurl.button.duration.tooltip" : "Automatic Duration",
+  "gui.vinurl.button.duration.tooltip.calculating" : "Calculating..."
 }

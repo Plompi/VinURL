@@ -34,7 +34,7 @@ public class ServerEvent {
 				.orElse(null);
 
 			if (stack == null) {
-				player.displayClientMessage(Component.literal("VinURL-Disc needed in hand!"), true);
+				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.missing"), true);
 				return;
 			}
 
@@ -43,12 +43,12 @@ public class ServerEvent {
 			try {
 				url = new URI(payload.url()).toURL().toString();
 			} catch (Exception e) {
-				player.displayClientMessage(Component.literal("Song URL is invalid!"), true);
+				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.invalid"), true);
 				return;
 			}
 
 			if (url.length() > MAX_URL_LENGTH) {
-				player.displayClientMessage(Component.literal("Song URL is too long!"), true);
+				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.long"), true);
 				return;
 			}
 

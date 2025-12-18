@@ -1,10 +1,10 @@
 package com.vinurl.gui;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+
+import java.util.LinkedHashMap;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
 
@@ -14,7 +14,7 @@ public class ProgressOverlay {
 	private static final LinkedHashMap<String, ProgressEntry> progressQueue = new LinkedHashMap<>();
 
 	public static void set(String id, int progressPercent) {
-		if(progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
+		if (progressQueue.put(id, new ProgressEntry(progressPercent)) == null) {
 			batchSize++;
 		}
 	}
@@ -32,12 +32,10 @@ public class ProgressOverlay {
 	public static void render(GuiGraphics context) {
 		if (progressQueue.isEmpty()) {return;}
 
-		long now = System.currentTimeMillis();
-		Map.Entry<String, ProgressEntry> firstEntry = progressQueue.entrySet().iterator().next();
-		String currentId = firstEntry.getKey();
-		ProgressEntry entry = firstEntry.getValue();
+		String currentId = progressQueue.firstEntry().getKey();
+		ProgressEntry entry = progressQueue.get(currentId);
 
-		if (entry.shouldRemove(now)) {
+		if (entry.shouldRemove()) {
 			stop(currentId);
 			return;
 		}
@@ -47,7 +45,7 @@ public class ProgressOverlay {
 				Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(20, ChatFormatting.RED));
 			case TRANSCODING -> {
-				int animationStep = (int) ((now - entry.stateChangeTime) / 100) % BAR_SIZE;
+				int animationStep = (int) ((System.currentTimeMillis() - entry.stateChangeTime) / 100) % BAR_SIZE;
 				yield Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(animationStep, ChatFormatting.GRAY))
 					.append(createProgressText(1, ChatFormatting.BLUE))

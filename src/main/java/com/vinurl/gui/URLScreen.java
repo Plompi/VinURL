@@ -96,7 +96,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		simulateButton.onPress(button -> {
 			if (simulate) {return;}
 			simulate = true;
-			button.tooltip(Component.literal("Calculating..."));
+			button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip.calculating"));
 			Executable.YT_DLP.executeCommand(
 				SoundManager.getFileName(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
 			).subscribe("duration")
@@ -111,8 +111,8 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 						default -> LOGGER.info(line);
 					}
 				})
-				.onError(error -> {button.tooltip(Component.literal("Automatic Duration")); simulate = false;})
-				.onComplete(() -> {button.tooltip(Component.literal("Automatic Duration")); simulate = false;})
+				.onError(error -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
+				.onComplete(() -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
 			.start();
 		});
 

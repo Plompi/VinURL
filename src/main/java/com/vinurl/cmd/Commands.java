@@ -33,16 +33,16 @@ public class Commands {
 	private static int deleteAudioFiles(CommandContext<FabricClientCommandSource> ctx) {
 		try {
 			FileUtils.deleteDirectory(SoundManager.AUDIO_DIRECTORY.toFile());
-			ctx.getSource().sendFeedback(Component.literal("Deleted all audio files"));
+			ctx.getSource().sendFeedback(Component.translatable("command.vinurl.delete.success"));
 			return 1;
 		} catch (IOException e) {
-			ctx.getSource().sendFeedback(Component.literal("Deleted only non active audio files"));
+			ctx.getSource().sendFeedback(Component.translatable("command.vinurl.delete.exception"));
 			return 0;
 		}
 	}
 
 	private static int updateExecutables(CommandContext<FabricClientCommandSource> ctx) {
-		ctx.getSource().sendFeedback(Component.literal("Checking for updates..."));
+		ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.check"));
 		CompletableFuture.runAsync(() -> {
 			boolean anyUpdate = false;
 			for (Executable executable : Executable.values()) {
@@ -54,14 +54,14 @@ public class Commands {
 				}
 			}
 			if (!anyUpdate) {
-				ctx.getSource().sendFeedback(Component.literal("Everything is up to date!"));
+				ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.latest"));
 			}
 		});
 		return 1;
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		CLIENT.tell(() -> CLIENT.setScreen(ConfigScreen.create(VinURLClient.CONFIG, null)));
+		ctx.getSource().getClient().tell(() -> CLIENT.setScreen(ConfigScreen.create(VinURLClient.CONFIG, null)));
 		return 1;
 	}
 }
