@@ -66,7 +66,7 @@ Add the following lines of code to the end of your method that is responsible fo
 public void startPlaying(){
     // Your own Logic...
     if (isVinURLLoaded) {
-            VinURLSound.play(world, itemStack, blockPos);
+            VinURLSound.play(level, itemStack, blockPos);
         }
 }
 ```
@@ -77,7 +77,7 @@ and in the method that stops the music, add the following at the top
 ```java
 public void dropRecord(){
     if (isVinURLLoaded) {
-		VinURLSound.stop(world, itemStack, blockPos);
+		VinURLSound.stop(level, itemStack, blockPos, cancel);
 	}
     // Your own Logic...
 

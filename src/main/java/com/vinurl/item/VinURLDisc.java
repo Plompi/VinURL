@@ -1,4 +1,4 @@
-package com.vinurl.items;
+package com.vinurl.item;
 
 import com.vinurl.net.ClientEvent;
 import net.minecraft.core.component.DataComponents;

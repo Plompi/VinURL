@@ -17,15 +17,15 @@ public class VinURLSound {
 	private static final double JUKEBOX_RANGE = 64;
 	private static final double INFINITE_RANGE = Double.POSITIVE_INFINITY;
 
-	public static void play(Level world, ItemStack stack, BlockPos position) {
-		sendToPlayers(world, stack, position, JUKEBOX_RANGE, (tag) ->
-			new ClientEvent.PlaySoundRecord(position, tag.get(URL_KEY), tag.get(LOOP_KEY))
+	public static void play(Level level, ItemStack stack, BlockPos pos) {
+		sendToPlayers(level, stack, pos, JUKEBOX_RANGE, (tag) ->
+			new ClientEvent.PlaySoundRecord(pos, tag.get(URL_KEY), tag.get(LOOP_KEY))
 		);
 	}
 
-	public static void stop(Level world, ItemStack stack, BlockPos position, boolean cancel) {
-		sendToPlayers(world, stack, position, INFINITE_RANGE, (tag) ->
-			new ClientEvent.StopSoundRecord(position, tag.get(URL_KEY), cancel)
+	public static void stop(Level level, ItemStack stack, BlockPos pos, boolean cancel) {
+		sendToPlayers(level, stack, pos, INFINITE_RANGE, (tag) ->
+			new ClientEvent.StopSoundRecord(pos, tag.get(URL_KEY), cancel)
 		);
 	}
 

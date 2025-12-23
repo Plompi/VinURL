@@ -5,6 +5,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
 
@@ -32,8 +33,9 @@ public class ProgressOverlay {
 	public static void render(GuiGraphics context) {
 		if (progressQueue.isEmpty()) {return;}
 
-		String currentId = progressQueue.firstEntry().getKey();
-		ProgressEntry entry = progressQueue.get(currentId);
+		Map.Entry<String, ProgressEntry> firstEntry = progressQueue.entrySet().iterator().next();
+		String currentId = firstEntry.getKey();
+		ProgressEntry entry = firstEntry.getValue();
 
 		if (entry.shouldRemove()) {
 			stop(currentId);
