@@ -27,9 +27,15 @@ public class FileSound extends AbstractSoundInstance {
 		super(PLACEHOLDER_SOUND_ID, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.fileName = fileName;
 		this.looping = loop;
-		this.x = pos.getCenter().x;
-		this.y = pos.getCenter().y;
-		this.z = pos.getCenter().z;
+		if (pos != null) {
+			this.x = pos.getCenter().x;
+			this.y = pos.getCenter().y;
+			this.z = pos.getCenter().z;
+		}
+		else {
+			this.attenuation = Attenuation.NONE;
+			this.relative = true;
+		}
 	}
 
 	@Override

@@ -12,8 +12,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -22,8 +23,8 @@ import static com.vinurl.util.Constants.VINURLPATH;
 
 public class SoundManager {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
-	private static final ConcurrentHashMap<BlockPos, FileSound> playingSounds = new ConcurrentHashMap<>();
-	private static final ConcurrentHashMap<String, String> descriptionCache = new ConcurrentHashMap<>();
+	private static final HashMap<BlockPos, FileSound> playingSounds = new HashMap<>();
+	private static final HashMap<String, String> descriptionCache = new HashMap<>();
 
 	public static void downloadSound(String url, String fileName) {
 		if (CLIENT.player == null) {return;}
@@ -89,7 +90,7 @@ public class SoundManager {
 	public static void queueSound(String fileName, BlockPos pos) {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
-			processStream.subscribe(pos.toString())
+			processStream.subscribe(Objects.toString(pos))
 				.onComplete(() -> {playSound(pos);}).start();
 		}
 	}
@@ -97,7 +98,7 @@ public class SoundManager {
 	public static void unqueueSound(String fileName, BlockPos pos, boolean cancel) {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
-			processStream.unsubscribe(pos.toString());
+			processStream.unsubscribe(Objects.toString(pos));
 			if (cancel && processStream.subscriberCount() <= 1) {
 				Executable.YT_DLP.killProcess(processStream.getId());
 			}

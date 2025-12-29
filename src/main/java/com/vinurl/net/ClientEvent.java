@@ -4,6 +4,7 @@ import com.vinurl.client.KeyListener;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLScreen;
+import io.wispforest.endec.annotations.NullableComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
@@ -81,9 +82,9 @@ public class ClientEvent {
 		});
 	}
 
-	public record PlaySoundRecord(BlockPos pos, String url, boolean loop) {}
+	public record PlaySoundRecord(@NullableComponent BlockPos pos, String url, boolean loop) {}
 
-	public record StopSoundRecord(BlockPos pos, String url, boolean cancel) {}
+	public record StopSoundRecord(@NullableComponent BlockPos pos, String url, boolean cancel) {}
 
 	public record GUIRecord(String url, int duration, boolean loop) {}
 }
