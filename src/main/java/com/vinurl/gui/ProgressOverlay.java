@@ -70,6 +70,6 @@ public class ProgressOverlay {
 	private static void renderText(GuiGraphics context, Component text, int offset) {
 		context.drawString(CLIENT.font, text,
 			(CLIENT.getWindow().getGuiScaledWidth() - CLIENT.font.width(text)) / 2,
-			CLIENT.getWindow().getGuiScaledHeight() - offset, 0xFFFFFF);
+			CLIENT.getWindow().getGuiScaledHeight() - offset, 0xFFFFFFFF);
 	}
 }

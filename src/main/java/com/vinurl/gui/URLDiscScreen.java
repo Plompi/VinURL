@@ -131,7 +131,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 		super.render(context, mouseX, mouseY, delta);
 
 		if (sliderDragged) {
-			context.renderTooltip(
+			context.setTooltipForNextFrame(
 				CLIENT.font,
 				Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
 				mouseX, mouseY
