@@ -32,7 +32,8 @@ repositories {
 Then the following dependency must be added in the `build.gradle` to reference VinURL specific code. The version of VinURL needs to be declared in the `gradle.properties`.
 
 <Callout variant="warning">
-    Only VinURL 1.2.0+ supports this method. Previous versions dont have the Helper methods
+    Only VinURL 2.2.0+ supports this method. Previous versions may work when used correctly,
+    but only the newest api endpoints are shown here.
 </Callout>
 
 
@@ -60,26 +61,54 @@ Import the Helper class from VinURL, which contains methods for playing and stop
 import com.vinurl.api.VinURLSound;
 ```
 
-Add the following lines of code to the end of your method that is responsible for starting the music
+#### Positional Sounds
+
+This method starts a positional custom sound for all players in a 64 block range from the specified *blockPos*.
 
 ```java
 public void startPlaying(){
     // Your own Logic...
     if (isVinURLLoaded) {
-            VinURLSound.play(level, itemStack, blockPos);
+            VinURLSound.playAt(level, itemStack, blockPos);
         }
 }
 ```
 
-and in the method that stops the music, add the following at the top
-
+This method stops a positional custom sound at the specified *blockPos* for all players.
+If a custom sound is still downloading when this function is called,
+then the parameter *cancelable* is responsible for whether the active download is aborted or not.
 
 ```java
 public void dropRecord(){
     if (isVinURLLoaded) {
-		VinURLSound.stop(level, itemStack, blockPos, cancel);
+		VinURLSound.stopAt(level, itemStack, blockPos, cancelable);
 	}
     // Your own Logic...
+}
+```
 
+#### Non-Positional / Global Sounds
+
+This method starts a global custom sound for the specified player via *uuid*.
+
+```java
+public void startPlaying(){
+    // Your own Logic...
+    if (isVinURLLoaded) {
+            VinURLSound.playFor(level, itemStack, uuid);
+        }
+}
+```
+
+This method stops a global custom sound for the specified user via *uuid*.
+If a custom sound is still downloading when this function is called,
+then the parameter *cancelable* is responsible for whether the active download is aborted or not.
+
+```java
+public void dropRecord(){
+    if (isVinURLLoaded) {
+		VinURLSound.stopFor(level, itemStack, uuid, cancelable);
+	}
+    // Your own Logic...
 }
 ```
