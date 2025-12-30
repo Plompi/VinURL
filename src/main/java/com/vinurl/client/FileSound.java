@@ -10,6 +10,7 @@ import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,7 +24,7 @@ import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 public class FileSound extends AbstractSoundInstance {
 	public final String fileName;
 
-	public FileSound(String fileName, BlockPos pos, boolean loop) {
+	public FileSound(String fileName, @Nullable BlockPos pos, boolean loop) {
 		super(PLACEHOLDER_SOUND_ID, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.fileName = fileName;
 		this.looping = loop;

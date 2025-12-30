@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -71,7 +72,14 @@ public class SoundManager {
 		}
 	}
 
-	public static void playSound(BlockPos pos) {
+	public static void addSound(String fileName, @Nullable BlockPos pos, boolean loop) {
+		FileSound fileSound = playingSounds.put(pos, new FileSound(fileName, pos, loop));
+		if (fileSound != null) {
+			CLIENT.getSoundManager().stop(fileSound);
+		}
+	}
+
+	public static void playSound(@Nullable BlockPos pos) {
 		FileSound fileSound = playingSounds.get(pos);
 		if (fileSound != null) {
 			CLIENT.getSoundManager().play(fileSound);
@@ -79,15 +87,14 @@ public class SoundManager {
 		}
 	}
 
-	public static void stopSound(BlockPos pos) {
-		CLIENT.getSoundManager().stop(playingSounds.remove(pos));
+	public static void stopSound(@Nullable BlockPos pos) {
+		FileSound fileSound = playingSounds.remove(pos);
+		if (fileSound != null) {
+			CLIENT.getSoundManager().stop(fileSound);
+		}
 	}
 
-	public static void addSound(String fileName, BlockPos pos, boolean loop) {
-		playingSounds.put(pos, new FileSound(fileName, pos, loop));
-	}
-
-	public static void queueSound(String fileName, BlockPos pos) {
+	public static void queueSound(String fileName, @Nullable BlockPos pos) {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
 			processStream.subscribe(Objects.toString(pos))
@@ -95,7 +102,7 @@ public class SoundManager {
 		}
 	}
 
-	public static void unqueueSound(String fileName, BlockPos pos, boolean cancel) {
+	public static void unqueueSound(String fileName, @Nullable BlockPos pos, boolean cancel) {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
 			processStream.unsubscribe(Objects.toString(pos));
