@@ -9,6 +9,7 @@ import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
@@ -65,12 +66,12 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 
 		durationSlider.value(duration);
 		durationSlider.tooltipSupplier(slider -> Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
-		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> {
+		durationSlider.mouseDrag().subscribe((click, deltaX, deltaY) -> {
 			sliderDragged = true;
 			lockButton.active = loopButton.active = simulateButton.active = false;
 			return true;
 		});
-		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> {
+		durationSlider.mouseUp().subscribe((click) -> {
 			sliderDragged = false;
 			lockButton.active = loopButton.active = simulateButton.active = true;
 			return true;
@@ -118,12 +119,12 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	}
 
 	@Override
-	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
+	public boolean keyPressed(KeyEvent input) {
+		if (input.key() == GLFW.GLFW_KEY_ESCAPE || input.key() == GLFW.GLFW_KEY_ENTER) {
 			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, loop, lock));
 			CLIENT.setScreen(null);
 		}
-		return super.keyPressed(keyCode, scanCode, modifiers);
+		return super.keyPressed(input);
 	}
 
 	@Override
