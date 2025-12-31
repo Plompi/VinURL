@@ -23,6 +23,7 @@ public class Constants {
 	//resources
 	public static final ResourceLocation PLACEHOLDER_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "placeholder_sound");
 	public static final ResourceLocation CUSTOM_RECORD_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "custom_record");
+	public static final ResourceLocation KEY_MAPPING_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "mapping");
 	public static final ResourceLocation NETWORK_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "network_channel");
 	public static final ResourceLocation PROGRESS_HUD_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "progress_hud");
 	public static final ResourceLocation URL_DISC_SCREEN_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "disc_url_screen");
