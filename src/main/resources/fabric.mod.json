@@ -27,7 +27,7 @@
   ],
   "depends": {
     "fabricloader": ">=${mod_loader_fabric_version}",
-    "minecraft": ["${mod_minecraft_version_start}","${mod_minecraft_version_end}"],
+    "minecraft": ">=${mod_minecraft_version_start} <=${mod_minecraft_version_end}",
     "java": ">=21",
     "fabric-api": "*",
     "owo-lib": "*"
