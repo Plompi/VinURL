@@ -5,7 +5,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,11 +21,12 @@ public class URLDisc extends Item {
 		super(new Item.Properties()
 			.stacksTo(1)
 			.rarity(Rarity.RARE)
-			.jukeboxPlayable(SONG_KEY));
+			.jukeboxPlayable(SONG_KEY)
+			.setId(ITEM_KEY));
 	}
 
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+	public InteractionResult use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
 		if (!level.isClientSide()) {
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
@@ -35,6 +36,6 @@ public class URLDisc extends Item {
 				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
 			}
 		}
-		return InteractionResultHolder.success(stack);
+		return InteractionResult.SUCCESS;
 	}
 }
