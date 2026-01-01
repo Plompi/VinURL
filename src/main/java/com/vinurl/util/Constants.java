@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.JukeboxSong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class Constants {
 	public static final ResourceLocation LOCK_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button");
 	public static final ResourceLocation LOCK_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
 	public static final ResourceKey<JukeboxSong> SONG_KEY = ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND_ID);
+	public static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, CUSTOM_RECORD_ID);
 
 	//networking
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(NETWORK_ID);
