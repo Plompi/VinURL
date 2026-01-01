@@ -27,7 +27,7 @@ public class VinURLDisc extends Item {
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide) {
+		if (!level.isClientSide()) {
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 			if (!tag.get(LOCK_KEY)) {
 				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(tag.get(URL_KEY), tag.get(DURATION_KEY), tag.get(LOOP_KEY)));

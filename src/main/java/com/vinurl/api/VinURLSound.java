@@ -45,7 +45,7 @@ public class VinURLSound {
 	}
 
 	private static void send(Level level, ItemStack stack, Iterable<Player> players, Function<CompoundTag, Record> factory) {
-		if (level == null || level.isClientSide) {return;}
+		if (level == null || level.isClientSide()) {return;}
 
 		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
