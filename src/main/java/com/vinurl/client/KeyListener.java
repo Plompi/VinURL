@@ -18,7 +18,7 @@ public class KeyListener {
 			"key.vinurl.accept",
 			InputConstants.Type.KEYSYM,
 			GLFW.GLFW_KEY_Y,
-			"category.vinurl"
+			"key.category.vinurl.mapping"
 		));
 
 		ClientTickEvents.END_CLIENT_TICK.register(client -> {

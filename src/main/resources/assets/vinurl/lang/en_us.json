@@ -17,7 +17,7 @@
   "text.config.VinURLConfig.title": "VinURL Config",
   "text.config.VinURLConfig.section.general": "General",
   "text.config.VinURLConfig.section.audioSettings": "Audio Settings",
-  "category.vinurl": "VinURL",
+  "key.category.vinurl.mapping": "VinURL",
   "key.vinurl.accept": "Add Provider",
   "message.vinurl.custom_record.missing" : "VinURL-Disc needed in hand!",
   "message.vinurl.custom_record.url.invalid" : "Song URL is invalid!",
