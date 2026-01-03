@@ -1,7 +1,3 @@
-Version: 2.2.0
-- enhancement: mod is now automatically being published to curseforge
-- api: added 2 new api endpoints playFor and stopFor for starting and stopping global custom sounds for a specified user via uuid. Especially useful for portable jukeboxes
-- breaking change: changed the 2 existing api endpoints play -> playAt and stop -> stopAt 
-- code: moved from yarn to mojang mappings
-- code: a lot of refactoring and code improvements
-- docs: updated the docs to reflect the new api
+Version: 2.2.1
+- bugfix: renaming a custom disc now correctly displays the newly set name instead of always displaying Custom Music Disc
+- bugfix: mc versions 1.21.6+ did not display the downloading progress because of the change from RGB to ARGB
