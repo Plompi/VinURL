@@ -21,7 +21,7 @@ public class URLDisc extends Item {
 		super(new Item.Properties()
 			.stacksTo(1)
 			.rarity(Rarity.RARE)
-			.jukeboxPlayable(SONG));
+			.jukeboxPlayable(SONG_KEY));
 	}
 
 	@Override

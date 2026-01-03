@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.component.CustomData;
 
+import static com.vinurl.VinURL.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.*;
 
 public class VinURLClient implements ClientModInitializer {
@@ -23,7 +24,6 @@ public class VinURLClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		// Downloads FFmpeg, FFprobe and YT-DLP if they do not exist and checks for updates.
 		for (Executable executable : Executable.values()) {
 			if (!executable.checkForExecutable()) {
 				LOGGER.error("Failed to load executable {}", executable);
@@ -40,7 +40,7 @@ public class VinURLClient implements ClientModInitializer {
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
 			lines.clear();
-			lines.add(Component.translatable("item.vinurl.custom_record").withStyle(ChatFormatting.AQUA));
+			lines.add(stack.getHoverName().copy().withStyle(ChatFormatting.AQUA));
 			lines.add(Component.translatable("itemGroup.tools").withStyle(ChatFormatting.BLUE));
 
 			if (CONFIG.showDescription()) {

@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.vinurl.util.Constants.CUSTOM_RECORD;
+import static com.vinurl.VinURL.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)

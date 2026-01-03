@@ -29,30 +29,30 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
 		ResourceLocation texture = !simulate ? (button.active && button.isHovered() ?
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered") :
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button")) :
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
+			SIMULATE_BUTTON_HOVER_ID :
+			SIMULATE_BUTTON_ID) :
+			SIMULATE_BUTTON_DISABLED_ID;
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
 		ResourceLocation texture = loop ?
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button") :
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button_disabled");
+			LOOP_BUTTON_ID :
+			LOOP_BUTTON_DISABLED_ID;
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
 		ResourceLocation texture = lock ?
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button") :
-			ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
+			LOCK_BUTTON_ID :
+			LOCK_BUTTON_DISABLED_ID;
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	public URLDiscScreen(String defaultURL, int defaultDuration, boolean defaultLoop) {
-		super(StackLayout.class, DataSource.asset(ResourceLocation.fromNamespaceAndPath(MOD_ID, "disc_url_screen")));
+		super(StackLayout.class, DataSource.asset(URL_DISC_SCREEN_ID));
 		this.url = defaultURL;
 		this.loop = defaultLoop;
 		this.duration = defaultDuration;
