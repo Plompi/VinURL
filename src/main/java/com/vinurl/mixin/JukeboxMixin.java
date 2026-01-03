@@ -11,7 +11,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.JukeboxBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.ticks.ContainerSingleItem;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,7 +21,7 @@ import static com.vinurl.util.Constants.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.DURATION_KEY;
 
 @Mixin(JukeboxBlockEntity.class)
-public abstract class JukeboxMixin implements ContainerSingleItem {
+public abstract class JukeboxMixin {
 	@Shadow
 	private ItemStack item;
 
@@ -31,28 +30,28 @@ public abstract class JukeboxMixin implements ContainerSingleItem {
 
 	@Inject(at = @At("HEAD"), method = "setTheItem")
 	public void stopPlaying(ItemStack stack, CallbackInfo ci) {
-		if (item.getItem() == CUSTOM_RECORD) {
+		if (item.is(CUSTOM_RECORD)) {
 			VinURLSound.stopAt(getContainerBlockEntity().getLevel(), item, getContainerBlockEntity().getBlockPos(), false);
 		}
 	}
 
 	@Inject(at = @At("TAIL"), method = "setTheItem")
 	public void startPlaying(ItemStack stack, CallbackInfo ci) {
-		if (item.getItem() == CUSTOM_RECORD) {
+		if (item.is(CUSTOM_RECORD)) {
 			VinURLSound.playAt(getContainerBlockEntity().getLevel(), item, getContainerBlockEntity().getBlockPos());
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "popOutTheItem")
 	public void cancelDownload(CallbackInfo ci) {
-		if (item.getItem() == CUSTOM_RECORD) {
+		if (item.is(CUSTOM_RECORD)) {
 			VinURLSound.stopAt(getContainerBlockEntity().getLevel(), item, getContainerBlockEntity().getBlockPos(), true);
 		}
 	}
 
 	@Inject(at = @At("HEAD"), method = "tick")
 	private static void tick(Level level, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity, CallbackInfo ci) {
-		if (blockEntity.getTheItem().getItem() == CUSTOM_RECORD) {
+		if (blockEntity.getTheItem().is(CUSTOM_RECORD)) {
 			CompoundTag tag = blockEntity.getTheItem().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 			JukeboxSongPlayer manager = blockEntity.getSongPlayer();
 			if (manager.getTicksSinceSongStarted() > tag.get(DURATION_KEY) * 20L) {

@@ -15,9 +15,9 @@ import net.minecraft.world.level.Level;
 
 import static com.vinurl.util.Constants.*;
 
-public class VinURLDisc extends Item {
+public class URLDisc extends Item {
 
-	public VinURLDisc() {
+	public URLDisc() {
 		super(new Item.Properties()
 			.stacksTo(1)
 			.rarity(Rarity.RARE)

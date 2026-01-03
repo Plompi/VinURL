@@ -1,6 +1,6 @@
 package com.vinurl.util;
 
-import com.vinurl.item.VinURLDisc;
+import com.vinurl.item.URLDisc;
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.network.OwoNetChannel;
@@ -24,7 +24,7 @@ public class Constants {
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 	public static final ResourceLocation PLACEHOLDER_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "placeholder_sound");
 	public static final ResourceKey<JukeboxSong> SONG = ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND_ID);
-	public static final Item CUSTOM_RECORD = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "custom_record"), new VinURLDisc());
+	public static final Item CUSTOM_RECORD = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(MOD_ID, "custom_record"), new URLDisc());
 
 	//networking
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(ResourceLocation.fromNamespaceAndPath(MOD_ID, "main"));

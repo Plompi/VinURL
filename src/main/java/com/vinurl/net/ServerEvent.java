@@ -29,7 +29,7 @@ public class ServerEvent {
 			Player player = context.player();
 			ItemStack stack = Stream.of(InteractionHand.values())
 				.map(player::getItemInHand)
-				.filter(currentStack -> currentStack.getItem() == CUSTOM_RECORD)
+				.filter(currentStack -> currentStack.is(CUSTOM_RECORD))
 				.findFirst()
 				.orElse(null);
 

@@ -3,7 +3,7 @@ package com.vinurl.net;
 import com.vinurl.client.KeyListener;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
-import com.vinurl.gui.URLScreen;
+import com.vinurl.gui.URLDiscScreen;
 import io.wispforest.endec.annotations.NullableComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -78,7 +78,7 @@ public class ClientEvent {
 
 		// Client event to open record ui
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			context.runtime().setScreen(new URLScreen(payload.url(), payload.duration(), payload.loop()));
+			context.runtime().setScreen(new URLDiscScreen(payload.url(), payload.duration(), payload.loop()));
 		});
 	}
 

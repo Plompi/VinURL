@@ -18,7 +18,7 @@ import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.util.Constants.*;
 import static com.vinurl.util.Constants.LOGGER;
 
-public class URLScreen extends BaseUIModelScreen<StackLayout> {
+public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
 	private boolean loop;
 	private boolean lock;
@@ -51,7 +51,7 @@ public class URLScreen extends BaseUIModelScreen<StackLayout> {
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
-	public URLScreen(String defaultURL, int defaultDuration, boolean defaultLoop) {
+	public URLDiscScreen(String defaultURL, int defaultDuration, boolean defaultLoop) {
 		super(StackLayout.class, DataSource.asset(ResourceLocation.fromNamespaceAndPath(MOD_ID, "disc_url_screen")));
 		this.url = defaultURL;
 		this.loop = defaultLoop;

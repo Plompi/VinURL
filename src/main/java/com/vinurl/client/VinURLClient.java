@@ -35,7 +35,7 @@ public class VinURLClient implements ClientModInitializer {
 		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
-			if (stack.getItem() != CUSTOM_RECORD || !stack.has(DataComponents.CUSTOM_DATA)) {return;}
+			if (!stack.is(CUSTOM_RECORD) || !stack.has(DataComponents.CUSTOM_DATA)) {return;}
 
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 
