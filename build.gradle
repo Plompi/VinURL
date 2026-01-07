@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "${plg_fabric_loom}"
+	id "net.fabricmc.fabric-loom-remap" version "${plg_fabric_loom}"
 	id "org.moddedmc.wiki.toolkit" version "${plg_moddedmc_wiki}"
 }
 
