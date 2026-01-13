@@ -67,7 +67,7 @@ wiki {
 	docs {
 		vinurl {
 			root = file("docs")
-			wikiAccessToken = System.getenv('WIKI_TOKEN')
 		}
 	}
+	wikiAccessToken = System.getenv('WIKI_TOKEN')
 }

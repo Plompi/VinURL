@@ -6,13 +6,28 @@ them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/bl
 
 # Usage
 
-| **Enter URL**                                                                                  | **Use Disc**                                                                                       |
-|------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| 1. Right click the Custom Music Disc                                                           | 1. Insert the Disc into a Jukebox                                                                  |
-| 2. Enter a valid URL                                                                           | 2. Wait until the download completes                                                               |
-| 3. Press Enter or Escape to set the URL                                                        | 3. Enjoy the music :)                                                                              |
-| ![enter_url](https://github.com/Plompi/VinURL/blob/master/docs/.assets/enter_url.gif?raw=true) | ![insert_disc](https://github.com/Plompi/VinURL/blob/master/docs/.assets/insert_disc.gif?raw=true) |
-
+<table>
+    <tr>
+        <th>Enter URL</th>
+        <th>Use Disc</th>
+    </tr>
+    <tr>
+        <td>1. Right click the Custom Music Disc</td>
+        <td>1. Insert the Disc into a Jukebox</td>
+    </tr>
+    <tr>
+        <td>2. Enter a valid URL</td>
+        <td>2. Wait until the download completes</td>
+    </tr>
+    <tr>
+        <td>3. Press Enter or Escape to set the URL</td>
+        <td>3. Enjoy the music :)</td>
+    </tr>
+    <tr>
+        <td><img src="https://github.com/Plompi/VinURL/blob/master/docs/.assets/enter_url.gif?raw=true" alt="enter url"></td>
+        <td><img src="https://github.com/Plompi/VinURL/blob/master/docs/.assets/insert_disc.gif?raw=true" alt="insert disc"></td>
+    </tr>
+</table>
 
 # Commands
 
