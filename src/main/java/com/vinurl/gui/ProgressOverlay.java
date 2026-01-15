@@ -3,6 +3,7 @@ package com.vinurl.gui;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.CommonColors;
 
 import java.util.LinkedHashMap;
 
@@ -43,7 +44,7 @@ public class ProgressOverlay {
 		Component progress = switch (entry.state) {
 			case INTERRUPTED ->
 				Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
-					.append(createProgressText(20, ChatFormatting.RED));
+					.append(createProgressText(BAR_SIZE, ChatFormatting.RED));
 			case TRANSCODING -> {
 				int animationStep = (int) ((System.currentTimeMillis() - entry.stateChangeTime) / 100) % BAR_SIZE;
 				yield Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
@@ -70,6 +71,6 @@ public class ProgressOverlay {
 	private static void renderText(GuiGraphics context, Component text, int offset) {
 		context.drawString(CLIENT.font, text,
 			(CLIENT.getWindow().getGuiScaledWidth() - CLIENT.font.width(text)) / 2,
-			CLIENT.getWindow().getGuiScaledHeight() - offset, 0xFFFFFF);
+			CLIENT.getWindow().getGuiScaledHeight() - offset, CommonColors.WHITE);
 	}
 }
