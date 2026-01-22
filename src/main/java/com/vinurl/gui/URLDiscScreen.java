@@ -16,7 +16,6 @@ import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.util.Constants.*;
-import static com.vinurl.util.Constants.LOGGER;
 
 public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
@@ -70,7 +69,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 
 		durationSlider.value(duration);
 		durationSlider.tooltipSupplier(slider -> Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
-		durationSlider.mouseDrag().subscribe((mouseX, mouseY, deltaX, deltaY, button) -> {
+		durationSlider.mouseDown().subscribe((mouseX, mouseY, button) -> {
 			sliderDragged = true;
 			lockButton.active = loopButton.active = simulateButton.active = false;
 			return true;
@@ -126,7 +125,8 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
 			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, loop, lock));
-			CLIENT.setScreen(null);
+			this.onClose();
+			return true;
 		}
 		return super.keyPressed(keyCode, scanCode, modifiers);
 	}
