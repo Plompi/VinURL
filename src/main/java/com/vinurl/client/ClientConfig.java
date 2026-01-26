@@ -23,7 +23,7 @@ public class ClientConfig {
 	public List<String> urlWhitelist = new ArrayList<>(List.of("https://www.youtube.com", "https://soundcloud.com"));
 
 	public static boolean urlSanitization(List<String> list) {
-		return list.stream().allMatch(url -> {
+		return list.stream().allMatch((url) -> {
 			try {
 				return new URI(url).toURL().toString().equals(url);
 			} catch (Exception e) {

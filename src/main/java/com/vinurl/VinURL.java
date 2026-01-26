@@ -19,7 +19,7 @@ public class VinURL implements ModInitializer {
 	public void onInitialize() {
 		Registry.register(BuiltInRegistries.SOUND_EVENT, PLACEHOLDER_SOUND_ID, SoundEvent.createVariableRangeEvent(PLACEHOLDER_SOUND_ID));
 
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register((content) -> content.accept(CUSTOM_RECORD));
+		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register((itemGroup) -> itemGroup.accept(CUSTOM_RECORD));
 
 		ServerEvent.register();
 	}

@@ -51,7 +51,7 @@ public enum Executable {
 	}
 
 	public boolean registerProcess(String id, ProcessStream processStream) {
-		return activeProcesses.computeIfAbsent(id, k -> {
+		return activeProcesses.computeIfAbsent(id, (s) -> {
 			processStream.onExit(() -> activeProcesses.remove(id));
 			return processStream;
 		}) == processStream;
@@ -69,9 +69,9 @@ public enum Executable {
 		ProcessStream stream = activeProcesses.remove(id);
 		if (stream != null && stream.process != null) {
 			try {
-				stream.process.descendants().forEach(ph -> {
-					ph.destroyForcibly();
-					ph.onExit().join();
+				stream.process.descendants().forEach((processHandle) -> {
+					processHandle.destroyForcibly();
+					processHandle.onExit().join();
 				});
 				stream.process.destroyForcibly();
 				stream.process.onExit().join();
@@ -236,8 +236,8 @@ public enum Executable {
 
 		public class SubscriberBuilder {
 			private final String subscriberId;
-			private Consumer<String> onOutput = s -> {};
-			private Consumer<Throwable> onError = t -> {};
+			private Consumer<String> onOutput = (s) -> {};
+			private Consumer<Throwable> onError = (t) -> {};
 			private Runnable onComplete = () -> {};
 
 			public SubscriberBuilder(String subscriberId) {

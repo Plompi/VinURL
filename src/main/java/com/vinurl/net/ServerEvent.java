@@ -26,15 +26,15 @@ public class ServerEvent {
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.StopSoundRecord.class);
 
 		// Server event handler for setting the URL on the custom record
-		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (payload, context) -> {
-			Player player = context.player();
+		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (message, access) -> {
+			Player player = access.player();
 			ItemStack stack = Stream.of(InteractionHand.values())
 				.map(player::getItemInHand)
-				.filter(currentStack -> currentStack.is(CUSTOM_RECORD))
+				.filter((stackInHand) -> stackInHand.is(CUSTOM_RECORD))
 				.findFirst()
-				.orElse(null);
+				.orElse(ItemStack.EMPTY);
 
-			if (stack == null) {
+			if (stack.isEmpty()) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.missing"), true);
 				return;
 			}
@@ -42,7 +42,7 @@ public class ServerEvent {
 			String url;
 
 			try {
-				url = new URI(payload.url()).toURL().toString();
+				url = new URI(message.url()).toURL().toString();
 			} catch (Exception e) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.invalid"), true);
 				return;
@@ -53,15 +53,14 @@ public class ServerEvent {
 				return;
 			}
 
+			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag() {{
+				put(URL_KEY, url);
+				put(DURATION_KEY, message.duration());
+				put(LOOP_KEY, message.loop());
+				put(LOCK_KEY, message.lock());
+			}}));
+
 			player.playNotifySound(SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
-
-			CompoundTag tag = new CompoundTag();
-			tag.put(URL_KEY, url);
-			tag.put(DURATION_KEY, payload.duration());
-			tag.put(LOOP_KEY, payload.loop());
-			tag.put(LOCK_KEY, payload.lock());
-
-			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 		});
 	}
 

@@ -56,8 +56,8 @@ public class VinURLSound {
 
 	private static Iterable<Player> playersInRange(Level level, BlockPos pos, double range) {
 		return level.players().stream()
-			.filter(p -> p.position().distanceTo(pos.getCenter()) <= range)
-			.map(p -> (Player) p).toList();
+			.filter((player) -> player.position().distanceTo(pos.getCenter()) <= range)
+			.map((player) -> (Player) player).toList();
 	}
 
 	private static Iterable<Player> playerByUuid(Level level, UUID uuid) {

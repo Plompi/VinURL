@@ -68,7 +68,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
 
 		durationSlider.value(duration);
-		durationSlider.tooltipSupplier(slider -> Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
+		durationSlider.tooltipSupplier((slider) -> Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
 		durationSlider.mouseDown().subscribe((mouseX, mouseY, button) -> {
 			sliderDragged = true;
 			lockButton.active = loopButton.active = simulateButton.active = false;
@@ -79,43 +79,43 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 			lockButton.active = loopButton.active = simulateButton.active = true;
 			return true;
 		});
-		durationSlider.onChanged().subscribe(newValue -> {duration = (int) newValue;});
+		durationSlider.onChanged().subscribe((newValue) -> {duration = (int) newValue;});
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
 			return true;
 		});
 
 		loopButton.renderer(LOOP_BUTTON_TEXTURE);
-		loopButton.onPress(button -> loop = !loop);
+		loopButton.onPress((button) -> loop = !loop);
 
 		lockButton.renderer(LOCK_BUTTON_TEXTURE);
-		lockButton.onPress(button -> lock = !lock);
+		lockButton.onPress((button) -> lock = !lock);
 
 		simulateButton.renderer(SIMULATE_BUTTON_TEXTURE);
-		simulateButton.onPress(button -> {
+		simulateButton.onPress((button) -> {
 			if (simulate) {return;}
 			simulate = true;
 			button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip.calculating"));
 			Executable.YT_DLP.executeCommand(
 				SoundManager.getFileName(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
 			).subscribe("duration")
-				.onOutput(line -> {
-					String type = line.substring(0, line.indexOf(':') + 1);
-					String message = line.substring(type.length()).trim();
+				.onOutput((output) -> {
+					String type = output.substring(0, output.indexOf(':') + 1);
+					String message = output.substring(type.length()).trim();
 
 					switch (type) {
 						case "DURATION:" -> durationSlider.value(Integer.parseInt(message));
 						case "WARNING:" -> LOGGER.warn(message);
 						case "ERROR:" -> LOGGER.error(message);
-						default -> LOGGER.info(line);
+						default -> LOGGER.info(output);
 					}
 				})
-				.onError(error -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
+				.onError((error) -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
 				.onComplete(() -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
 			.start();
 		});
 
-		urlTextbox.onChanged().subscribe(text -> placeholderLabel.text(Component.literal((url = text).isEmpty() ? "URL" : "")));
+		urlTextbox.onChanged().subscribe((text) -> placeholderLabel.text(Component.literal((url = text).isEmpty() ? "URL" : "")));
 		urlTextbox.text(url);
 		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 110, 16)));
 		urlTextbox.focusGained().subscribe((source) -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 0, 0)));

@@ -28,7 +28,6 @@ public class SoundManager {
 	private static final HashMap<String, String> descriptionCache = new HashMap<>();
 
 	public static void downloadSound(String url, String fileName) {
-		if (CLIENT.player == null) {return;}
 		ProgressOverlay.set(fileName, 0);
 
 		Executable.YT_DLP.executeCommand(
@@ -41,18 +40,18 @@ public class SoundManager {
 			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 			"-o", fileName + ".%(ext)s"
 		).subscribe("main")
-			.onOutput(line -> {
-				String type = line.substring(0, line.indexOf(':') + 1);
-				String message = line.substring(type.length()).trim();
+			.onOutput((output) -> {
+				String type = output.substring(0, output.indexOf(':') + 1);
+				String message = output.substring(type.length()).trim();
 
 				switch (type) {
 					case "PROGRESS:" -> ProgressOverlay.set(fileName, Integer.parseInt(message));
 					case "WARNING:" -> LOGGER.warn(message);
 					case "ERROR:" -> LOGGER.error(message);
-					default -> LOGGER.info(line);
+					default -> LOGGER.info(output);
 				}
 			})
-			.onError(error -> {
+			.onError((error) -> {
 				ProgressOverlay.stopFailed(fileName);
 				deleteSound(fileName);
 			})
@@ -124,8 +123,8 @@ public class SoundManager {
 
 			String filter = "Comment: " + attribute + "=";
 			return Stream.of(metadata.split("\n"))
-				.filter(line -> line.startsWith(filter))
-				.map(line -> line.substring(filter.length()))
+				.filter((line) -> line.startsWith(filter))
+				.map((line) -> line.substring(filter.length()))
 				.findFirst()
 				.orElse("N/A");
 		} catch (JOrbisException e) {

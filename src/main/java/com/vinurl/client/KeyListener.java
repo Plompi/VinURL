@@ -21,7 +21,7 @@ public class KeyListener {
 			"key.category.vinurl.mapping"
 		));
 
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+		ClientTickEvents.END_CLIENT_TICK.register((client) -> {
 			if (waitingFuture == null || waitingFuture.isDone()) {return;}
 
 			if (acceptKey.isDown()) {

@@ -19,12 +19,12 @@ public class ClientEvent {
 
 	public static void register() {
 		// Client event for playing sounds
-		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (payload, context) -> {
-			BlockPos pos = payload.pos();
-			String url = payload.url();
-			boolean loop = payload.loop();
+		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (message, access) -> {
+			Minecraft client = access.runtime();
+			BlockPos pos = message.pos();
+			String url = message.url();
+			boolean loop = message.loop();
 			String fileName = SoundManager.getFileName(url);
-			Minecraft client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {return;}
 
@@ -58,7 +58,7 @@ public class ClientEvent {
 					true
 				);
 
-				KeyListener.waitForKeyPress().thenAccept(confirmed -> {
+				KeyListener.waitForKeyPress().thenAccept((confirmed) -> {
 					if (confirmed) {
 						CONFIG.urlWhitelist().add(baseURL);
 						CONFIG.save();
@@ -70,15 +70,15 @@ public class ClientEvent {
 		});
 
 		// Client event for stopping sounds
-		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (payload, context) -> {
-			BlockPos pos = payload.pos();
+		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (message, access) -> {
+			BlockPos pos = message.pos();
 			SoundManager.stopSound(pos);
-			SoundManager.unqueueSound(SoundManager.getFileName(payload.url()), pos, payload.cancel());
+			SoundManager.unqueueSound(SoundManager.getFileName(message.url()), pos, message.cancel());
 		});
 
 		// Client event to open record ui
-		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (payload, context) -> {
-			context.runtime().setScreen(new URLDiscScreen(payload.url(), payload.duration(), payload.loop()));
+		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (message, access) -> {
+			access.runtime().setScreen(new URLDiscScreen(message.url(), message.duration(), message.loop()));
 		});
 	}
 
