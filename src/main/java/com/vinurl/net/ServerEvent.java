@@ -53,7 +53,7 @@ public class ServerEvent {
 				return;
 			}
 
-			player.playNotifySound(SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
+			player.level().playSound(null, player.blockPosition(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
 
 			CompoundTag tag = new CompoundTag();
 			tag.put(URL_KEY, url);

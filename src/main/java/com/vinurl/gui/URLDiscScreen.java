@@ -11,7 +11,7 @@ import io.wispforest.owo.ui.util.NinePatchTexture;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -26,7 +26,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private int duration;
 
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		ResourceLocation texture = !simulate ? (button.active && button.isHovered() ?
+		Identifier texture = !simulate ? (button.active && button.isHovered() ?
 			SIMULATE_BUTTON_HOVER_ID :
 			SIMULATE_BUTTON_ID) :
 			SIMULATE_BUTTON_DISABLED_ID;
@@ -34,14 +34,14 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	};
 
 	private final ButtonComponent.Renderer LOOP_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		ResourceLocation texture = loop ?
+		Identifier texture = loop ?
 			LOOP_BUTTON_ID :
 			LOOP_BUTTON_DISABLED_ID;
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		ResourceLocation texture = lock ?
+		Identifier texture = lock ?
 			LOCK_BUTTON_ID :
 			LOCK_BUTTON_DISABLED_ID;
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());

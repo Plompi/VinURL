@@ -6,7 +6,7 @@ import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.JukeboxSong;
 import org.slf4j.Logger;
@@ -21,19 +21,19 @@ public class Constants {
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 
 	//resources
-	public static final ResourceLocation PLACEHOLDER_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "placeholder_sound");
-	public static final ResourceLocation CUSTOM_RECORD_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "custom_record");
-	public static final ResourceLocation KEY_MAPPING_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "mapping");
-	public static final ResourceLocation NETWORK_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "network_channel");
-	public static final ResourceLocation PROGRESS_HUD_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "progress_hud");
-	public static final ResourceLocation URL_DISC_SCREEN_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "disc_url_screen");
-	public static final ResourceLocation SIMULATE_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button");
-	public static final ResourceLocation SIMULATE_BUTTON_HOVER_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered");
-	public static final ResourceLocation SIMULATE_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
-	public static final ResourceLocation LOOP_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button");
-	public static final ResourceLocation LOOP_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button_disabled");
-	public static final ResourceLocation LOCK_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button");
-	public static final ResourceLocation LOCK_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
+	public static final Identifier PLACEHOLDER_SOUND_ID = Identifier.fromNamespaceAndPath(MOD_ID, "placeholder_sound");
+	public static final Identifier CUSTOM_RECORD_ID = Identifier.fromNamespaceAndPath(MOD_ID, "custom_record");
+	public static final Identifier KEY_MAPPING_ID = Identifier.fromNamespaceAndPath(MOD_ID, "mapping");
+	public static final Identifier NETWORK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "network_channel");
+	public static final Identifier PROGRESS_HUD_ID = Identifier.fromNamespaceAndPath(MOD_ID, "progress_hud");
+	public static final Identifier URL_DISC_SCREEN_ID = Identifier.fromNamespaceAndPath(MOD_ID, "disc_url_screen");
+	public static final Identifier SIMULATE_BUTTON_ID = Identifier.fromNamespaceAndPath(MOD_ID, "simulate_button");
+	public static final Identifier SIMULATE_BUTTON_HOVER_ID = Identifier.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered");
+	public static final Identifier SIMULATE_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
+	public static final Identifier LOOP_BUTTON_ID = Identifier.fromNamespaceAndPath(MOD_ID, "loop_button");
+	public static final Identifier LOOP_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "loop_button_disabled");
+	public static final Identifier LOCK_BUTTON_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button");
+	public static final Identifier LOCK_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
 	public static final ResourceKey<JukeboxSong> SONG_KEY = ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND_ID);
 	public static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, CUSTOM_RECORD_ID);
 
