@@ -1,6 +1,5 @@
 package com.vinurl.client;
 
-import net.minecraft.Util;
 import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.AudioStream;
@@ -8,8 +7,9 @@ import net.minecraft.client.sounds.JOrbisAudioStream;
 import net.minecraft.client.sounds.LoopingAudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.FileInputStream;
@@ -39,7 +39,7 @@ public class FileSound extends AbstractSoundInstance {
 	}
 
 	@Override
-	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, ResourceLocation id, boolean loop) {
+	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, Identifier id, boolean loop) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(SoundManager.getAudioFile(fileName));
