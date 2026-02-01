@@ -53,12 +53,12 @@ public class ServerEvent {
 				return;
 			}
 
-			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(new CompoundTag() {{
-				put(URL_KEY, url);
-				put(DURATION_KEY, message.duration());
-				put(LOOP_KEY, message.loop());
-				put(LOCK_KEY, message.lock());
-			}}));
+			CompoundTag tag = new CompoundTag();
+			tag.put(URL_KEY, url);
+			tag.put(DURATION_KEY, message.duration());
+			tag.put(LOOP_KEY, message.loop());
+			tag.put(LOCK_KEY, message.lock());
+			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
 			player.level().playSound(null, player, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
 		});
