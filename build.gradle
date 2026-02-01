@@ -12,6 +12,7 @@ base {
 
 repositories {
 	maven { url = "https://maven.wispforest.io" }
+	maven { url = "https://jitpack.io" }
 	mavenLocal()
 }
 
