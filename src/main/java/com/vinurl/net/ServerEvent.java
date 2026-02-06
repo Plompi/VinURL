@@ -3,10 +3,10 @@ package com.vinurl.net;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
@@ -27,7 +27,7 @@ public class ServerEvent {
 
 		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (message, access) -> {
-			ServerPlayer player = access.player();
+			Player player = access.player();
 			ItemStack stack = Stream.of(InteractionHand.values())
 				.map(player::getItemInHand)
 				.filter((stackInHand) -> stackInHand.is(CUSTOM_RECORD))

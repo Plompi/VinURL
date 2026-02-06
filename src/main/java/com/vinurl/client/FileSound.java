@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-import static com.vinurl.client.SoundManager.getAudioFile;
 import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 public class FileSound extends AbstractSoundInstance {
@@ -43,7 +42,7 @@ public class FileSound extends AbstractSoundInstance {
 	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, ResourceLocation id, boolean repeatInstantly) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
-				InputStream inputStream = new FileInputStream(getAudioFile(fileName));
+				InputStream inputStream = new FileInputStream(SoundManager.getAudioFile(fileName));
 				return repeatInstantly
 					? new LoopingAudioStream(JOrbisAudioStream::new, inputStream)
 					: new JOrbisAudioStream(inputStream);
