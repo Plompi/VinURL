@@ -32,7 +32,9 @@ public enum Executable {
 	FFPROBE("ffprobe", "eugeneware/ffmpeg-static",
 		String.format("ffprobe-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
 	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static",
-		String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")));
+		String.format("ffmpeg-%s-x64", (SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
+	DENO("deno", "denoland/deno",
+		String.format("deno-x86_64-%s.zip", (SystemUtils.IS_OS_LINUX ? "unknown-linux-gnu" : SystemUtils.IS_OS_MAC ? "apple-darwin" : "pc-windows-msvc")));
 
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final String FILE_NAME;

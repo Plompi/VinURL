@@ -37,8 +37,7 @@ public class SoundManager {
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
 			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
-			"-P", AUDIO_DIRECTORY.toString(), "--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
-			"-o", fileName + ".%(ext)s"
+			"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
 		).subscribe("main")
 			.onOutput((output) -> {
 				String type = output.substring(0, output.indexOf(':') + 1);

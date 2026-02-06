@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static com.vinurl.util.Constants.*;
 
@@ -44,24 +45,22 @@ public class VinURLSound {
 		);
 	}
 
-	private static void send(Level level, ItemStack stack, Iterable<Player> players, Function<CompoundTag, Record> factory) {
+	private static void send(Level level, ItemStack stack, List<Player> players, Function<CompoundTag, Record> factory) {
 		if (level == null || level.isClientSide()) {return;}
 
 		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-
 		for (Player player : players) {
 			NETWORK_CHANNEL.serverHandle(player).send(factory.apply(tag));
 		}
 	}
 
-	private static Iterable<Player> playersInRange(Level level, BlockPos pos, double range) {
+	private static List<Player> playersInRange(Level level, BlockPos pos, double range) {
 		return level.players().stream()
 			.filter((player) -> player.position().distanceTo(pos.getCenter()) <= range)
 			.map((player) -> (Player) player).toList();
 	}
 
-	private static Iterable<Player> playerByUuid(Level level, UUID uuid) {
-		Player player = level.getPlayerByUUID(uuid);
-		return player != null ? List.of(player) : List.of();
+	private static List<Player> playerByUuid(Level level, UUID uuid) {
+		return Stream.ofNullable(level.getPlayerByUUID(uuid)).toList();
 	}
 }
