@@ -50,6 +50,7 @@ Commands Section)
 This mod automatically downloads the following external programs in the background to ensure proper functionality. By using this mod, you agree to the automated download and use of these external programs.
 
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp) ([Unlicense](https://github.com/yt-dlp/yt-dlp/blob/master/LICENSE)): Downloads media from supported providers.
+- [deno](https://github.com/denoland/deno) ([MIT](https://github.com/denoland/deno/blob/main/LICENSE.md)): Javascript engine to run [yt-dlp-ejs](https://github.com/yt-dlp/ejs) solver scripts.
 - [FFmpeg binaries](https://github.com/eugeneware/ffmpeg-static) ([GPL-3.0](https://github.com/eugeneware/ffmpeg-static/blob/master/LICENSE)): Extracts audio from media files.
 
 Please note that it is the sole responsibility of each user to comply with applicable copyright laws and the terms of service of any music provider when using this mod. The developers of this mod do not assume any liability for unauthorized use or violations of such laws and regulations.
