@@ -44,18 +44,14 @@ public class Commands {
 	private static int updateExecutables(CommandContext<FabricClientCommandSource> ctx) {
 		ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.check"));
 		CompletableFuture.runAsync(() -> {
-			boolean anyUpdate = false;
-			for (Executable executable : Executable.values()) {
-				String current = executable.currentVersion();
-				if (executable.checkForUpdates()) {
-					String latest = executable.currentVersion();
-					ctx.getSource().sendFeedback(Component.literal(String.format("%s: %s -> %s", executable, current, latest)));
-					anyUpdate = true;
+			for (Executable exe : Executable.values()) {
+				String current = exe.currentVersion();
+				if (exe.checkForUpdates()) {
+					String latest = exe.currentVersion();
+					ctx.getSource().sendFeedback(Component.literal(String.format("%s: %s -> %s", exe, current, latest)));
 				}
 			}
-			if (!anyUpdate) {
-				ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.latest"));
-			}
+			ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.latest"));
 		});
 		return 1;
 	}

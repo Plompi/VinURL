@@ -39,11 +39,11 @@ public class FileSound extends AbstractSoundInstance {
 	}
 
 	@Override
-	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, ResourceLocation id, boolean repeatInstantly) {
+	public CompletableFuture<AudioStream> getAudioStream(SoundBufferLibrary loader, ResourceLocation id, boolean loop) {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(SoundManager.getAudioFile(fileName));
-				return repeatInstantly
+				return loop
 					? new LoopingAudioStream(JOrbisAudioStream::new, inputStream)
 					: new JOrbisAudioStream(inputStream);
 			} catch (IOException e) {

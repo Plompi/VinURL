@@ -15,6 +15,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.component.CustomData;
 
+import java.util.concurrent.CompletableFuture;
+
 import static com.vinurl.VinURL.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.*;
 
@@ -24,11 +26,13 @@ public class VinURLClient implements ClientModInitializer {
 
 	@Override
 	public void onInitializeClient() {
-		for (Executable executable : Executable.values()) {
-			if (!executable.checkForExecutable()) {
-				LOGGER.error("Failed to load executable {}", executable);
+		CompletableFuture.runAsync((() -> {
+			for (Executable exe : Executable.values()) {
+				if (!exe.checkForExecutable()) {
+					LOGGER.error("Failed to load executable {}", exe);
+				}
 			}
-		}
+		}));
 
 		KeyListener.register();
 		Commands.register();
