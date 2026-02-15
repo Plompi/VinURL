@@ -62,7 +62,7 @@ public class SoundManager {
 	}
 
 	public static void deleteSound(String fileName) {
-		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles(file -> file.getName().contains(fileName));
+		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles((file) -> file.getName().contains(fileName));
 		if (filesToDelete == null) {return;}
 
 		for (File file : filesToDelete) {
@@ -96,7 +96,7 @@ public class SoundManager {
 		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
 		if (processStream != null) {
 			processStream.subscribe(Objects.toString(pos))
-				.onComplete(() -> {playSound(pos);}).start();
+				.onComplete(() -> playSound(pos)).start();
 		}
 	}
 

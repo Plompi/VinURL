@@ -55,11 +55,15 @@ First declare a static variable to determine if VinURL is loaded
 public static boolean isVinURLLoaded = FabricLoader.getInstance().isModLoaded("vinurl");
 ```
 
-Import the Helper class from VinURL, which contains methods for playing and stopping VinURLDiscs
+Import the VinURL API, which contains methods for playing and stopping custom sounds.
 
 ```java
 import com.vinurl.api.VinURLSound;
 ```
+
+<Callout variant="warning">
+    The API is designed to be used from the server-side only
+</Callout>
 
 #### Positional Sounds
 
@@ -69,8 +73,8 @@ This method starts a positional custom sound for all players in a 64 block range
 public void startPlaying(){
     // Your own Logic...
     if (isVinURLLoaded) {
-            VinURLSound.playAt(level, itemStack, blockPos);
-        }
+        VinURLSound.playAt(serverLevel, itemStack, blockPos);
+    }
 }
 ```
 
@@ -81,7 +85,7 @@ then the parameter *cancelable* is responsible for whether the active download i
 ```java
 public void dropRecord(){
     if (isVinURLLoaded) {
-		VinURLSound.stopAt(level, itemStack, blockPos, cancelable);
+		VinURLSound.stopAt(serverLevel, itemStack, blockPos, cancelable);
 	}
     // Your own Logic...
 }
@@ -95,8 +99,8 @@ This method starts a global custom sound for the specified player via *uuid*.
 public void startPlaying(){
     // Your own Logic...
     if (isVinURLLoaded) {
-            VinURLSound.playFor(level, itemStack, uuid);
-        }
+        VinURLSound.playFor(serverLevel, itemStack, uuid);
+    }
 }
 ```
 
@@ -107,7 +111,7 @@ then the parameter *cancelable* is responsible for whether the active download i
 ```java
 public void dropRecord(){
     if (isVinURLLoaded) {
-		VinURLSound.stopFor(level, itemStack, uuid, cancelable);
+		VinURLSound.stopFor(serverLevel, itemStack, uuid, cancelable);
 	}
     // Your own Logic...
 }

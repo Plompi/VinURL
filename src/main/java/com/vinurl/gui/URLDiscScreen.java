@@ -68,7 +68,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
 
 		durationSlider.value(duration);
-		durationSlider.tooltipSupplier((slider) -> Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)));
+		durationSlider.tooltipSupplier((slider) -> Component.literal("%02d:%02d".formatted(duration / 60, duration % 60)));
 		durationSlider.mouseDown().subscribe((mouseX, mouseY, button) -> {
 			sliderDragged = true;
 			lockButton.active = loopButton.active = simulateButton.active = false;
@@ -79,7 +79,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 			lockButton.active = loopButton.active = simulateButton.active = true;
 			return true;
 		});
-		durationSlider.onChanged().subscribe((newValue) -> {duration = (int) newValue;});
+		durationSlider.onChanged().subscribe((newValue) -> duration = (int) newValue);
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
 			return true;
@@ -138,7 +138,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 		if (sliderDragged) {
 			context.renderTooltip(
 				CLIENT.font,
-				Component.literal(String.format("%02d:%02d", duration / 60, duration % 60)),
+				Component.literal("%02d:%02d".formatted(duration / 60, duration % 60)),
 				mouseX, mouseY
 			);
 		}
