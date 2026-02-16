@@ -27,14 +27,14 @@ import static com.vinurl.util.Constants.VINURLPATH;
 
 public enum Executable {
 
-	YT_DLP("yt-dlp", "yt-dlp/yt-dlp", String.format("yt-dlp%s",
-		(SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe"))),
-	FFPROBE("ffprobe", "eugeneware/ffmpeg-static", String.format("ffprobe-%s-x64",
-		(SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
-	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static", String.format("ffmpeg-%s-x64",
-		(SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32"))),
-	DENO("deno", "denoland/deno", String.format("deno-x86_64-%s.zip",
-		(SystemUtils.IS_OS_LINUX ? "unknown-linux-gnu" : SystemUtils.IS_OS_MAC ? "apple-darwin" : "pc-windows-msvc")));
+	YT_DLP("yt-dlp", "yt-dlp/yt-dlp", "yt-dlp%s".formatted(
+		SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
+	FFPROBE("ffprobe", "eugeneware/ffmpeg-static", "ffprobe-%s-x64".formatted(
+		SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
+	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static", "ffmpeg-%s-x64".formatted(
+		SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
+	DENO("deno", "denoland/deno", "deno-x86_64-%s.zip".formatted(
+		SystemUtils.IS_OS_LINUX ? "unknown-linux-gnu" : SystemUtils.IS_OS_MAC ? "apple-darwin" : "pc-windows-msvc"));
 
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final String FILE_NAME;
@@ -148,7 +148,7 @@ public enum Executable {
 	}
 
 	private String latestVersion() {
-		String url = String.format("https://api.github.com/repos/%s/releases/latest", REPOSITORY_NAME);
+		String url = "https://api.github.com/repos/%s/releases/latest".formatted(REPOSITORY_NAME);
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()))) {
 			return reader.readLine().split("\"tag_name\":\"")[1].split("\",\"target_commitish\"")[0];
 		} catch (IOException | ArrayIndexOutOfBoundsException | URISyntaxException e) {
@@ -157,7 +157,7 @@ public enum Executable {
 	}
 
 	private InputStream getDownloadInputStream() throws IOException, URISyntaxException {
-		String url = String.format("https://github.com/%s/releases/latest/download/%s", REPOSITORY_NAME, REPOSITORY_FILE);
+		String url = "https://github.com/%s/releases/latest/download/%s".formatted(REPOSITORY_NAME, REPOSITORY_FILE);
 		return new URI(url).toURL().openStream();
 	}
 

@@ -43,18 +43,18 @@ public class ProgressOverlay {
 
 		Component progress = switch (entry.state) {
 			case INTERRUPTED ->
-				Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+				Component.literal("%d/%d ".formatted(batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(BAR_SIZE, ChatFormatting.RED));
 			case TRANSCODING -> {
 				int animationStep = (int) ((System.currentTimeMillis() - entry.stateChangeTime) / 100) % BAR_SIZE;
-				yield Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+				yield Component.literal("%d/%d ".formatted(batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(animationStep, ChatFormatting.GRAY))
 					.append(createProgressText(1, ChatFormatting.BLUE))
 					.append(createProgressText(BAR_SIZE - 1 - animationStep, ChatFormatting.GRAY));
 			}
 			default -> {
 				int progressBars = BAR_SIZE * entry.progress / 100;
-				yield Component.literal(String.format("%d/%d ", batchSize - (progressQueue.size() - 1), batchSize))
+				yield Component.literal("%d/%d ".formatted(batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(progressBars, ChatFormatting.GREEN))
 					.append(createProgressText(BAR_SIZE - progressBars, ChatFormatting.GRAY));
 			}

@@ -48,7 +48,7 @@ public class Commands {
 				String current = exe.currentVersion();
 				if (exe.checkForUpdates()) {
 					String latest = exe.currentVersion();
-					ctx.getSource().sendFeedback(Component.literal(String.format("%s: %s -> %s", exe, current, latest)));
+					ctx.getSource().sendFeedback(Component.literal("%s: %s -> %s".formatted( exe, current, latest)));
 				}
 			}
 			ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.latest"));
