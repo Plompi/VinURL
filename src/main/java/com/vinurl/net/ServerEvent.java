@@ -19,6 +19,8 @@ import static com.vinurl.util.Constants.*;
 
 public class ServerEvent {
 	public static final int MAX_URL_LENGTH = 400;
+	public static final int MIN_DURATION = 0;
+	public static final int MAX_DURATION = 3600;
 
 	public static void register() {
 		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
@@ -59,7 +61,7 @@ public class ServerEvent {
 
 			CompoundTag tag = new CompoundTag();
 			tag.put(URL_KEY, url);
-			tag.put(DURATION_KEY, message.duration());
+			tag.put(DURATION_KEY, Math.clamp(message.duration(), MIN_DURATION, MAX_DURATION));
 			tag.put(LOOP_KEY, message.loop());
 			tag.put(LOCK_KEY, message.lock());
 			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
