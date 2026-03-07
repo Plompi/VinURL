@@ -24,9 +24,22 @@ public class ClientEvent {
 			BlockPos pos = message.pos();
 			String url = message.url();
 			boolean loop = message.loop();
-			String fileName = SoundManager.getFileName(url);
 
 			if (client.player == null || url.isEmpty()) {return;}
+
+			URI uri;
+
+			try {
+				uri = new URI(url);
+			} catch (Exception ignored) {
+				return;
+			}
+
+			String scheme = uri.getScheme();
+			String host = uri.getHost();
+			if (scheme == null || host == null) {return;}
+
+			String fileName = SoundManager.getFileName(url);
 
 			SoundManager.addSound(fileName, pos, loop);
 
@@ -41,7 +54,7 @@ public class ClientEvent {
 			}
 
 			if (CONFIG.downloadEnabled()) {
-				String baseURL = URI.create(url).getScheme() + "://" + URI.create(url).getHost();
+				String baseURL = scheme + "://" + host;
 
 				if (CONFIG.urlWhitelist().contains(baseURL)) {
 					SoundManager.downloadSound(url, fileName);

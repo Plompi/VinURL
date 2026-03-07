@@ -42,7 +42,11 @@ public class ServerEvent {
 			String url;
 
 			try {
-				url = new URI(message.url()).toURL().toString();
+				URI uri = new URI(message.url());
+				if (uri.getHost() == null) {
+					throw new IllegalArgumentException("Missing host");
+				}
+				url = uri.toURL().toString();
 			} catch (Exception e) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.invalid"), true);
 				return;
