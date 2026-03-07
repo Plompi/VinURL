@@ -41,6 +41,12 @@ public class ServerEvent {
 				return;
 			}
 
+			CompoundTag existingTag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+			if (existingTag.get(LOCK_KEY)) {
+				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
+				return;
+			}
+
 			String url;
 
 			try {
