@@ -43,7 +43,7 @@ public class ClientEvent {
 			if (CONFIG.downloadEnabled()) {
 				String baseURL = URI.create(url).getScheme() + "://" + URI.create(url).getHost();
 
-				if (CONFIG.urlWhitelist().stream().anyMatch(url::startsWith)) {
+				if (CONFIG.urlWhitelist().contains(baseURL)) {
 					SoundManager.downloadSound(url, fileName);
 					SoundManager.queueSound(fileName, pos);
 					return;
