@@ -26,7 +26,7 @@
     "vinurl.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${mod_loader_fabric_version}",
+    "fabricloader": ">=0.15.0",
     "minecraft": ">=${mod_minecraft_version_start} <=${mod_minecraft_version_end}",
     "java": ">=21",
     "fabric-api": "*",

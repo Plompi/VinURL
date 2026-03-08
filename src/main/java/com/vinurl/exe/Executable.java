@@ -22,19 +22,55 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
+import static com.vinurl.exe.Platform.PLATFORM;
 import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
 public enum Executable {
 
-	YT_DLP("yt-dlp", "yt-dlp/yt-dlp", "yt-dlp%s".formatted(
-		SystemUtils.IS_OS_LINUX ? "_linux" : SystemUtils.IS_OS_MAC ? "_macos" : ".exe")),
-	FFPROBE("ffprobe", "eugeneware/ffmpeg-static", "ffprobe-%s-x64".formatted(
-		SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
-	FFMPEG("ffmpeg", "eugeneware/ffmpeg-static", "ffmpeg-%s-x64".formatted(
-		SystemUtils.IS_OS_LINUX ? "linux" : SystemUtils.IS_OS_MAC ? "darwin" : "win32")),
-	DENO("deno", "denoland/deno", "deno-x86_64-%s.zip".formatted(
-		SystemUtils.IS_OS_LINUX ? "unknown-linux-gnu" : SystemUtils.IS_OS_MAC ? "apple-darwin" : "pc-windows-msvc"));
+	YT_DLP("yt-dlp", "yt-dlp/yt-dlp",
+		switch (PLATFORM) {
+			case WIN_X64 -> "yt-dlp.exe";
+			case WIN_ARM64 -> "yt-dlp_arm64.exe";
+			case MAC_X64, MAC_ARM64 -> "yt-dlp_macos";
+			case LIN_X64 -> "yt-dlp_linux";
+			case LIN_ARM64 -> "yt-dlp_linux_aarch64";
+			case NOT_SUPPORTED -> null;
+		}
+	),
+	FFPROBE("ffprobe", "Tyrrrz/FFmpegBin",
+		switch (PLATFORM) {
+			case WIN_X64 -> "ffmpeg-windows-x64.zip";
+			case WIN_ARM64 -> "ffmpeg-windows-arm64.zip";
+			case MAC_X64 -> "ffmpeg-osx-x64.zip";
+			case MAC_ARM64 -> "ffmpeg-osx-arm64.zip";
+			case LIN_X64 -> "ffmpeg-linux-x64.zip";
+			case LIN_ARM64 -> "ffmpeg-linux-arm64.zip";
+			case NOT_SUPPORTED -> null;
+		}
+	),
+	FFMPEG("ffmpeg", "Tyrrrz/FFmpegBin",
+		switch (PLATFORM) {
+			case WIN_X64 -> "ffmpeg-windows-x64.zip";
+			case WIN_ARM64 -> "ffmpeg-windows-arm64.zip";
+			case MAC_X64 -> "ffmpeg-osx-x64.zip";
+			case MAC_ARM64 -> "ffmpeg-osx-arm64.zip";
+			case LIN_X64 -> "ffmpeg-linux-x64.zip";
+			case LIN_ARM64 -> "ffmpeg-linux-arm64.zip";
+			case NOT_SUPPORTED -> null;
+		}
+	),
+	DENO("deno", "denoland/deno",
+		switch (PLATFORM) {
+			case WIN_X64 -> "deno-x86_64-pc-windows-msvc.zip";
+			case WIN_ARM64 -> "deno-aarch64-pc-windows-msvc.zip";
+			case MAC_X64 -> "deno-x86_64-apple-darwin.zip";
+			case MAC_ARM64 -> "deno-aarch64-apple-darwin.zip";
+			case LIN_X64 -> "deno-x86_64-unknown-linux-gnu.zip";
+			case LIN_ARM64 -> "deno-aarch64-unknown-linux-gnu.zip";
+			case NOT_SUPPORTED -> null;
+		}
+	);
 
 	public final Path DIRECTORY = VINURLPATH.resolve("executables");
 	private final String FILE_NAME;
@@ -124,13 +160,13 @@ public enum Executable {
 			if (SystemUtils.IS_OS_UNIX) {
 				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILE_PATH.toString()});
 			}
-			return createVersionFile(latestVersion());
+			return writeVersion(latestVersion());
 		} catch (Exception e) {
 			return false;
 		}
 	}
 
-	private boolean createVersionFile(String version) {
+	private boolean writeVersion(String version) {
 		try {
 			Files.writeString(VERSION_PATH, version);
 			return true;

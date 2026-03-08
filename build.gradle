@@ -35,9 +35,6 @@ processResources {
 
 			mod_minecraft_version_start		: mod_minecraft_version_start,
 			mod_minecraft_version_end		: mod_minecraft_version_end,
-
-			mod_loader_fabric_version		: mod_loader_fabric_version,
-			mod_loader_neoforge_version		: mod_loader_neoforge_version
 	]
 	inputs.properties replaceProperties
 	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
