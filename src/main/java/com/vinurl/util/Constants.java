@@ -16,6 +16,8 @@ import java.nio.file.Path;
 public class Constants {
 	//general
 	public static final String MOD_ID = "vinurl";
+	public static final String MOD_VERSION = FabricLoader.getInstance().getModContainer(MOD_ID)
+		.map(c -> c.getMetadata().getVersion().getFriendlyString()).orElse("unknown");
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
 
