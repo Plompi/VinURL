@@ -1,5 +1,6 @@
 package com.vinurl.net;
 
+import com.vinurl.util.Url;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -10,7 +11,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
-import java.net.URI;
 import java.util.stream.Stream;
 
 import static com.vinurl.VinURL.CUSTOM_RECORD;
@@ -41,33 +41,30 @@ public class ServerEvent {
 				return;
 			}
 
-			CompoundTag existingTag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-			if (existingTag.get(LOCK_KEY)) {
+			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+			if (tag.get(LOCK_KEY)) {
 				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
 				return;
 			}
 
-			String url;
-
-			try {
-				URI uri = new URI(message.url());
-				if (uri.getHost() == null) {
-					throw new IllegalArgumentException("Missing host");
-				}
-				url = uri.toURL().toString();
-			} catch (Exception e) {
+			Url url = Url.parse(message.url());
+			if (url == null) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.invalid"), true);
 				return;
 			}
 
-			if (url.length() > MAX_URL_LENGTH) {
+			if (url.toString().length() > MAX_URL_LENGTH) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.long"), true);
 				return;
 			}
 
-			CompoundTag tag = new CompoundTag();
-			tag.put(URL_KEY, url);
-			tag.put(DURATION_KEY, Math.clamp(message.duration(), MIN_DURATION, MAX_DURATION));
+			if (message.duration() < MIN_DURATION || message.duration() > MAX_DURATION) {
+				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.duration.invalid"), true);
+				return;
+			}
+
+			tag.put(URL_KEY, url.toString());
+			tag.put(DURATION_KEY, message.duration());
 			tag.put(LOOP_KEY, message.loop());
 			tag.put(LOCK_KEY, message.lock());
 			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));

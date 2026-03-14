@@ -22,6 +22,7 @@
   "message.vinurl.custom_record.missing" : "VinURL-Disc needed in hand!",
   "message.vinurl.custom_record.url.invalid" : "Song URL is invalid!",
   "message.vinurl.custom_record.url.long" : "Song URL is too long!",
+  "message.vinurl.custom_record.duration.invalid" : "The duration is invalid!",
   "message.vinurl.custom_record.whitelist" : "Press %s to whitelist %s",
   "command.vinurl.delete.success": "Deleted all audio files",
   "command.vinurl.delete.exception": "Deleted only non active audio files",

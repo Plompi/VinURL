@@ -4,13 +4,12 @@ import com.vinurl.client.KeyListener;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLDiscScreen;
+import com.vinurl.util.Url;
 import io.wispforest.endec.annotations.NullableComponent;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-
-import java.net.URI;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
@@ -24,22 +23,9 @@ public class ClientEvent {
 			BlockPos pos = message.pos();
 			String url = message.url();
 			boolean loop = message.loop();
+			String fileName = SoundManager.getFileName(url);
 
 			if (client.player == null || url.isEmpty()) {return;}
-
-			URI uri;
-
-			try {
-				uri = new URI(url);
-			} catch (Exception ignored) {
-				return;
-			}
-
-			String scheme = uri.getScheme();
-			String host = uri.getHost();
-			if (scheme == null || host == null) {return;}
-
-			String fileName = SoundManager.getFileName(url);
 
 			SoundManager.addSound(fileName, pos, loop);
 
@@ -54,9 +40,11 @@ public class ClientEvent {
 			}
 
 			if (CONFIG.downloadEnabled()) {
-				String baseURL = scheme + "://" + host;
+				Url baseURL = Url.parse(url).base();
 
-				if (CONFIG.urlWhitelist().contains(baseURL)) {
+				if (baseURL == null) {return;}
+
+				if (CONFIG.urlWhitelist().contains(baseURL.toString())) {
 					SoundManager.downloadSound(url, fileName);
 					SoundManager.queueSound(fileName, pos);
 					return;
@@ -66,14 +54,14 @@ public class ClientEvent {
 					Component.translatable(
 						"message.vinurl.custom_record.whitelist",
 						Component.literal(KeyListener.getHotKey()).withStyle(ChatFormatting.YELLOW),
-						Component.literal(baseURL).withStyle(ChatFormatting.YELLOW)
+						Component.literal(baseURL.toString()).withStyle(ChatFormatting.YELLOW)
 					),
 					true
 				);
 
 				KeyListener.waitForKeyPress().thenAccept((confirmed) -> {
 					if (confirmed) {
-						CONFIG.urlWhitelist().add(baseURL);
+						CONFIG.urlWhitelist().add(baseURL.toString());
 						CONFIG.save();
 						SoundManager.downloadSound(url, fileName);
 						SoundManager.queueSound(fileName, pos);
