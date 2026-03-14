@@ -21,11 +21,12 @@ public class ClientEvent {
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (message, access) -> {
 			Minecraft client = access.runtime();
 			BlockPos pos = message.pos();
-			String url = message.url();
+			Url url = Url.parse(message.url());
 			boolean loop = message.loop();
-			String fileName = SoundManager.getFileName(url);
 
-			if (client.player == null || url.isEmpty()) {return;}
+			if (client.player == null || url == null) {return;}
+
+			String fileName = SoundManager.getFileName(url.toString());
 
 			SoundManager.addSound(fileName, pos, loop);
 
@@ -40,12 +41,11 @@ public class ClientEvent {
 			}
 
 			if (CONFIG.downloadEnabled()) {
-				Url baseURL = Url.parse(url).base();
+				Url baseUrl = url.base();
+				if (baseUrl == null) {return;}
 
-				if (baseURL == null) {return;}
-
-				if (CONFIG.urlWhitelist().contains(baseURL.toString())) {
-					SoundManager.downloadSound(url, fileName);
+				if (CONFIG.urlWhitelist().contains(baseUrl.toString())) {
+					SoundManager.downloadSound(url.toString(), fileName);
 					SoundManager.queueSound(fileName, pos);
 					return;
 				}
@@ -54,16 +54,16 @@ public class ClientEvent {
 					Component.translatable(
 						"message.vinurl.custom_record.whitelist",
 						Component.literal(KeyListener.getHotKey()).withStyle(ChatFormatting.YELLOW),
-						Component.literal(baseURL.toString()).withStyle(ChatFormatting.YELLOW)
+						Component.literal(baseUrl.toString()).withStyle(ChatFormatting.YELLOW)
 					),
 					true
 				);
 
 				KeyListener.waitForKeyPress().thenAccept((confirmed) -> {
 					if (confirmed) {
-						CONFIG.urlWhitelist().add(baseURL.toString());
+						CONFIG.urlWhitelist().add(baseUrl.toString());
 						CONFIG.save();
-						SoundManager.downloadSound(url, fileName);
+						SoundManager.downloadSound(url.toString(), fileName);
 						SoundManager.queueSound(fileName, pos);
 					}
 				});

@@ -53,7 +53,7 @@ public class ServerEvent {
 				return;
 			}
 
-			if (url.toString().length() > MAX_URL_LENGTH) {
+			if (url.length() > MAX_URL_LENGTH) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.url.long"), true);
 				return;
 			}

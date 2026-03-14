@@ -1,8 +1,11 @@
 package com.vinurl.client;
 
-import io.wispforest.owo.config.annotation.*;
+import com.vinurl.util.Url;
+import io.wispforest.owo.config.annotation.Config;
+import io.wispforest.owo.config.annotation.Modmenu;
+import io.wispforest.owo.config.annotation.PredicateConstraint;
+import io.wispforest.owo.config.annotation.SectionHeader;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,13 +26,7 @@ public class ClientConfig {
 	public List<String> urlWhitelist = new ArrayList<>(List.of("https://www.youtube.com", "https://soundcloud.com"));
 
 	public static boolean urlSanitization(List<String> list) {
-		return list.stream().allMatch((url) -> {
-			try {
-				return new URI(url).toURL().toString().equals(url);
-			} catch (Exception e) {
-				return false;
-			}
-		});
+		return list.stream().allMatch(Url::isValid);
 	}
 
 	@SectionHeader("audioSettings")

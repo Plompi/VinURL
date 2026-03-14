@@ -32,12 +32,20 @@ public final class Url {
 		}
 	}
 
+	public static boolean isValid(String input) {
+		return parse(input) != null;
+	}
+
 	public Url base() {
 		try {
 			return new Url(new URI(url.getProtocol(), url.getAuthority(), null, null, null).toURL());
 		} catch (Exception e) {
 			return null;
 		}
+	}
+
+	public int length() {
+		return url.toString().length();
 	}
 
 	@Override
