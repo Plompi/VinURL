@@ -38,8 +38,8 @@ public final class Url {
 
 	public Url base() {
 		try {
-			return new Url(new URI(url.getProtocol(), url.getAuthority(), null, null, null).toURL());
-		} catch (Exception e) {
+			return new Url(new URI(url.getProtocol(), url.getHost(), null, null, null).toURL());
+		} catch (URISyntaxException | MalformedURLException e) {
 			return null;
 		}
 	}
