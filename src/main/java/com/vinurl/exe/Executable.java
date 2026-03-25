@@ -6,11 +6,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,6 +25,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
+import static com.vinurl.exe.GitHub.ReleaseInfo;
 import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
@@ -92,7 +96,8 @@ public enum Executable {
 	public boolean checkForExecutable() {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILE_PATH.toFile().exists()) {
-				return downloadExecutable();
+				ReleaseInfo release = GitHub.fetchLatestRelease(REPOSITORY_NAME, REPOSITORY_FILE);
+				return !release.isEmpty() && downloadExecutable(release);
 			} else if (CONFIG.updatesOnStartup()) {
 				checkForUpdates();
 			}
@@ -102,32 +107,71 @@ public enum Executable {
 	}
 
 	public boolean checkForUpdates() {
-		return !currentVersion().equals(latestVersion()) && downloadExecutable();
+		ReleaseInfo release = GitHub.fetchLatestRelease(REPOSITORY_NAME, REPOSITORY_FILE);
+		if (release.isEmpty() || release.version().equals(currentVersion())) {
+			return false;
+		}
+		return downloadExecutable(release);
 	}
 
-	private boolean downloadExecutable() {
-		try (InputStream inputStream = getDownloadInputStream()) {
-			if (REPOSITORY_FILE.endsWith(".zip")) {
-				try (ZipInputStream zipInput = new ZipInputStream(inputStream)) {
-					ZipEntry zipEntry = zipInput.getNextEntry();
-					while (zipEntry != null) {
-						if (zipEntry.getName().endsWith(FILE_NAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : ""))) {
-							Files.copy(zipInput, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
-							break;
-						}
-						zipEntry = zipInput.getNextEntry();
-					}
-				}
-			} else {
-				Files.copy(inputStream, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
+	private boolean downloadExecutable(ReleaseInfo release) {
+		Path tempFile = null;
+		try {
+			tempFile = Files.createTempFile(DIRECTORY, FILE_NAME, ".tmp");
+			tempFile.toFile().deleteOnExit();
+
+			String actualDigest = downloadToFile(GitHub.openAssetStream(REPOSITORY_NAME, REPOSITORY_FILE), tempFile);
+
+			if (release.digest() != null && !release.digest().equals(actualDigest)) {
+				LOGGER.error("Digest verification failed for {} (expected {}, got {})",
+					REPOSITORY_FILE, release.digest(), actualDigest);
+				return false;
 			}
+
+			if (REPOSITORY_FILE.endsWith(".zip")) {
+				extractFromZip(tempFile, FILE_PATH);
+			} else {
+				Files.move(tempFile, FILE_PATH, StandardCopyOption.REPLACE_EXISTING);
+				tempFile = null;
+			}
+
 			if (SystemUtils.IS_OS_UNIX) {
 				Runtime.getRuntime().exec(new String[] {"chmod", "+x", FILE_PATH.toString()});
 			}
-			return createVersionFile(latestVersion());
+			return createVersionFile(release.version());
 		} catch (Exception e) {
+			LOGGER.error("Failed to download {}", REPOSITORY_FILE, e);
 			return false;
+		} finally {
+			if (tempFile != null) {
+				try {
+					Files.deleteIfExists(tempFile);
+				} catch (IOException ignored) {}
+			}
 		}
+	}
+
+	private String downloadToFile(InputStream input, Path target) throws IOException, NoSuchAlgorithmException {
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		try (DigestInputStream digestInput = new DigestInputStream(input, md);
+			 OutputStream output = Files.newOutputStream(target)) {
+			digestInput.transferTo(output);
+		}
+		return "sha256:" + HexFormat.of().formatHex(md.digest());
+	}
+
+	private void extractFromZip(Path zipFile, Path target) throws IOException {
+		String targetName = FILE_NAME + (SystemUtils.IS_OS_WINDOWS ? ".exe" : "");
+		try (ZipInputStream zipInput = new ZipInputStream(Files.newInputStream(zipFile))) {
+			ZipEntry zipEntry;
+			while ((zipEntry = zipInput.getNextEntry()) != null) {
+				if (zipEntry.getName().endsWith(targetName)) {
+					Files.copy(zipInput, target, StandardCopyOption.REPLACE_EXISTING);
+					return;
+				}
+			}
+		}
+		throw new IOException("Entry not found in zip: " + targetName);
 	}
 
 	private boolean createVersionFile(String version) {
@@ -145,20 +189,6 @@ public enum Executable {
 		} catch (IOException e) {
 			return "";
 		}
-	}
-
-	private String latestVersion() {
-		String url = "https://api.github.com/repos/%s/releases/latest".formatted(REPOSITORY_NAME);
-		try (BufferedReader reader = new BufferedReader(new InputStreamReader(new URI(url).toURL().openStream()))) {
-			return reader.readLine().split("\"tag_name\":\"")[1].split("\",\"target_commitish\"")[0];
-		} catch (IOException | ArrayIndexOutOfBoundsException | URISyntaxException e) {
-			return "";
-		}
-	}
-
-	private InputStream getDownloadInputStream() throws IOException, URISyntaxException {
-		String url = "https://github.com/%s/releases/latest/download/%s".formatted(REPOSITORY_NAME, REPOSITORY_FILE);
-		return new URI(url).toURL().openStream();
 	}
 
 	public ProcessStream executeCommand(String id, String... arguments) {
