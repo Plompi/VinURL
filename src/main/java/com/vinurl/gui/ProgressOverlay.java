@@ -1,7 +1,7 @@
 package com.vinurl.gui;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
 
@@ -30,7 +30,7 @@ public class ProgressOverlay {
 		progressQueue.put(id, new ProgressEntry(ProgressEntry.ERROR));
 	}
 
-	public static void render(GuiGraphics context) {
+	public static void render(GuiGraphicsExtractor context) {
 		if (progressQueue.isEmpty()) {return;}
 
 		String currentId = progressQueue.firstEntry().getKey();
@@ -68,9 +68,9 @@ public class ProgressOverlay {
 		return Component.literal("|".repeat(count)).withStyle(formatting);
 	}
 
-	private static void renderText(GuiGraphics context, Component text, int offset) {
-		context.drawString(CLIENT.font, text,
+	private static void renderText(GuiGraphicsExtractor context, Component text, int offset) {
+		context.textWithBackdrop(CLIENT.font, text,
 			(CLIENT.getWindow().getGuiScaledWidth() - CLIENT.font.width(text)) / 2,
-			(CLIENT.getWindow().getGuiScaledHeight() - offset), CommonColors.WHITE);
+			(CLIENT.getWindow().getGuiScaledHeight() - offset), CLIENT.font.width(text) , CommonColors.WHITE);
 	}
 }

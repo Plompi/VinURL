@@ -8,7 +8,7 @@ import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -129,8 +129,8 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	}
 
 	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
+	public void extractRenderState(GuiGraphicsExtractor context, int mouseX, int mouseY, float delta) {
+		super.extractRenderState(context, mouseX, mouseY, delta);
 
 		if (sliderDragged) {
 			context.setTooltipForNextFrame(

@@ -50,14 +50,12 @@ public class ClientEvent {
 					return;
 				}
 
-				client.player.displayClientMessage(
+				client.player.sendOverlayMessage(
 					Component.translatable(
 						"message.vinurl.custom_record.whitelist",
 						Component.literal(KeyListener.getHotKey()).withStyle(ChatFormatting.YELLOW),
 						Component.literal(baseUrl.toString()).withStyle(ChatFormatting.YELLOW)
-					),
-					true
-				);
+					));
 
 				KeyListener.waitForKeyPress().thenAccept((confirmed) -> {
 					if (confirmed) {

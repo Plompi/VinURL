@@ -1,10 +1,10 @@
 plugins {
-	id "net.fabricmc.fabric-loom-remap" version "${plg_fabric_loom}"
+	id "net.fabricmc.fabric-loom" version "${plg_fabric_loom}"
 	id "org.moddedmc.wiki.toolkit" version "${plg_moddedmc_wiki}"
 }
 
 var mod_version = file('CHANGELOG.md').text.find(/Version: (.+)/) { _, version -> version }
-version = "${mod_version}+mc${mod_minecraft_version_end}"
+version = "${mod_version}+mc${mod_minecraft_version}"
 
 base {
 	archivesName = mod_id
@@ -16,11 +16,10 @@ repositories {
 }
 
 dependencies {
-	annotationProcessor modImplementation("io.wispforest:owo-lib:${run_owo_version}")
+	annotationProcessor implementation("io.wispforest:owo-lib:${run_owo_version}")
 	minecraft "com.mojang:minecraft:${run_minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${run_fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${run_fabric_version}"
+	implementation "net.fabricmc:fabric-loader:${run_fabric_loader_version}"
+	implementation "net.fabricmc.fabric-api:fabric-api:${run_fabric_version}"
 }
 
 processResources {
@@ -34,8 +33,7 @@ processResources {
 			mod_description                 : mod_description,
 			mod_url                         : mod_url,
 
-			mod_minecraft_version_start		: mod_minecraft_version_start,
-			mod_minecraft_version_end		: mod_minecraft_version_end,
+			mod_minecraft_version			: mod_minecraft_version,
 	]
 	inputs.properties replaceProperties
 	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml']) {
@@ -44,13 +42,13 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 }
 
 java {
-	toolchain.languageVersion = JavaLanguageVersion.of(21)
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	toolchain.languageVersion = JavaLanguageVersion.of(25)
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
 }
 
 jar {

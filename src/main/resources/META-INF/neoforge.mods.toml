@@ -22,7 +22,7 @@ side="BOTH"
 [[dependencies."${mod_id}"]]
 modId="minecraft"
 mandatory=true
-versionRange="[${mod_minecraft_version_start},${mod_minecraft_version_end}]"
+versionRange="[${mod_minecraft_version}]"
 ordering="NONE"
 side="BOTH"
 

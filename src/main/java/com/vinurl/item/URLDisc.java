@@ -33,7 +33,7 @@ public class URLDisc extends Item {
 			if (!tag.get(LOCK_KEY)) {
 				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(tag.get(URL_KEY), tag.get(DURATION_KEY), tag.get(LOOP_KEY)));
 			} else {
-				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
+				player.sendOverlayMessage(Component.translatable("item.vinurl.custom_record.message.locked"));
 			}
 		}
 		return InteractionResult.SUCCESS;
