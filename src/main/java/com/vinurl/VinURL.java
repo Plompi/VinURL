@@ -3,7 +3,7 @@ package com.vinurl;
 import com.vinurl.item.URLDisc;
 import com.vinurl.net.ServerEvent;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvent;
@@ -19,7 +19,7 @@ public class VinURL implements ModInitializer {
 	@Override
 	public void onInitialize() {
 
-		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register((itemGroup) -> itemGroup.accept(CUSTOM_RECORD));
+		CreativeModeTabEvents.modifyOutputEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register((itemGroup) -> itemGroup.accept(CUSTOM_RECORD));
 
 		ServerEvent.register();
 	}

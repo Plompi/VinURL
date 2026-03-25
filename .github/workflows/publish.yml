@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  JAVA_VERSION: 21
+  JAVA_VERSION: 25
 
 permissions:
   contents: write
@@ -57,8 +57,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.all.outputs.mod_minecraft_version_end }}"
-          version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version_end }}-fabric"
+          name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.all.outputs.mod_minecraft_version }}"
+          version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version }}-fabric"
 
           modrinth-id: 5PsMUIsq
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
@@ -84,8 +84,8 @@ jobs:
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
-          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.all.outputs.mod_minecraft_version_end }}"
-          version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version_end }}-neoforge"
+          name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.all.outputs.mod_minecraft_version }}"
+          version: "${{ env.mod_version }}+${{ steps.all.outputs.mod_minecraft_version }}-neoforge"
 
           modrinth-id: 5PsMUIsq
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
