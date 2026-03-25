@@ -63,8 +63,8 @@ jobs:
           modrinth-id: 5PsMUIsq
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          curseforge-id: 1326616
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+#          curseforge-id: 1326616
+#          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           dependencies: |
             fabric-api
@@ -90,8 +90,8 @@ jobs:
           modrinth-id: 5PsMUIsq
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
-          curseforge-id: 1326616
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
+#          curseforge-id: 1326616
+#          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           dependencies: |
             forgified-fabric-api
