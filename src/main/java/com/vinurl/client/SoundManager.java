@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -37,6 +36,7 @@ public class SoundManager {
 			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
 			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
+			"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
 			"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
 		).subscribe("main")
 			.onOutput((output) -> {
@@ -56,7 +56,7 @@ public class SoundManager {
 			})
 			.onComplete(() -> {
 				ProgressOverlay.stop(fileName);
-				descriptionToCache(fileName);
+				setDescription(fileName);
 			})
 		.start();
 	}
@@ -110,11 +110,19 @@ public class SoundManager {
 		}
 	}
 
-	public static String getDescription(String fileName) {
-		return Optional.ofNullable(descriptionFromCache(fileName)).orElseGet(() -> descriptionToCache(fileName));
+	public static synchronized String getDescription(String fileName) {
+		return descriptionCache.computeIfAbsent(fileName, SoundManager::computeDescription);
 	}
 
-	private static String getOggAttribute(String fileName, String attribute) {
+	public static synchronized void setDescription(String fileName) {
+		descriptionCache.put(fileName, computeDescription(fileName));
+	}
+
+	private static String computeDescription(String fileName) {
+		return getAttribute(fileName, "artist") + " - " + getAttribute(fileName, "title");
+	}
+
+	private static String getAttribute(String fileName, String attribute) {
 		VorbisFile vorbisFile = null;
 		try {
 			vorbisFile = new VorbisFile(getAudioFile(fileName).toString());
@@ -137,19 +145,6 @@ public class SoundManager {
 				}
 			}
 		}
-	}
-
-	public static String descriptionToCache(String fileName) {
-		descriptionCache.remove(fileName);
-		return descriptionCache.compute(fileName, (k, v) -> {
-			String artist = getOggAttribute(fileName, "artist");
-			String title = getOggAttribute(fileName, "title");
-			return (artist + " - " + title).replaceAll("[︀-️]", "");
-		});
-	}
-
-	public static String descriptionFromCache(String fileName) {
-		return descriptionCache.get(fileName);
 	}
 
 	public static File getAudioFile(String fileName) {
