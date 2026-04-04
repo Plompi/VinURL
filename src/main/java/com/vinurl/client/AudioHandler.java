@@ -74,8 +74,8 @@ public class AudioHandler {
 		CLIENT.getSoundManager().stop(playingSounds.remove(position));
 	}
 
-	public static void addSound(String fileName, Vec3d position, boolean loop) {
-		playingSounds.put(position, new FileSound(fileName, position, loop));
+	public static void addSound(String fileName, Vec3d position, long ticks, boolean loop) {
+		playingSounds.put(position, new FileSound(fileName, position, ticks, loop));
 	}
 
 	public static void queueSound(String fileName, Vec3d position) {

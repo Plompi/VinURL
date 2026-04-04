@@ -16,7 +16,7 @@ import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class ClientEvent {
-	public record PlaySoundRecord(BlockPos position, String url, boolean loop) {}
+	public record PlaySoundRecord(BlockPos position, String url, long ticks, boolean loop) {}
 
 	public record StopSoundRecord(BlockPos position, String url, boolean canceled) {}
 
@@ -28,12 +28,13 @@ public class ClientEvent {
 			Vec3d position = payload.position().toCenterPos();
 			String url = payload.url();
 			boolean loop = payload.loop();
+			long ticks = payload.ticks();
 			String fileName = AudioHandler.hashURL(url);
 			MinecraftClient client = context.runtime();
 
 			if (client.player == null || url.isEmpty()) {return;}
 
-			AudioHandler.addSound(fileName, position, loop);
+			AudioHandler.addSound(fileName, position, ticks, loop);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
 				AudioHandler.queueSound(fileName, position);

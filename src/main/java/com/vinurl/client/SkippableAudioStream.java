@@ -2,55 +2,23 @@ package com.vinurl.client;
 
 import net.minecraft.client.sound.AudioStream;
 
-import javax.sound.sampled.AudioFormat;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
 
-public class SkippableAudioStream implements AudioStream {
-	private final AudioStream originalStream;
-	private final long bytesToSkip;
-	private long bytesSkipped = 0;
-	private final AudioFormat format;
-	private boolean hasSkipped = false;
+public class SkippableAudioStream {
+	public static AudioStream createOffsetStream(AudioStream original, long offsetMilliseconds) throws IOException {
+		if (offsetMilliseconds <= 0) return original;
 
-	public SkippableAudioStream(AudioStream originalStream, long shiftMilliseconds) {
-		this.originalStream = originalStream;
-		this.format = originalStream.getFormat();
-		this.bytesToSkip = (long) (shiftMilliseconds / 1000.0 * format.getSampleRate() * format.getFrameSize());
-	}
+		float offsetSeconds = offsetMilliseconds / 1000.0f;
+		long bytesToSkip = (long) (offsetSeconds * original.getFormat().getSampleRate() * original.getFormat().getFrameSize());
 
-	@Override
-	public AudioFormat getFormat() {
-		return format;
-	}
-
-	@Override
-	public ByteBuffer read(int size) throws IOException {
-		if (!hasSkipped) {
-			skipInitialBytes();
-			hasSkipped = true;
+		while (bytesToSkip > 0) {
+			ByteBuffer buffer = original.read((int) Math.min(bytesToSkip, 8192));
+			if (buffer == null || buffer.remaining() == 0) break;
+			bytesToSkip -= buffer.remaining();
 		}
 
-		return originalStream.read(size);
-	}
-
-	private void skipInitialBytes() throws IOException {
-		ByteBuffer buffer;
-		while (bytesSkipped < bytesToSkip) {
-			buffer = originalStream.read(4096);
-			if (buffer == null || buffer.remaining() == 0) {
-				break;
-			}
-
-			int bytesToConsume = (int) Math.min(bytesToSkip - bytesSkipped, buffer.remaining());
-			buffer.position(buffer.position() + bytesToConsume);
-			bytesSkipped += bytesToConsume;
-		}
-	}
-
-	@Override
-	public void close() throws IOException {
-		originalStream.close();
+		return original;
 	}
 }
