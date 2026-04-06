@@ -24,8 +24,8 @@ them from YouTube or other supported [Sites](https://github.com/yt-dlp/yt-dlp/bl
         <td>3. Enjoy the music :)</td>
     </tr>
     <tr>
-        <td><img src="https://github.com/Plompi/VinURL/blob/master/docs/.assets/enter_url.gif?raw=true" alt="enter url"></td>
-        <td><img src="https://github.com/Plompi/VinURL/blob/master/docs/.assets/insert_disc.gif?raw=true" alt="insert disc"></td>
+        <td><img src="https://github.com/Plompi/VinURL/blob/1.21(-1)/docs/.assets/enter_url.gif?raw=true" alt="enter url"></td>
+        <td><img src="https://github.com/Plompi/VinURL/blob/1.21(-1)/docs/.assets/insert_disc.gif?raw=true" alt="insert disc"></td>
     </tr>
 </table>
 
