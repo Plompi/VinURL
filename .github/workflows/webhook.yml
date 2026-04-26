@@ -3,7 +3,7 @@ name: Discord Webhook
 on:
   push:
     branches:
-      - master
+      - 1.21(-1)
     paths:
       - "CHANGELOG.md"
   workflow_dispatch:
