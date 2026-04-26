@@ -1,5 +1,5 @@
-Version: 2.3.0
-- enhancement: added deno js runtime for better yt-dlp support
-- enhancement: cartographer sound is now played to alle nearby players when a disc is written to
-- enhancement: external programs are now being downloaded async at startup 
-- api: now expects a ServerLevel (makes it clearer, that the api should only be used from the server-side)
+Version: 2.4.0
+- bugfix: fixed a race condition of writing and reading the 'author - title' cache
+- enhancement: improved url validation
+- enhancement: added ARM compatibility
+- enhancement: switched to another ffmpeg repository for newer ffmpeg versions and arm support
