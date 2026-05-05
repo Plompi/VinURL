@@ -1,5 +1,6 @@
 package com.vinurl.net;
 
+import com.vinurl.client.FileSound;
 import com.vinurl.client.KeyListener;
 import com.vinurl.client.SoundManager;
 import com.vinurl.exe.Executable;
@@ -28,15 +29,15 @@ public class ClientEvent {
 
 			String fileName = SoundManager.getFileName(url.toString());
 
-			SoundManager.addSound(fileName, pos, loop);
+			FileSound fileSound = new FileSound(fileName, pos, loop);
 
 			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
-				SoundManager.queueSound(fileName, pos);
+				SoundManager.queueSound(fileSound);
 				return;
 			}
 
 			if (SoundManager.getAudioFile(fileName).exists()) {
-				SoundManager.playSound(pos);
+				SoundManager.playSound(fileSound);
 				return;
 			}
 
@@ -46,7 +47,7 @@ public class ClientEvent {
 
 				if (CONFIG.urlWhitelist().contains(baseUrl.toString())) {
 					SoundManager.downloadSound(url.toString(), fileName);
-					SoundManager.queueSound(fileName, pos);
+					SoundManager.queueSound(fileSound);
 					return;
 				}
 
@@ -64,7 +65,7 @@ public class ClientEvent {
 						CONFIG.urlWhitelist().add(baseUrl.toString());
 						CONFIG.save();
 						SoundManager.downloadSound(url.toString(), fileName);
-						SoundManager.queueSound(fileName, pos);
+						SoundManager.queueSound(fileSound);
 					}
 				});
 			}
@@ -73,8 +74,9 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (message, access) -> {
 			BlockPos pos = message.pos();
-			SoundManager.stopSound(pos);
-			SoundManager.unqueueSound(SoundManager.getFileName(message.url()), pos, message.cancel());
+			FileSound fileSound = SoundManager.getSound(pos);
+			SoundManager.stopSound(fileSound);
+			SoundManager.unqueueSound(fileSound, message.cancel());
 		});
 
 		// Client event to open record ui

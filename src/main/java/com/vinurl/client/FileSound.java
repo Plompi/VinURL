@@ -22,11 +22,13 @@ import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 public class FileSound extends AbstractSoundInstance {
 	public final String fileName;
+	public final BlockPos position;
 
 	public FileSound(String fileName, @Nullable BlockPos pos, boolean loop) {
 		super(PLACEHOLDER_SOUND_ID, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.fileName = fileName;
 		this.looping = loop;
+		this.position = pos;
 		if (pos != null) {
 			this.x = pos.getCenter().x;
 			this.y = pos.getCenter().y;

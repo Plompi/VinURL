@@ -8,12 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -23,7 +23,7 @@ import static com.vinurl.util.Constants.VINURLPATH;
 
 public class SoundManager {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");
-	private static final HashMap<BlockPos, FileSound> playingSounds = new HashMap<>();
+	private static final HashSet<FileSound> playingSounds = new HashSet<>();
 	private static final HashMap<String, String> descriptionCache = new HashMap<>();
 
 	public static void downloadSound(String url, String fileName) {
@@ -70,40 +70,40 @@ public class SoundManager {
 		}
 	}
 
-	public static void addSound(String fileName, @Nullable BlockPos pos, boolean loop) {
-		FileSound fileSound = playingSounds.put(pos, new FileSound(fileName, pos, loop));
-		if (fileSound != null) {
-			CLIENT.getSoundManager().stop(fileSound);
-		}
+	public static FileSound getSound(BlockPos pos) {
+		return playingSounds.stream()
+			.filter(s -> Objects.equals(s.position, pos))
+			.findFirst()
+			.orElse(null);
 	}
 
-	public static void playSound(@Nullable BlockPos pos) {
-		FileSound fileSound = playingSounds.get(pos);
-		if (fileSound != null) {
-			CLIENT.getSoundManager().play(fileSound);
-			CLIENT.gui.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
-		}
+	public static void playSound(FileSound fileSound) {
+		if (fileSound == null) {return;}
+		playingSounds.add(fileSound);
+		CLIENT.getSoundManager().play(fileSound);
+		CLIENT.gui.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
 	}
 
-	public static void stopSound(@Nullable BlockPos pos) {
-		FileSound fileSound = playingSounds.remove(pos);
-		if (fileSound != null) {
-			CLIENT.getSoundManager().stop(fileSound);
-		}
+	public static void stopSound(FileSound fileSound) {
+		if (fileSound == null) {return;}
+		playingSounds.remove(fileSound);
+		CLIENT.getSoundManager().stop(fileSound);
 	}
 
-	public static void queueSound(String fileName, @Nullable BlockPos pos) {
-		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
+	public static void queueSound(FileSound fileSound) {
+		if (fileSound == null) {return;}
+		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
-			processStream.subscribe(Objects.toString(pos))
-				.onComplete(() -> playSound(pos)).start();
+			processStream.subscribe(Objects.toString(fileSound.position))
+				.onComplete(() -> playSound(fileSound)).start();
 		}
 	}
 
-	public static void unqueueSound(String fileName, @Nullable BlockPos pos, boolean cancel) {
-		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileName + "/download");
+	public static void unqueueSound(FileSound fileSound, boolean cancel) {
+		if (fileSound == null) {return;}
+		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
-			processStream.unsubscribe(Objects.toString(pos));
+			processStream.unsubscribe(Objects.toString(fileSound.position));
 			if (cancel && processStream.subscriberCount() <= 1) {
 				Executable.YT_DLP.killProcess(processStream.getId());
 			}
