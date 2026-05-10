@@ -1,7 +1,7 @@
 {
   "item.vinurl.custom_record": "커스텀 음반",
   "item.vinurl.custom_record.desc": "음악 없음",
-  "item.vinurl.custom_record.message.locked": "잠금 해제 🔒" ,
+  "item.vinurl.custom_record.message.locked": "잠김 🔒" ,
   "text.config.VinURLConfig.option.updatesOnStartup": "자동 업데이트",
   "text.config.VinURLConfig.option.updatesOnStartup.tooltip": "시작시 YT-DLP, FFmpeg, FFprobe의 최신버전 여부를 확인하고업데이트합니다.",
   "text.config.VinURLConfig.option.downloadEnabled": "커스텀 음반 다운로드",
