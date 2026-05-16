@@ -29,5 +29,8 @@
   "command.vinurl.update.check": "Suche nach Aktualisierungen...",
   "command.vinurl.update.latest": "Alles ist auf dem neusten Stand!",
   "gui.vinurl.button.duration.tooltip": "Automatische Länge",
-  "gui.vinurl.button.duration.tooltip.calculating": "Berechne..."
+  "gui.vinurl.button.duration.tooltip.calculating": "Berechne...",
+  "gui.vinurl.button.lock": "Lock",
+  "gui.vinurl.button.loop": "Loop",
+  "gui.vinurl.textfield.placeholder": "URL"
 }
