@@ -79,6 +79,13 @@ public class SoundManager {
 			.orElse(null);
 	}
 
+	public static FileSound getSound(int entityID) {
+		return playingSounds.stream()
+			.filter(s -> s.entity != null && Objects.equals(s.entity.getId(), entityID))
+			.findFirst()
+			.orElse(null);
+	}
+
 	public static void setSound(FileSound fileSound) {
 		if (fileSound == null) {return;}
 		playingSounds.add(fileSound);
