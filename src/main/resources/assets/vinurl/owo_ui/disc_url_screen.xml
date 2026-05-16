@@ -16,7 +16,7 @@
                                                  region-height="16" region-width="110">
                                         </texture>
                                         <label id="placeholder_label">
-                                            <text>URL</text>
+                                            <text translate="true">gui.vinurl.textfield.placeholder</text>
                                             <shadow>true</shadow>
                                             <color>gray</color>
                                             <margins>
@@ -38,7 +38,7 @@
                                 </stack-layout>
 
                                 <button id="simulate_button">
-                                    <tooltip-text>Automatic Duration</tooltip-text>
+                                    <tooltip-text translate="true">gui.vinurl.button.duration.tooltip</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>
@@ -49,7 +49,7 @@
                                 </button>
 
                                 <button id="loop_button">
-                                    <tooltip-text>Loop</tooltip-text>
+                                    <tooltip-text translate="true">gui.vinurl.button.loop</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>
@@ -60,7 +60,7 @@
                                 </button>
 
                                 <button id="lock_button">
-                                    <tooltip-text>Lock</tooltip-text>
+                                    <tooltip-text translate="true">gui.vinurl.button.lock</tooltip-text>
                                     <sizing>
                                         <horizontal method="fixed">16</horizontal>
                                         <vertical method="fixed">16</vertical>
