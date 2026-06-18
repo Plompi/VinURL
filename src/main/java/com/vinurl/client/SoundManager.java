@@ -8,13 +8,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -62,12 +61,10 @@ public class SoundManager {
 	}
 
 	public static void deleteSound(String fileName) {
-		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles((file) -> file.getName().contains(fileName));
-		if (filesToDelete == null) {return;}
-
-		for (File file : filesToDelete) {
-			FileUtils.deleteQuietly(file);
-		}
+		FileUtils.listFiles(AUDIO_DIRECTORY.toFile(), TrueFileFilter.INSTANCE, null)
+			.stream()
+			.filter(f -> f.getName().contains(fileName))
+			.forEach(FileUtils::deleteQuietly);
 	}
 
 	public static FileSound getSound(BlockPos pos) {
