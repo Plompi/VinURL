@@ -76,7 +76,7 @@ public enum Executable {
 	private final String FILE_NAME;
 	private final String REPOSITORY_NAME;
 	private final String REPOSITORY_FILE;
-	private final Path FILE_PATH;
+	public final Path FILE_PATH;
 	private final Path VERSION_PATH;
 	private final ConcurrentHashMap<String, ProcessStream> activeProcesses = new ConcurrentHashMap<>();
 
