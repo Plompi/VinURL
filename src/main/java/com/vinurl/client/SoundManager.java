@@ -7,13 +7,16 @@ import com.vinurl.gui.ProgressOverlay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -30,13 +33,15 @@ public class SoundManager {
 
 		Executable.YT_DLP.executeCommand(
 			fileName + "/download",
-			url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
-			"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
-			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
-			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
-			"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
-			"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
+			new CommandLine(Executable.YT_DLP.FILE_PATH).addArguments(new String[] {
+				url, "-x", "--no-simulate", "-q", "--progress", "--add-metadata", "--no-playlist",
+				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
+				"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
+				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
+				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
+				"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
+				"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
+			}, false).addArguments(VinURLClient.CONFIG.parameters())
 		).subscribe("main")
 			.onOutput((output) -> {
 				String type = output.substring(0, output.indexOf(':') + 1);

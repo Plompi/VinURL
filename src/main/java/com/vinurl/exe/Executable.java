@@ -1,5 +1,6 @@
 package com.vinurl.exe;
 
+import org.apache.commons.exec.CommandLine;
 import org.apache.commons.lang3.SystemUtils;
 
 import java.io.BufferedReader;
@@ -11,13 +12,13 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -76,7 +77,7 @@ public enum Executable {
 	private final String FILE_NAME;
 	private final String REPOSITORY_NAME;
 	private final String REPOSITORY_FILE;
-	private final Path FILE_PATH;
+	public final Path FILE_PATH;
 	private final Path VERSION_PATH;
 	private final ConcurrentHashMap<String, ProcessStream> activeProcesses = new ConcurrentHashMap<>();
 
@@ -197,8 +198,8 @@ public enum Executable {
 		return new URI(url).toURL().openStream();
 	}
 
-	public ProcessStream executeCommand(String id, String... arguments) {
-		return new ProcessStream(id, arguments);
+	public ProcessStream executeCommand(String id, CommandLine command) {
+		return new ProcessStream(id, command);
 	}
 
 	public class ProcessStream {
@@ -208,9 +209,10 @@ public enum Executable {
 		private final ConcurrentHashMap<String, Flow.Subscription> subscriptions = new ConcurrentHashMap<>();
 		private Process process;
 
-		public ProcessStream(String id, String... arguments) {
+		public ProcessStream(String id, CommandLine command) {
 			this.id = id;
-			this.arguments = arguments;
+			this.arguments = command.toStrings();
+			System.out.println("id = " + id + ", command = " + Arrays.toString(this.arguments));
 			if (registerProcess(id, this)) {
 				CompletableFuture.runAsync(this::startProcess);
 			}
@@ -247,7 +249,7 @@ public enum Executable {
 		private void startProcess() {
 			try {
 				process = new ProcessBuilder()
-					.command(Stream.concat(Stream.of(FILE_PATH.toString()), Stream.of(arguments)).toArray(String[]::new))
+					.command(arguments)
 					.redirectErrorStream(true)
 					.start();
 

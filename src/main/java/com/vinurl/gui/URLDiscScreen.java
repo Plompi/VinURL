@@ -2,6 +2,7 @@ package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.vinurl.client.SoundManager;
+import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
@@ -12,6 +13,7 @@ import io.wispforest.owo.ui.util.NinePatchTexture;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import org.apache.commons.exec.CommandLine;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -97,7 +99,9 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 			simulate = true;
 			button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip.calculating"));
 			Executable.YT_DLP.executeCommand(
-				SoundManager.getFileName(url) + "/duration", url, "--print", "DURATION: %(duration)d", "--no-playlist"
+				SoundManager.getFileName(url) + "/duration", new CommandLine(Executable.YT_DLP.FILE_PATH).addArguments(new String[] {
+					url, "--print", "DURATION: %(duration)d", "--no-playlist"
+				}, false).addArguments(VinURLClient.CONFIG.parameters())
 			).subscribe("duration")
 				.onOutput((output) -> {
 					String type = output.substring(0, output.indexOf(':') + 1);
