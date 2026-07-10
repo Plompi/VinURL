@@ -3,11 +3,11 @@ package com.vinurl.client;
 import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.Executable;
+import com.vinurl.exe.ProcessStream;
 import com.vinurl.gui.ProgressOverlay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.exec.CommandLine;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
@@ -31,9 +31,9 @@ public class SoundManager {
 	public static void downloadSound(String url, String fileName) {
 		ProgressOverlay.set(fileName, 0);
 
-		Executable.YT_DLP.executeCommand(
+		Executable.executeCommand(
 			fileName + "/download",
-			new CommandLine(Executable.YT_DLP.FILE_PATH).addArguments(new String[] {
+			Executable.YT_DLP.getCommandLine().addArguments(new String[] {
 				url, "-x", "--no-simulate", "-q", "--progress", "--add-metadata", "--no-playlist",
 				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
 				"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
@@ -79,9 +79,13 @@ public class SoundManager {
 			.orElse(null);
 	}
 
-	public static void playSound(FileSound fileSound) {
+	public static void setSound(FileSound fileSound) {
 		if (fileSound == null) {return;}
 		playingSounds.add(fileSound);
+	}
+
+	public static void playSound(FileSound fileSound) {
+		if (fileSound == null) {return;}
 		CLIENT.getSoundManager().play(fileSound);
 		CLIENT.gui.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
 	}
@@ -94,7 +98,7 @@ public class SoundManager {
 
 	public static void queueSound(FileSound fileSound) {
 		if (fileSound == null) {return;}
-		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileSound.fileName + "/download");
+		ProcessStream processStream = Executable.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
 			processStream.subscribe(Objects.toString(fileSound.position))
 				.onComplete(() -> playSound(fileSound)).start();
@@ -103,11 +107,11 @@ public class SoundManager {
 
 	public static void unqueueSound(FileSound fileSound, boolean cancel) {
 		if (fileSound == null) {return;}
-		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileSound.fileName + "/download");
+		ProcessStream processStream = Executable.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
 			processStream.unsubscribe(Objects.toString(fileSound.position));
 			if (cancel && processStream.subscriberCount() <= 1) {
-				Executable.YT_DLP.killProcess(processStream.getId());
+				Executable.killProcess(processStream.getId());
 			}
 		}
 	}

@@ -30,8 +30,9 @@ public class ClientEvent {
 			String fileName = SoundManager.getFileName(url.toString());
 
 			FileSound fileSound = new FileSound(fileName, pos, loop);
+			SoundManager.setSound(fileSound);
 
-			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
+			if (Executable.isProcessRunning(fileName + "/download")) {
 				SoundManager.queueSound(fileSound);
 				return;
 			}

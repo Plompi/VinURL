@@ -13,7 +13,6 @@ import io.wispforest.owo.ui.util.NinePatchTexture;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.exec.CommandLine;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -98,8 +97,8 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 			if (simulate) {return;}
 			simulate = true;
 			button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip.calculating"));
-			Executable.YT_DLP.executeCommand(
-				SoundManager.getFileName(url) + "/duration", new CommandLine(Executable.YT_DLP.FILE_PATH).addArguments(new String[] {
+			Executable.executeCommand(
+				SoundManager.getFileName(url) + "/duration", Executable.YT_DLP.getCommandLine().addArguments(new String[] {
 					url, "--print", "DURATION: %(duration)d", "--no-playlist"
 				}, false).addArguments(VinURLClient.CONFIG.parameters())
 			).subscribe("duration")
