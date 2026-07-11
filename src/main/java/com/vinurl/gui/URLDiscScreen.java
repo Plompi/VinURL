@@ -99,7 +99,8 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 			button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip.calculating"));
 			Executable.executeCommand(
 				SoundManager.getFileName(url) + "/duration", Executable.YT_DLP.getCommandLine().addArguments(new String[] {
-					url, "--print", "DURATION: %(duration)d", "--no-playlist"
+					url, "--print", "DURATION: %(duration)d", "--no-playlist",
+                    "--js-runtimes", "deno:" + Executable.DENO.FILE_PATH
 				}, false).addArguments(VinURLClient.CONFIG.parameters())
 			).subscribe("duration")
 				.onOutput((output) -> {

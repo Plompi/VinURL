@@ -40,6 +40,7 @@ public class SoundManager {
 				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
 				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
 				"--ffmpeg-location", Executable.FFMPEG.FILE_PATH.toString(),
+        		"--js-runtimes", "deno:" + Executable.DENO.FILE_PATH,
 				"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
 			}, false).addArguments(VinURLClient.CONFIG.parameters())
 		).subscribe("main")
