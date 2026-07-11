@@ -24,13 +24,12 @@ public class ClientEvent {
 			BlockPos pos = message.pos();
 			int entityID = message.entityID();
 			Url url = Url.parse(message.url());
-			boolean loop = message.loop();
 
 			if (client.player == null || client.level == null || url == null) {return;}
 
 			String fileName = SoundManager.getFileName(url.toString());
 
-			FileSound fileSound = new FileSound(fileName, pos, client.level.getEntity(entityID), loop);
+			FileSound fileSound = new FileSound(fileName, pos, client.level.getEntity(entityID));
 			SoundManager.setSound(fileSound);
 
 			if (Executable.isProcessRunning(fileName + "/download")) {
@@ -88,15 +87,14 @@ public class ClientEvent {
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (message, access) -> {
 			String url = message.url();
 			int duration = message.duration();
-			boolean loop = message.loop();
 
-			access.runtime().setScreen(new URLDiscScreen(url, duration, loop));
+			access.runtime().setScreen(new URLDiscScreen(url, duration));
 		});
 	}
 
-	public record PlaySoundRecord(@NullableComponent BlockPos pos, int entityID, String url, boolean loop) {}
+	public record PlaySoundRecord(@NullableComponent BlockPos pos, int entityID, String url) {}
 
 	public record StopSoundRecord(@NullableComponent BlockPos pos, int entityID, String url, boolean cancel) {}
 
-	public record GUIRecord(String url, int duration, boolean loop) {}
+	public record GUIRecord(String url, int duration) {}
 }

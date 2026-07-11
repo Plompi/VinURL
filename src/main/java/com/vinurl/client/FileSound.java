@@ -5,7 +5,6 @@ import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.AudioStream;
 import net.minecraft.client.sounds.JOrbisAudioStream;
-import net.minecraft.client.sounds.LoopingAudioStream;
 import net.minecraft.client.sounds.SoundBufferLibrary;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -23,16 +22,17 @@ import static com.vinurl.VinURL.PLACEHOLDER_SOUND;
 
 public class FileSound extends AbstractTickableSoundInstance {
 	public final String fileName;
+	private final long startTime;
 
 	public final @Nullable BlockPos position;
 	public final @Nullable Entity entity;
 
-	public FileSound(String fileName, BlockPos pos, Entity entity, boolean loop) {
+	public FileSound(String fileName, BlockPos pos, Entity entity) {
 		super(PLACEHOLDER_SOUND, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.fileName = fileName;
+		this.startTime = System.currentTimeMillis();
 		this.position = pos;
 		this.entity = entity;
-		this.looping = loop;
 	}
 
 	@Override
@@ -59,9 +59,7 @@ public class FileSound extends AbstractTickableSoundInstance {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(SoundManager.getAudioFile(fileName));
-				return loop
-					? new LoopingAudioStream(JOrbisAudioStream::new, inputStream)
-					: new JOrbisAudioStream(inputStream);
+				return SkippableAudioStream.offset(new JOrbisAudioStream(inputStream), System.currentTimeMillis() - startTime);
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}

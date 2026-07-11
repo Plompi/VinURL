@@ -27,8 +27,6 @@ public class Constants {
 	public static final ResourceLocation SIMULATE_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button");
 	public static final ResourceLocation SIMULATE_BUTTON_HOVER_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered");
 	public static final ResourceLocation SIMULATE_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
-	public static final ResourceLocation LOOP_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button");
-	public static final ResourceLocation LOOP_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "loop_button_disabled");
 	public static final ResourceLocation LOCK_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button");
 	public static final ResourceLocation LOCK_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
 	public static final ResourceKey<JukeboxSong> SONG_KEY = ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND_ID);
@@ -36,7 +34,6 @@ public class Constants {
 	//networking
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(NETWORK_ID);
 	public static final KeyedEndec<String> URL_KEY = new KeyedEndec<>("music_url", Endec.STRING, "");
-	public static final KeyedEndec<Boolean> LOOP_KEY = new KeyedEndec<>("loop", Endec.BOOLEAN, false);
 	public static final KeyedEndec<Boolean> LOCK_KEY = new KeyedEndec<>("lock", Endec.BOOLEAN, false);
 	public static final KeyedEndec<Integer> DURATION_KEY = new KeyedEndec<>("duration", Endec.INT, 0);
 }

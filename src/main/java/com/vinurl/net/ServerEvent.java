@@ -65,7 +65,6 @@ public class ServerEvent {
 
 			tag.put(URL_KEY, url.toString());
 			tag.put(DURATION_KEY, message.duration());
-			tag.put(LOOP_KEY, message.loop());
 			tag.put(LOCK_KEY, message.lock());
 			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
@@ -73,5 +72,5 @@ public class ServerEvent {
 		});
 	}
 
-	public record SetURLRecord(String url, int duration, boolean loop, boolean lock) {}
+	public record SetURLRecord(String url, int duration, boolean lock) {}
 }

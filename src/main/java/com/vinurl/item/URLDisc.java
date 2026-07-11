@@ -30,7 +30,7 @@ public class URLDisc extends Item {
 		if (!level.isClientSide()) {
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 			if (!tag.get(LOCK_KEY)) {
-				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(tag.get(URL_KEY), tag.get(DURATION_KEY), tag.get(LOOP_KEY)));
+				NETWORK_CHANNEL.serverHandle(player).send(new ClientEvent.GUIRecord(tag.get(URL_KEY), tag.get(DURATION_KEY)));
 			} else {
 				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
 			}

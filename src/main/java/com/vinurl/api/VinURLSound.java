@@ -24,13 +24,13 @@ public class VinURLSound {
 
 	public static void playAt(ServerLevel level, ItemStack stack, BlockPos pos) {
 		send(stack, () -> playersInRange(level, pos, JUKEBOX_RANGE), (tag) ->
-			new ClientEvent.PlaySoundRecord(pos, -1, tag.get(URL_KEY), tag.get(LOOP_KEY))
+			new ClientEvent.PlaySoundRecord(pos, -1, tag.get(URL_KEY))
 		);
 	}
 
 	public static void playFor(ServerLevel level, ItemStack stack, int entityID) {
 		send(stack, () -> playersInRange(level, entityID, JUKEBOX_RANGE), (tag) ->
-			new ClientEvent.PlaySoundRecord(null, entityID, tag.get(URL_KEY), tag.get(LOOP_KEY))
+			new ClientEvent.PlaySoundRecord(null, entityID, tag.get(URL_KEY))
 		);
 	}
 
