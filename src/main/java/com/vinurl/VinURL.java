@@ -14,10 +14,10 @@ import static com.vinurl.util.Constants.*;
 
 public class VinURL implements ModInitializer {
 	public static final Item CUSTOM_RECORD = Registry.register(BuiltInRegistries.ITEM, CUSTOM_RECORD_ID, new URLDisc());
+	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(BuiltInRegistries.SOUND_EVENT, PLACEHOLDER_SOUND_ID, SoundEvent.createVariableRangeEvent(PLACEHOLDER_SOUND_ID));
 
 	@Override
 	public void onInitialize() {
-		Registry.register(BuiltInRegistries.SOUND_EVENT, PLACEHOLDER_SOUND_ID, SoundEvent.createVariableRangeEvent(PLACEHOLDER_SOUND_ID));
 
 		ItemGroupEvents.modifyEntriesEvent(CreativeModeTabs.TOOLS_AND_UTILITIES).register((itemGroup) -> itemGroup.accept(CUSTOM_RECORD));
 

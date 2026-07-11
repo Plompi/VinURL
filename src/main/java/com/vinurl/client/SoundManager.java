@@ -3,11 +3,13 @@ package com.vinurl.client;
 import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
 import com.vinurl.exe.Executable;
+import com.vinurl.exe.ProcessStream;
 import com.vinurl.gui.ProgressOverlay;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,16 +31,18 @@ public class SoundManager {
 	public static void downloadSound(String url, String fileName) {
 		ProgressOverlay.set(fileName, 0);
 
-		Executable.YT_DLP.executeCommand(
+		Executable.executeCommand(
 			fileName + "/download",
-			url, "-x", "-q", "--progress", "--add-metadata", "--no-playlist",
-			"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
-			"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
-			"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-			"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
-			"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
-			"--js-runtimes", "deno:" + Executable.DENO.FILE_PATH,
-			"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
+			Executable.YT_DLP.getCommandLine().addArguments(new String[] {
+				url, "-x", "--no-simulate", "-q", "--progress", "--add-metadata", "--no-playlist",
+				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
+				"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
+				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
+				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
+				"--ffmpeg-location", Executable.FFMPEG.DIRECTORY.toString(),
+                "--js-runtimes", "deno:" + Executable.DENO.FILE_PATH,
+				"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
+			}, false).addArguments(VinURLClient.CONFIG.parameters())
 		).subscribe("main")
 			.onOutput((output) -> {
 				String type = output.substring(0, output.indexOf(':') + 1);
@@ -63,12 +67,10 @@ public class SoundManager {
 	}
 
 	public static void deleteSound(String fileName) {
-		File[] filesToDelete = AUDIO_DIRECTORY.toFile().listFiles((file) -> file.getName().contains(fileName));
-		if (filesToDelete == null) {return;}
-
-		for (File file : filesToDelete) {
-			FileUtils.deleteQuietly(file);
-		}
+		FileUtils.listFiles(AUDIO_DIRECTORY.toFile(), TrueFileFilter.INSTANCE, null)
+			.stream()
+			.filter(f -> f.getName().contains(fileName))
+			.forEach(FileUtils::deleteQuietly);
 	}
 
 	public static FileSound getSound(BlockPos pos) {
@@ -78,9 +80,20 @@ public class SoundManager {
 			.orElse(null);
 	}
 
-	public static void playSound(FileSound fileSound) {
+	public static FileSound getSound(int entityID) {
+		return playingSounds.stream()
+			.filter(s -> s.entity != null && Objects.equals(s.entity.getId(), entityID))
+			.findFirst()
+			.orElse(null);
+	}
+
+	public static void setSound(FileSound fileSound) {
 		if (fileSound == null) {return;}
 		playingSounds.add(fileSound);
+	}
+
+	public static void playSound(FileSound fileSound) {
+		if (fileSound == null) {return;}
 		CLIENT.getSoundManager().play(fileSound);
 		CLIENT.gui.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
 	}
@@ -93,7 +106,7 @@ public class SoundManager {
 
 	public static void queueSound(FileSound fileSound) {
 		if (fileSound == null) {return;}
-		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileSound.fileName + "/download");
+		ProcessStream processStream = Executable.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
 			processStream.subscribe(Objects.toString(fileSound.position))
 				.onComplete(() -> playSound(fileSound)).start();
@@ -102,11 +115,11 @@ public class SoundManager {
 
 	public static void unqueueSound(FileSound fileSound, boolean cancel) {
 		if (fileSound == null) {return;}
-		Executable.ProcessStream processStream = Executable.YT_DLP.getProcessStream(fileSound.fileName + "/download");
+		ProcessStream processStream = Executable.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
 			processStream.unsubscribe(Objects.toString(fileSound.position));
 			if (cancel && processStream.subscriberCount() <= 1) {
-				Executable.YT_DLP.killProcess(processStream.getId());
+				Executable.killProcess(processStream.getId());
 			}
 		}
 	}

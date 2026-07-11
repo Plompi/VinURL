@@ -29,7 +29,7 @@ public class ClientConfig {
 		return list.stream().allMatch(Url::isValid);
 	}
 
-	@SectionHeader("audioSettings")
+	@SectionHeader("downloadSettings")
 	public AudioQuality audioBitrate = AudioQuality.MEDIUM;
 
 	public enum AudioQuality {
@@ -47,4 +47,6 @@ public class ClientConfig {
 			return value;
 		}
 	}
+
+	public String parameters = "";
 }

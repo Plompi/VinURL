@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -24,25 +24,25 @@ public class VinURLSound {
 
 	public static void playAt(ServerLevel level, ItemStack stack, BlockPos pos) {
 		send(stack, () -> playersInRange(level, pos, JUKEBOX_RANGE), (tag) ->
-			new ClientEvent.PlaySoundRecord(pos, tag.get(URL_KEY), tag.get(LOOP_KEY))
+			new ClientEvent.PlaySoundRecord(pos, -1, tag.get(URL_KEY), tag.get(LOOP_KEY))
 		);
 	}
 
-	public static void playFor(ServerLevel level, ItemStack stack, UUID uuid) {
-		send(stack, () -> playerByUuid(level, uuid), (tag) ->
-			new ClientEvent.PlaySoundRecord(null, tag.get(URL_KEY), tag.get(LOOP_KEY))
+	public static void playFor(ServerLevel level, ItemStack stack, int entityID) {
+		send(stack, () -> playersInRange(level, entityID, JUKEBOX_RANGE), (tag) ->
+			new ClientEvent.PlaySoundRecord(null, entityID, tag.get(URL_KEY), tag.get(LOOP_KEY))
 		);
 	}
 
 	public static void stopAt(ServerLevel level, ItemStack stack, BlockPos pos, boolean cancelable) {
 		send(stack, () -> playersInRange(level, pos, INFINITE_RANGE), (tag) ->
-			new ClientEvent.StopSoundRecord(pos, tag.get(URL_KEY), cancelable)
+			new ClientEvent.StopSoundRecord(pos, -1, tag.get(URL_KEY), cancelable)
 		);
 	}
 
-	public static void stopFor(ServerLevel level, ItemStack stack, UUID uuid, boolean cancelable) {
-		send(stack, () -> playerByUuid(level, uuid), (tag) ->
-			new ClientEvent.StopSoundRecord(null, tag.get(URL_KEY), cancelable)
+	public static void stopFor(ServerLevel level, ItemStack stack, int entityID, boolean cancelable) {
+		send(stack, () -> playersInRange(level, entityID, INFINITE_RANGE), (tag) ->
+			new ClientEvent.StopSoundRecord(null, entityID, tag.get(URL_KEY), cancelable)
 		);
 	}
 
@@ -59,7 +59,9 @@ public class VinURLSound {
 		return level.getPlayers((player) -> player.position().distanceTo(pos.getCenter()) <= range);
 	}
 
-	private static List<ServerPlayer> playerByUuid(ServerLevel level, UUID uuid) {
-		return level.getPlayers((player) -> player.getUUID() == uuid);
+	private static List<ServerPlayer> playersInRange(ServerLevel level, int entityID, double range) {
+		return Optional.ofNullable(level.getEntity(entityID))
+			.map(entity -> playersInRange(level, entity.blockPosition(), range))
+			.orElse(List.of());
 	}
 }

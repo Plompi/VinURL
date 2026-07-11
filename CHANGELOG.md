@@ -1,5 +1,5 @@
-Version: 2.4.0
-- bugfix: fixed a race condition of writing and reading the 'author - title' cache
-- enhancement: improved url validation
-- enhancement: added ARM compatibility
-- enhancement: switched to another ffmpeg repository for newer ffmpeg versions and arm support
+Version: 2.5.0
+- enhancement: added crowdin translation
+- enhancement: changed how FileSounds are being stored (makes it possible to store non positional sounds)
+- enhancement: all ui texts are now translatables
+- enhancement: added the ability to add own yt-dlp parameters

@@ -55,9 +55,7 @@ public class VinURLClient implements ClientModInitializer {
 		});
 
 		ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> {
-			for (Executable executable : Executable.values()) {
-				executable.killAllProcesses();
-			}
+			Executable.killAllProcesses();
 		});
 
 		HudRenderCallback.EVENT.register((drawContext, tickDelta) -> {

@@ -22,16 +22,18 @@ public class ClientEvent {
 		NETWORK_CHANNEL.registerClientbound(PlaySoundRecord.class, (message, access) -> {
 			Minecraft client = access.runtime();
 			BlockPos pos = message.pos();
+			int entityID = message.entityID();
 			Url url = Url.parse(message.url());
 			boolean loop = message.loop();
 
-			if (client.player == null || url == null) {return;}
+			if (client.player == null || client.level == null || url == null) {return;}
 
 			String fileName = SoundManager.getFileName(url.toString());
 
-			FileSound fileSound = new FileSound(fileName, pos, loop);
+			FileSound fileSound = new FileSound(fileName, pos, client.level.getEntity(entityID), loop);
+			SoundManager.setSound(fileSound);
 
-			if (Executable.YT_DLP.isProcessRunning(fileName + "/download")) {
+			if (Executable.isProcessRunning(fileName + "/download")) {
 				SoundManager.queueSound(fileSound);
 				return;
 			}
@@ -74,20 +76,27 @@ public class ClientEvent {
 		// Client event for stopping sounds
 		NETWORK_CHANNEL.registerClientbound(StopSoundRecord.class, (message, access) -> {
 			BlockPos pos = message.pos();
-			FileSound fileSound = SoundManager.getSound(pos);
+			int entityID = message.entityID();
+			boolean cancel = message.cancel();
+
+			FileSound fileSound = pos != null ? SoundManager.getSound(pos) : SoundManager.getSound(entityID);
 			SoundManager.stopSound(fileSound);
-			SoundManager.unqueueSound(fileSound, message.cancel());
+			SoundManager.unqueueSound(fileSound, cancel);
 		});
 
 		// Client event to open record ui
 		NETWORK_CHANNEL.registerClientbound(GUIRecord.class, (message, access) -> {
-			access.runtime().setScreen(new URLDiscScreen(message.url(), message.duration(), message.loop()));
+			String url = message.url();
+			int duration = message.duration();
+			boolean loop = message.loop();
+
+			access.runtime().setScreen(new URLDiscScreen(url, duration, loop));
 		});
 	}
 
-	public record PlaySoundRecord(@NullableComponent BlockPos pos, String url, boolean loop) {}
+	public record PlaySoundRecord(@NullableComponent BlockPos pos, int entityID, String url, boolean loop) {}
 
-	public record StopSoundRecord(@NullableComponent BlockPos pos, String url, boolean cancel) {}
+	public record StopSoundRecord(@NullableComponent BlockPos pos, int entityID, String url, boolean cancel) {}
 
 	public record GUIRecord(String url, int duration, boolean loop) {}
 }
