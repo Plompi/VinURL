@@ -30,7 +30,7 @@ public class FileSound extends AbstractTickableSoundInstance {
 	public FileSound(String fileName, BlockPos pos, Entity entity) {
 		super(PLACEHOLDER_SOUND, SoundSource.RECORDS, SoundInstance.createUnseededRandom());
 		this.fileName = fileName;
-		this.startTime = System.currentTimeMillis();
+		this.startTime = Util.getMillis();
 		this.position = pos;
 		this.entity = entity;
 	}
@@ -59,7 +59,7 @@ public class FileSound extends AbstractTickableSoundInstance {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(SoundManager.getAudioFile(fileName));
-				return SkippableAudioStream.offset(new JOrbisAudioStream(inputStream), System.currentTimeMillis() - startTime);
+				return SkippableAudioStream.offset(new JOrbisAudioStream(inputStream), Util.getMillis() - startTime);
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}

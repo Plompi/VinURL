@@ -15,13 +15,13 @@ repositories {
 }
 
 dependencies {
-	annotationProcessor modImplementation("io.wispforest:owo-lib:${run_owo_version}")
+	annotationProcessor (modImplementation"io.wispforest:owo-lib:${run_owo_version}")
 	minecraft "com.mojang:minecraft:${run_minecraft_version}"
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${run_fabric_loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${run_fabric_version}"
 
-	implementation 'org.apache.commons:commons-exec:1.6.0'
+	include (implementation "org.apache.commons:commons-exec:1.6.0")
 }
 
 processResources {
