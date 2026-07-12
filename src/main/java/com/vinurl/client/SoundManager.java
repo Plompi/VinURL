@@ -108,7 +108,7 @@ public class SoundManager {
 		if (fileSound == null) {return;}
 		ProcessStream processStream = Executable.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
-			processStream.subscribe(Objects.toString(fileSound.position))
+			processStream.subscribe(fileSound.toString())
 				.onComplete(() -> playSound(fileSound)).start();
 		}
 	}
@@ -117,7 +117,7 @@ public class SoundManager {
 		if (fileSound == null) {return;}
 		ProcessStream processStream = Executable.getProcessStream(fileSound.fileName + "/download");
 		if (processStream != null) {
-			processStream.unsubscribe(Objects.toString(fileSound.position));
+			processStream.unsubscribe(fileSound.toString());
 			if (cancel && processStream.subscriberCount() <= 1) {
 				Executable.killProcess(processStream.getId());
 			}
