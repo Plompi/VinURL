@@ -1,8 +1,8 @@
 package com.vinurl.net;
 
-import com.vinurl.client.FileSound;
+import com.vinurl.sound.FileSound;
 import com.vinurl.client.KeyListener;
-import com.vinurl.client.SoundManager;
+import com.vinurl.sound.SoundManager;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLDiscScreen;
 import com.vinurl.util.Url;

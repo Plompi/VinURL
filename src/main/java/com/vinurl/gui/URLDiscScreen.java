@@ -1,7 +1,7 @@
 package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.client.SoundManager;
+import com.vinurl.sound.SoundManager;
 import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;

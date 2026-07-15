@@ -1,4 +1,4 @@
-package com.vinurl.client;
+package com.vinurl.sound;
 
 import net.minecraft.Util;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -59,7 +59,7 @@ public class FileSound extends AbstractTickableSoundInstance {
 		return CompletableFuture.supplyAsync(() -> {
 			try {
 				InputStream inputStream = new FileInputStream(SoundManager.getAudioFile(fileName));
-				return SkippableAudioStream.offset(new JOrbisAudioStream(inputStream), Util.getMillis() - startTime);
+				return new SkippableAudioStream(new JOrbisAudioStream(inputStream)).offset(Util.getMillis() - startTime);
 			} catch (IOException e) {
 				throw new CompletionException(e);
 			}

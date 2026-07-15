@@ -1,7 +1,8 @@
-package com.vinurl.client;
+package com.vinurl.sound;
 
 import com.jcraft.jorbis.JOrbisException;
 import com.jcraft.jorbis.VorbisFile;
+import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
 import com.vinurl.exe.ProcessStream;
 import com.vinurl.gui.ProgressOverlay;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
+import static com.vinurl.net.ServerEvent.MAX_DURATION;
 import static com.vinurl.util.Constants.LOGGER;
 import static com.vinurl.util.Constants.VINURLPATH;
 
@@ -38,9 +40,9 @@ public class SoundManager {
 				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
 				"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
 				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
-				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis",
+				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis -t %d".formatted(MAX_DURATION),
 				"--ffmpeg-location", Executable.FFMPEG.FILE_PATH.toString(),
-        		"--js-runtimes", "deno:" + Executable.DENO.FILE_PATH,
+        		"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH),
 				"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
 			}, false).addArguments(VinURLClient.CONFIG.parameters())
 		).subscribe("main")

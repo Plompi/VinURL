@@ -4,6 +4,7 @@ import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
 import com.vinurl.net.ClientEvent;
+import com.vinurl.sound.SoundManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
