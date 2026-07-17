@@ -69,7 +69,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 			lockButton.active = simulateButton.active = true;
 			return true;
 		});
-		durationSlider.onChanged().subscribe((newValue) -> duration = (int) newValue);
+		durationSlider.onChanged().subscribe((newValue) -> duration = (int) Math.round(newValue));
 		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
 			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
 			return true;
