@@ -2,30 +2,29 @@ package com.vinurl.sound;
 
 
 import net.minecraft.Util;
-import net.minecraft.client.sounds.AudioStream;
+import net.minecraft.client.sounds.JOrbisAudioStream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 
-public class SkippableAudioStream {
-	private final AudioStream stream;
-
-	public SkippableAudioStream(AudioStream stream) {
-		this.stream = stream;
+public class SkippableAudioStream extends JOrbisAudioStream {
+	public SkippableAudioStream(InputStream stream, long offsetMilliseconds) throws IOException {
+		super(stream);
+		this.offset(offsetMilliseconds);
 	}
 
-	public AudioStream offset(long offsetMilliseconds) throws IOException {
+	private void offset(long offsetMilliseconds) throws IOException {
 		for (int i = 0; i < 5 && offsetMilliseconds > 0; i++) {
 			offsetMilliseconds = skipBytes(calculateBytes(offsetMilliseconds));
 		}
-		return stream;
 	}
 
 	private long skipBytes(long bytes) throws IOException {
 		long start = Util.getMillis();
 		while (bytes > 0) {
-			ByteBuffer buffer = stream.read((int) Math.min(bytes, 8192));
+			ByteBuffer buffer = this.read((int) Math.min(bytes, 8192));
 			if (!buffer.hasRemaining()) {
 				break;
 			}
@@ -35,6 +34,6 @@ public class SkippableAudioStream {
 	}
 
 	private long calculateBytes(long millis) {
-		return (long) (millis / 1000.0 * stream.getFormat().getSampleRate() * stream.getFormat().getFrameSize());
+		return (long) (millis / 1000.0 * this.getFormat().getSampleRate() * this.getFormat().getFrameSize());
 	}
 }
