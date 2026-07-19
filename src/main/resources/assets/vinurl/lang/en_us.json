@@ -34,5 +34,8 @@
   "gui.vinurl.button.duration.tooltip.calculating" : "Calculating...",
   "gui.vinurl.button.lock" : "Lock",
   "gui.vinurl.button.loop" : "Loop",
-  "gui.vinurl.textfield.placeholder" : "URL"
+  "gui.vinurl.textfield.placeholder" : "URL",
+  "gui.vinurl.progress.downloading" : "Downloading",
+  "gui.vinurl.progress.transcoding" : "Transcoding",
+  "gui.vinurl.progress.interrupted" : "Interrupted"
 }

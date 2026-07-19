@@ -1,6 +1,7 @@
 package com.vinurl.gui;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.CommonColors;
@@ -46,7 +47,7 @@ public class ProgressOverlay {
 				Component.literal("%d/%d ".formatted(batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(BAR_SIZE, ChatFormatting.RED));
 			case TRANSCODING -> {
-				int animationStep = (int) ((System.currentTimeMillis() - entry.stateChangeTime) / 100) % BAR_SIZE;
+				int animationStep = (int) ((Util.getMillis() - entry.stateChangeTime) / 100) % BAR_SIZE;
 				yield Component.literal("%d/%d ".formatted(batchSize - (progressQueue.size() - 1), batchSize))
 					.append(createProgressText(animationStep, ChatFormatting.GRAY))
 					.append(createProgressText(1, ChatFormatting.BLUE))
@@ -60,7 +61,7 @@ public class ProgressOverlay {
 			}
 		};
 
-		renderText(context, Component.literal(entry.state.toString()), 72);
+		renderText(context, Component.translatable("gui.vinurl.progress.%s".formatted(entry.state)), 72);
 		renderText(context, progress, 62);
 	}
 

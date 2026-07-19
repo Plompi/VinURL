@@ -2,6 +2,7 @@ package com.vinurl.client;
 
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.minecraft.Util;
 import net.minecraft.client.KeyMapping;
 import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -27,7 +28,7 @@ public class KeyListener {
 			if (acceptKey.isDown()) {
 				waitingFuture.complete(true);
 				waitingFuture = null;
-			} else if (System.currentTimeMillis() > timeout) {
+			} else if (Util.getMillis() > timeout) {
 				waitingFuture.complete(false);
 				waitingFuture = null;
 			}
@@ -35,7 +36,7 @@ public class KeyListener {
 	}
 
 	public static CompletableFuture<Boolean> waitForKeyPress() {
-		timeout = System.currentTimeMillis() + KEY_PRESS_TIMEOUT_MILLIS;
+		timeout = Util.getMillis() + KEY_PRESS_TIMEOUT_MILLIS;
 		return (waitingFuture = new CompletableFuture<>());
 	}
 
