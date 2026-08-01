@@ -1,9 +1,9 @@
 package com.vinurl.cmd;
 
 import com.mojang.brigadier.context.CommandContext;
-import com.vinurl.sound.SoundManager;
 import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
+import com.vinurl.sound.SoundManager;
 import io.wispforest.owo.config.ui.ConfigScreen;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -48,7 +48,7 @@ public class Commands {
 				String current = exe.currentVersion();
 				if (exe.checkForUpdates()) {
 					String latest = exe.currentVersion();
-					ctx.getSource().sendFeedback(Component.literal("%s: %s -> %s".formatted( exe, current, latest)));
+					ctx.getSource().sendFeedback(Component.literal("%s: %s -> %s".formatted(exe, current, latest)));
 				}
 			}
 			ctx.getSource().sendFeedback(Component.translatable("command.vinurl.update.latest"));

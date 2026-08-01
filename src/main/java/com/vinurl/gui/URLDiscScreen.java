@@ -1,10 +1,10 @@
 package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.sound.SoundManager;
 import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.ServerEvent;
+import com.vinurl.sound.SoundManager;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;

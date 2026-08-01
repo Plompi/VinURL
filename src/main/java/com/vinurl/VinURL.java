@@ -10,7 +10,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.CUSTOM_RECORD_ID;
+import static com.vinurl.util.Constants.PLACEHOLDER_SOUND_ID;
 
 public class VinURL implements ModInitializer {
 	public static final Item CUSTOM_RECORD = Registry.register(BuiltInRegistries.ITEM, CUSTOM_RECORD_ID, new URLDisc());

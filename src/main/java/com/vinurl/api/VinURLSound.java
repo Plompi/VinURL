@@ -6,16 +6,17 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomData;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.vinurl.VinURL.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+import static com.vinurl.util.Constants.URL_KEY;
 
 @SuppressWarnings("unused")
 public class VinURLSound {
@@ -28,9 +29,9 @@ public class VinURLSound {
 		);
 	}
 
-	public static void playFor(ServerLevel level, ItemStack stack, int entityID) {
-		send(stack, () -> playersInRange(level, entityID, JUKEBOX_RANGE), (tag) ->
-			new ClientEvent.PlaySoundRecord(null, entityID, tag.get(URL_KEY))
+	public static void playFor(ServerLevel level, ItemStack stack, Entity entity) {
+		send(stack, () -> playersInRange(level, entity, JUKEBOX_RANGE), (tag) ->
+			new ClientEvent.PlaySoundRecord(null, entity.getId(), tag.get(URL_KEY))
 		);
 	}
 
@@ -40,9 +41,9 @@ public class VinURLSound {
 		);
 	}
 
-	public static void stopFor(ServerLevel level, ItemStack stack, int entityID, boolean cancelable) {
-		send(stack, () -> playersInRange(level, entityID, INFINITE_RANGE), (tag) ->
-			new ClientEvent.StopSoundRecord(null, entityID, tag.get(URL_KEY), cancelable)
+	public static void stopFor(ServerLevel level, ItemStack stack, Entity entity, boolean cancelable) {
+		send(stack, () -> playersInRange(level, entity, INFINITE_RANGE), (tag) ->
+			new ClientEvent.StopSoundRecord(null, entity.getId(), tag.get(URL_KEY), cancelable)
 		);
 	}
 
@@ -59,9 +60,7 @@ public class VinURLSound {
 		return level.getPlayers((player) -> player.position().distanceTo(pos.getCenter()) <= range);
 	}
 
-	private static List<ServerPlayer> playersInRange(ServerLevel level, int entityID, double range) {
-		return Optional.ofNullable(level.getEntity(entityID))
-			.map(entity -> playersInRange(level, entity.blockPosition(), range))
-			.orElse(List.of());
+	private static List<ServerPlayer> playersInRange(ServerLevel level, Entity entity, double range) {
+		return playersInRange(level, entity.blockPosition(), range);
 	}
 }
