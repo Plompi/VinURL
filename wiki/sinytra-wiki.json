@@ -1,5 +1,6 @@
 {
   "id": "vinurl",
   "platform": "modrinth",
-  "slug": "vinurl"
+  "slug": "vinurl",
+  "schema": "1"
 }

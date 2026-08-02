@@ -83,7 +83,7 @@ If a custom sound is still downloading when this function is called,
 then the parameter *cancelable* is responsible for whether the active download is aborted or not.
 
 ```java
-public void dropRecord(){
+public void stopPlaying(){
     if (isVinURLLoaded) {
 		VinURLSound.stopAt(serverLevel, itemStack, blockPos, cancelable);
 	}
@@ -91,27 +91,27 @@ public void dropRecord(){
 }
 ```
 
-#### Non-Positional / Global Sounds
+#### Entity-Bound Sounds / Moving Sounds
 
-This method starts a global custom sound for the specified player via *uuid*.
+This method starts a movable custom sound for all players in a 64 block range from the specified *entity*.
 
 ```java
 public void startPlaying(){
     // Your own Logic...
     if (isVinURLLoaded) {
-        VinURLSound.playFor(serverLevel, itemStack, uuid);
+        VinURLSound.playFor(serverLevel, itemStack, entity);
     }
 }
 ```
 
-This method stops a global custom sound for the specified user via *uuid*.
+This method stops a movable custom sound of the specified *entity* for all players.
 If a custom sound is still downloading when this function is called,
 then the parameter *cancelable* is responsible for whether the active download is aborted or not.
 
 ```java
-public void dropRecord(){
+public void stopPlaying(){
     if (isVinURLLoaded) {
-		VinURLSound.stopFor(serverLevel, itemStack, uuid, cancelable);
+		VinURLSound.stopFor(serverLevel, itemStack, entity, cancelable);
 	}
     // Your own Logic...
 }
