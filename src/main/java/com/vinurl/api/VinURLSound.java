@@ -1,9 +1,12 @@
 package com.vinurl.api;
 
 import com.vinurl.net.ClientEvent;
+
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -46,12 +49,12 @@ public class VinURLSound {
 		);
 	}
 
-	private static void send(ItemStack stack, Supplier<List<ServerPlayer>> players, Function<CompoundTag, Record> factory) {
+	private static void send(ItemStack stack, Supplier<List<ServerPlayer>> players, Function<CompoundTag, CustomPacketPayload> factory) {
 		if (!stack.is(CUSTOM_RECORD)) {return;}
 
 		CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
 		for (ServerPlayer player : players.get()) {
-			NETWORK_CHANNEL.serverHandle(player).send(factory.apply(tag));
+			ServerPlayNetworking.send(player, factory.apply(tag));
 		}
 	}
 

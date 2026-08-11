@@ -23,9 +23,6 @@ public class ServerEvent {
 	public static final int MAX_DURATION = 3600;
 
 	public static void register() {
-		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
-		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.PlaySoundRecord.class);
-		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.StopSoundRecord.class);
 
 		// Server event handler for setting the URL on the custom record
 		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (message, access) -> {
