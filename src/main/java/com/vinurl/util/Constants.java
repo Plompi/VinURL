@@ -2,7 +2,6 @@ package com.vinurl.util;
 
 import io.wispforest.endec.Endec;
 import io.wispforest.endec.impl.KeyedEndec;
-import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -36,7 +35,6 @@ public class Constants {
 	public static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, CUSTOM_RECORD_ID);
 
 	//networking
-	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(NETWORK_ID);
 	public static final KeyedEndec<String> URL_KEY = new KeyedEndec<>("music_url", Endec.STRING, "");
 	public static final KeyedEndec<Boolean> LOCK_KEY = new KeyedEndec<>("lock", Endec.BOOLEAN, false);
 	public static final KeyedEndec<Integer> DURATION_KEY = new KeyedEndec<>("duration", Endec.INT, 0);

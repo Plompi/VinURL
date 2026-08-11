@@ -9,6 +9,7 @@ import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
@@ -112,7 +113,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(KeyEvent input) {
 		if (input.key() == GLFW.GLFW_KEY_ESCAPE || input.key() == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, lock));
+			ClientPlayNetworking.send(new ServerEvent.SetURLRecord(url, duration, lock));
 			this.onClose();
 			return true;
 		}

@@ -1,9 +1,17 @@
 package com.vinurl.net;
 
 import com.vinurl.util.Url;
+
+import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -23,9 +31,10 @@ public class ServerEvent {
 	public static final int MAX_DURATION = 3600;
 
 	public static void register() {
+		PayloadTypeRegistry.serverboundPlay().register(SetURLRecord.TYPE, SetURLRecord.CODEC);
 
 		// Server event handler for setting the URL on the custom record
-		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (message, access) -> {
+		ServerPlayNetworking.registerGlobalReceiver(SetURLRecord.TYPE, (message, access) -> {
 			Player player = access.player();
 			ItemStack stack = Stream.of(InteractionHand.values())
 				.map(player::getItemInHand)
@@ -69,5 +78,20 @@ public class ServerEvent {
 		});
 	}
 
-	public record SetURLRecord(String url, int duration, boolean lock) {}
+	public record SetURLRecord(String url, int duration, boolean lock) implements CustomPacketPayload {
+		public static final Identifier IDENTIFIER = Identifier.fromNamespaceAndPath(MOD_ID, "set_url_record");
+
+		public static final CustomPacketPayload.Type<SetURLRecord> TYPE = new CustomPacketPayload.Type<>(IDENTIFIER);
+
+		public static final StreamCodec<RegistryFriendlyByteBuf, SetURLRecord> CODEC = StreamCodec.composite(
+				ByteBufCodecs.STRING_UTF8, SetURLRecord::url,
+				ByteBufCodecs.INT, SetURLRecord::duration,
+				ByteBufCodecs.BOOL, SetURLRecord::lock,
+				SetURLRecord::new);
+
+		@Override
+		public Type<? extends CustomPacketPayload> type() {
+			return TYPE;
+		}
+	}
 }

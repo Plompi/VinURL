@@ -21,7 +21,6 @@ import net.minecraft.resources.Identifier;
 
 import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.util.Constants.MOD_ID;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 public class ClientEvent {
 
