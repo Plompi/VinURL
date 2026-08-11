@@ -1,5 +1,6 @@
 package com.vinurl.api;
 
+import com.vinurl.item.URLDisc;
 import com.vinurl.net.ClientEvent;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -27,25 +28,25 @@ public class VinURLSound {
 
 	public static void playAt(ServerLevel level, ItemStack stack, BlockPos pos) {
 		send(stack, () -> playersInRange(level, pos, JUKEBOX_RANGE), (tag) ->
-			new ClientEvent.PlaySoundRecord(pos, -1, tag.get(URL_KEY))
+			new ClientEvent.PlaySoundRecord(pos, -1, URLDisc.DataWrapper.getUrl(tag))
 		);
 	}
 
 	public static void playFor(ServerLevel level, ItemStack stack, int entityID) {
 		send(stack, () -> playersInRange(level, entityID, JUKEBOX_RANGE), (tag) ->
-			new ClientEvent.PlaySoundRecord(null, entityID, tag.get(URL_KEY))
+			new ClientEvent.PlaySoundRecord(null, entityID, URLDisc.DataWrapper.getUrl(tag))
 		);
 	}
 
 	public static void stopAt(ServerLevel level, ItemStack stack, BlockPos pos, boolean cancelable) {
 		send(stack, () -> playersInRange(level, pos, INFINITE_RANGE), (tag) ->
-			new ClientEvent.StopSoundRecord(pos, -1, tag.get(URL_KEY), cancelable)
+			new ClientEvent.StopSoundRecord(pos, -1, URLDisc.DataWrapper.getUrl(tag), cancelable)
 		);
 	}
 
 	public static void stopFor(ServerLevel level, ItemStack stack, int entityID, boolean cancelable) {
 		send(stack, () -> playersInRange(level, entityID, INFINITE_RANGE), (tag) ->
-			new ClientEvent.StopSoundRecord(null, entityID, tag.get(URL_KEY), cancelable)
+			new ClientEvent.StopSoundRecord(null, entityID, URLDisc.DataWrapper.getUrl(tag), cancelable)
 		);
 	}
 

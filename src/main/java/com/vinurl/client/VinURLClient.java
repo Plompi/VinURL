@@ -3,6 +3,7 @@ package com.vinurl.client;
 import com.vinurl.cmd.Commands;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
+import com.vinurl.item.URLDisc;
 import com.vinurl.net.ClientEvent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
@@ -48,8 +49,8 @@ public class VinURLClient implements ClientModInitializer {
 			lines.add(Component.translatable("itemGroup.tools").withStyle(ChatFormatting.BLUE));
 
 			if (CONFIG.showDescription()) {
-				String description = SoundManager.getDescription(SoundManager.getFileName(tag.get(URL_KEY)));
-				String locked = tag.get(LOCK_KEY) ? "🔒 " : "";
+				String description = SoundManager.getDescription(SoundManager.getFileName(URLDisc.DataWrapper.getUrl(tag)));
+				String locked = URLDisc.DataWrapper.getLock(tag) ? "🔒 " : "";
 				lines.add(Component.literal(locked + description).withStyle(ChatFormatting.GRAY));
 			}
 		});

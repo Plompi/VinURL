@@ -1,5 +1,6 @@
 package com.vinurl.net;
 
+import com.vinurl.item.URLDisc;
 import com.vinurl.util.Url;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -48,7 +49,7 @@ public class ServerEvent {
 			}
 
 			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-			if (tag.get(LOCK_KEY)) {
+			if (URLDisc.DataWrapper.getLock(tag)) {
 				player.sendOverlayMessage(Component.translatable("item.vinurl.custom_record.message.locked"));
 				return;
 			}
@@ -69,9 +70,9 @@ public class ServerEvent {
 				return;
 			}
 
-			tag.put(URL_KEY, url.toString());
-			tag.put(DURATION_KEY, message.duration());
-			tag.put(LOCK_KEY, message.lock());
+			URLDisc.DataWrapper.putUrl(tag, url.toString());
+			URLDisc.DataWrapper.putDuration(tag, message.duration());
+			URLDisc.DataWrapper.putLock(tag, message.lock());
 			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
 
 			player.level().playSound(null, player, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);

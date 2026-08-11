@@ -33,9 +33,4 @@ public class Constants {
 	public static final Identifier LOCK_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
 	public static final ResourceKey<JukeboxSong> SONG_KEY = ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND_ID);
 	public static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, CUSTOM_RECORD_ID);
-
-	//networking
-	public static final KeyedEndec<String> URL_KEY = new KeyedEndec<>("music_url", Endec.STRING, "");
-	public static final KeyedEndec<Boolean> LOCK_KEY = new KeyedEndec<>("lock", Endec.BOOLEAN, false);
-	public static final KeyedEndec<Integer> DURATION_KEY = new KeyedEndec<>("duration", Endec.INT, 0);
 }
