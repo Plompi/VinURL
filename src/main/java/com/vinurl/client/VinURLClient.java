@@ -5,21 +5,20 @@ import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
 import com.vinurl.net.ClientEvent;
 import com.vinurl.sound.SoundManager;
+import com.vinurl.component.AudioComponent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.component.CustomData;
 
 import java.util.concurrent.CompletableFuture;
 
 import static com.vinurl.VinURL.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.VinURL.AUDIO_COMPONENT;
+import static com.vinurl.util.Constants.LOGGER;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
@@ -40,17 +39,17 @@ public class VinURLClient implements ClientModInitializer {
 		ClientEvent.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
-			if (!stack.is(CUSTOM_RECORD) || !stack.has(DataComponents.CUSTOM_DATA)) {return;}
+			if (!stack.is(CUSTOM_RECORD) || !stack.has(AUDIO_COMPONENT)) {return;}
 
-			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+			AudioComponent component = stack.getOrDefault(AUDIO_COMPONENT, AudioComponent.DEFAULT);
 
 			lines.clear();
 			lines.add(stack.getHoverName().copy().withStyle(ChatFormatting.AQUA));
 			lines.add(Component.translatable("itemGroup.tools").withStyle(ChatFormatting.BLUE));
 
 			if (CONFIG.showDescription()) {
-				String description = SoundManager.getDescription(SoundManager.getFileName(tag.get(URL_KEY)));
-				String locked = tag.get(LOCK_KEY) ? "🔒 " : "";
+				String description = SoundManager.getDescription(SoundManager.getFileName(component.url()));
+				String locked = component.lock() ? "🔒 " : "";
 				lines.add(Component.literal(locked + description).withStyle(ChatFormatting.GRAY));
 			}
 		});

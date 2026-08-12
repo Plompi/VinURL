@@ -1,7 +1,5 @@
 package com.vinurl.util;
 
-import io.wispforest.endec.Endec;
-import io.wispforest.endec.impl.KeyedEndec;
 import io.wispforest.owo.network.OwoNetChannel;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.Registries;
@@ -23,6 +21,7 @@ public class Constants {
 	public static final ResourceLocation PLACEHOLDER_SOUND_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "placeholder_sound");
 	public static final ResourceLocation CUSTOM_RECORD_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "custom_record");
 	public static final ResourceLocation NETWORK_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "network_channel");
+	public static final ResourceLocation AUDIO_COMPONENT_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "audio_data");
 	public static final ResourceLocation URL_DISC_SCREEN_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "disc_url_screen");
 	public static final ResourceLocation SIMULATE_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button");
 	public static final ResourceLocation SIMULATE_BUTTON_HOVER_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered");
@@ -33,7 +32,4 @@ public class Constants {
 
 	//networking
 	public static final OwoNetChannel NETWORK_CHANNEL = OwoNetChannel.create(NETWORK_ID);
-	public static final KeyedEndec<String> URL_KEY = new KeyedEndec<>("music_url", Endec.STRING, "");
-	public static final KeyedEndec<Boolean> LOCK_KEY = new KeyedEndec<>("lock", Endec.BOOLEAN, false);
-	public static final KeyedEndec<Integer> DURATION_KEY = new KeyedEndec<>("duration", Endec.INT, 0);
 }

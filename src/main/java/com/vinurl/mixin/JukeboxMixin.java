@@ -1,13 +1,11 @@
 package com.vinurl.mixin;
 
 import com.vinurl.api.VinURLSound;
+import com.vinurl.component.AudioComponent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.JukeboxSongPlayer;
-import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.vinurl.util.Constants.DURATION_KEY;
+import static com.vinurl.VinURL.AUDIO_COMPONENT;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxMixin extends BlockEntity {
@@ -51,9 +49,9 @@ public abstract class JukeboxMixin extends BlockEntity {
 	@Inject(at = @At("HEAD"), method = "tick")
 	private static void tick(Level level, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity, CallbackInfo ci) {
 		if (level == null || level.isClientSide()) {return;}
-		CompoundTag tag = blockEntity.getTheItem().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+		AudioComponent component = blockEntity.getTheItem().get(AUDIO_COMPONENT);
 		JukeboxSongPlayer manager = blockEntity.getSongPlayer();
-		if (tag.has(DURATION_KEY) && manager.getTicksSinceSongStarted() > tag.get(DURATION_KEY) * 20L) {
+		if (component != null && manager.getTicksSinceSongStarted() > component.duration() * 20L) {
 			manager.stop(level, state);
 			VinURLSound.stopAt((ServerLevel) level, blockEntity.getTheItem(), pos, false);
 		}

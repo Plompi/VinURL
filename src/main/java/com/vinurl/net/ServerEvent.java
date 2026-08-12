@@ -1,20 +1,19 @@
 package com.vinurl.net;
 
+import com.vinurl.component.AudioComponent;
 import com.vinurl.util.Url;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 
 import java.util.stream.Stream;
 
 import static com.vinurl.VinURL.CUSTOM_RECORD;
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.VinURL.AUDIO_COMPONENT;
+import static com.vinurl.util.Constants.NETWORK_CHANNEL;
 
 
 public class ServerEvent {
@@ -41,8 +40,8 @@ public class ServerEvent {
 				return;
 			}
 
-			CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-			if (tag.get(LOCK_KEY)) {
+			AudioComponent component = stack.getOrDefault(AUDIO_COMPONENT, AudioComponent.DEFAULT);
+			if (component.lock()) {
 				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
 				return;
 			}
@@ -63,10 +62,7 @@ public class ServerEvent {
 				return;
 			}
 
-			tag.put(URL_KEY, url.toString());
-			tag.put(DURATION_KEY, message.duration());
-			tag.put(LOCK_KEY, message.lock());
-			stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+			stack.set(AUDIO_COMPONENT, new AudioComponent(url.toString(), message.duration(), message.lock()));
 
 			player.level().playSound(null, player, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
 		});
