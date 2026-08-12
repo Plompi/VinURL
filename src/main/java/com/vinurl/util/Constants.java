@@ -1,7 +1,5 @@
 package com.vinurl.util;
 
-import io.wispforest.endec.Endec;
-import io.wispforest.endec.impl.KeyedEndec;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -25,12 +23,14 @@ public class Constants {
 	public static final Identifier KEY_MAPPING_ID = Identifier.fromNamespaceAndPath(MOD_ID, "mapping");
 	public static final Identifier NETWORK_ID = Identifier.fromNamespaceAndPath(MOD_ID, "network_channel");
 	public static final Identifier PROGRESS_HUD_ID = Identifier.fromNamespaceAndPath(MOD_ID, "progress_hud");
-	public static final Identifier URL_DISC_SCREEN_ID = Identifier.fromNamespaceAndPath(MOD_ID, "disc_url_screen");
+	// TODO: remove owo_ui files
+	// public static final Identifier URL_DISC_SCREEN_ID = Identifier.fromNamespaceAndPath(MOD_ID, "disc_url_screen");
 	public static final Identifier SIMULATE_BUTTON_ID = Identifier.fromNamespaceAndPath(MOD_ID, "simulate_button");
 	public static final Identifier SIMULATE_BUTTON_HOVER_ID = Identifier.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered");
 	public static final Identifier SIMULATE_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
-	public static final Identifier LOCK_BUTTON_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button");
-	public static final Identifier LOCK_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
+	// TODO: remove lock button sprites?
+	// public static final Identifier LOCK_BUTTON_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button");
+	// public static final Identifier LOCK_BUTTON_DISABLED_ID = Identifier.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
 	public static final ResourceKey<JukeboxSong> SONG_KEY = ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND_ID);
 	public static final ResourceKey<Item> ITEM_KEY = ResourceKey.create(Registries.ITEM, CUSTOM_RECORD_ID);
 }
