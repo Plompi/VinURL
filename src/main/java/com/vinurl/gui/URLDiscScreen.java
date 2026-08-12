@@ -1,138 +1,88 @@
 package com.vinurl.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.client.VinURLClient;
-import com.vinurl.exe.Executable;
-import com.vinurl.net.packet.SetURLPacket;
-import com.vinurl.sound.SoundManager;
-import io.wispforest.owo.ui.base.BaseUIModelScreen;
-import io.wispforest.owo.ui.component.*;
-import io.wispforest.owo.ui.container.StackLayout;
-import io.wispforest.owo.ui.core.PositionedRectangle;
-import io.wispforest.owo.ui.util.NinePatchTexture;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import static com.vinurl.net.ServerEvent.MAX_URL_LENGTH;
+
+import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 
-import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.*;
+import com.vinurl.net.packet.SetURLPacket;
 
-public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
-	private String url;
-	private boolean lock;
-	private boolean sliderDragged;
-	private boolean simulate;
-	private int duration;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.LockIconButton;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 
-	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		RenderSystem.enableDepthTest();
-		ResourceLocation texture = !simulate ? (button.active && button.isHovered() ?
-			SIMULATE_BUTTON_HOVER_ID :
-			SIMULATE_BUTTON_ID) :
-			SIMULATE_BUTTON_DISABLED_ID;
-		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
-	};
+public class URLDiscScreen extends Screen {
+	private static final int PADDING = 5;
 
-	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
-		RenderSystem.enableDepthTest();
-		ResourceLocation texture = lock ?
-			LOCK_BUTTON_ID :
-			LOCK_BUTTON_DISABLED_ID;
-		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
-	};
+	private static record InitialData(String url, int duration) {
+	}
 
-	public URLDiscScreen(String defaultURL, int defaultDuration) {
-		super(StackLayout.class, DataSource.asset(URL_DISC_SCREEN_ID));
-		this.url = defaultURL;
-		this.duration = defaultDuration;
+	private final InitialData initialData;
+
+	private EditBox urlTextbox;
+	private LockIconButton lockButton;
+
+	public URLDiscScreen(String url, int duration) {
+		this(new InitialData(url, duration));
+	}
+
+	private URLDiscScreen(InitialData data) {
+		super(Component.literal("URL Disc Screen"));
+		this.initialData = data;
 	}
 
 	@Override
-	protected void build(StackLayout stackLayout) {
-		LabelComponent placeholderLabel = stackLayout.childById(LabelComponent.class, "placeholder_label");
-		TextBoxComponent urlTextbox = stackLayout.childById(TextBoxComponent.class, "url_textbox");
-		SlimSliderComponent durationSlider = stackLayout.childById(SlimSliderComponent.class, "duration_slider");
-		ButtonComponent lockButton = stackLayout.childById(ButtonComponent.class, "lock_button");
-		ButtonComponent simulateButton = stackLayout.childById(ButtonComponent.class, "simulate_button");
-		TextureComponent textFieldTexture = stackLayout.childById(TextureComponent.class, "text_field_disabled");
+	protected void init() {
+		Vector2i center = new Vector2i(width / 2, height / 2);
 
-		durationSlider.value(duration);
-		durationSlider.tooltipSupplier((slider) -> Component.literal("%02d:%02d".formatted(duration / 60, duration % 60)));
-		durationSlider.mouseDown().subscribe((mouseX, mouseY, button) -> {
-			sliderDragged = true;
-			lockButton.active = simulateButton.active = false;
-			return true;
-		});
-		durationSlider.mouseUp().subscribe((mouseX, mouseY, button) -> {
-			sliderDragged = false;
-			lockButton.active = simulateButton.active = true;
-			return true;
-		});
-		durationSlider.onChanged().subscribe((newValue) -> duration = (int) Math.round(newValue));
-		durationSlider.mouseScroll().subscribe((mouseX, mouseY, amount) -> {
-			durationSlider.value(Math.clamp(durationSlider.value() + amount, durationSlider.min(), durationSlider.max()));
-			return true;
-		});
+		{
+			Component urlPlaceholder = Component.translatable("gui.vinurl.textfield.placeholder");
 
-		lockButton.renderer(LOCK_BUTTON_TEXTURE);
-		lockButton.onPress((button) -> lock = !lock);
+			Vector2i size = new Vector2i(240, 20);
+			urlTextbox = new EditBox(
+					font,
+					center.x - (size.x / 2), center.y,
+					size.x, size.y,
+					// no proper string for the edit box's narration atm
+					// so this'll do until then
+					urlPlaceholder);
 
-		simulateButton.renderer(SIMULATE_BUTTON_TEXTURE);
-		simulateButton.onPress((button) -> {
-			if (simulate) {return;}
-			simulate = true;
-			button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip.calculating"));
-			Executable.executeCommand(
-				SoundManager.getFileName(url) + "/duration", Executable.YT_DLP.getCommandLine().addArguments(new String[] {
-					url, "--print", "DURATION: %(duration)d", "--no-playlist",
-                    "--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
-				}, false).addArguments(VinURLClient.CONFIG.parameters())
-			).subscribe("duration")
-				.onOutput((output) -> {
-					String type = output.substring(0, output.indexOf(':') + 1);
-					String message = output.substring(type.length()).trim();
+			urlTextbox.setMaxLength(MAX_URL_LENGTH);
+			urlTextbox.setHint(urlPlaceholder);
 
-					switch (type) {
-						case "DURATION:" -> durationSlider.value(Integer.parseInt(message));
-						case "WARNING:" -> LOGGER.warn(message);
-						case "ERROR:" -> LOGGER.error(message);
-						default -> LOGGER.info(output);
-					}
-				})
-				.onError((error) -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
-				.onComplete(() -> {button.tooltip(Component.translatable("gui.vinurl.button.duration.tooltip")); simulate = false;})
-			.start();
-		});
+			urlTextbox.setValue(initialData.url);
 
-		urlTextbox.onChanged().subscribe((text) -> placeholderLabel.text(Component.literal((url = text).isEmpty() ? "URL" : "")));
-		urlTextbox.text(url);
-		urlTextbox.focusLost().subscribe(() -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 110, 16)));
-		urlTextbox.focusGained().subscribe((source) -> textFieldTexture.visibleArea(PositionedRectangle.of(0, 0, 0, 0)));
+			addRenderableWidget(urlTextbox);
+		}
+
+		{
+			lockButton = new LockIconButton(
+					urlTextbox.getX() + urlTextbox.getWidth() + PADDING, urlTextbox.getY(),
+					btn -> lockButton.setLocked(!lockButton.isLocked()));
+
+			lockButton.setTooltip(Tooltip.create(Component.translatable("gui.vinurl.button.lock")));
+
+			addRenderableWidget(lockButton);
+		}
 	}
 
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
+			String url = urlTextbox.getValue();
+			// TODO: implement UI for duration
+			int duration = 60;
+			boolean lock = lockButton.isLocked();
+
 			ClientPlayNetworking.send(new SetURLPacket(url, duration, lock));
 			this.onClose();
 			return true;
 		}
+
 		return super.keyPressed(keyCode, scanCode, modifiers);
-	}
-
-	@Override
-	public void render(GuiGraphics context, int mouseX, int mouseY, float delta) {
-		super.render(context, mouseX, mouseY, delta);
-
-		if (sliderDragged) {
-			context.renderTooltip(
-				CLIENT.font,
-				Component.literal("%02d:%02d".formatted(duration / 60, duration % 60)),
-				mouseX, mouseY
-			);
-		}
 	}
 
 	@Override
