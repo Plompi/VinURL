@@ -3,13 +3,14 @@ package com.vinurl.gui;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
-import com.vinurl.net.ServerEvent;
+import com.vinurl.net.packet.SetURLPacket;
 import com.vinurl.sound.SoundManager;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -114,7 +115,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, lock));
+			ClientPlayNetworking.send(new SetURLPacket(url, duration, lock));
 			this.onClose();
 			return true;
 		}

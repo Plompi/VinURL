@@ -1,7 +1,9 @@
 package com.vinurl.net;
 
 import com.vinurl.component.AudioComponent;
+import com.vinurl.net.packet.SetURLPacket;
 import com.vinurl.util.Url;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -11,9 +13,8 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.stream.Stream;
 
-import static com.vinurl.VinURL.CUSTOM_RECORD;
 import static com.vinurl.VinURL.AUDIO_COMPONENT;
-import static com.vinurl.util.Constants.NETWORK_CHANNEL;
+import static com.vinurl.VinURL.CUSTOM_RECORD;
 
 
 public class ServerEvent {
@@ -22,12 +23,8 @@ public class ServerEvent {
 	public static final int MAX_DURATION = 3600;
 
 	public static void register() {
-		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.GUIRecord.class);
-		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.PlaySoundRecord.class);
-		NETWORK_CHANNEL.registerClientboundDeferred(ClientEvent.StopSoundRecord.class);
-
 		// Server event handler for setting the URL on the custom record
-		NETWORK_CHANNEL.registerServerbound(SetURLRecord.class, (message, access) -> {
+		ServerPlayNetworking.registerGlobalReceiver(SetURLPacket.TYPE, (message, access) -> {
 			Player player = access.player();
 			ItemStack stack = Stream.of(InteractionHand.values())
 				.map(player::getItemInHand)
@@ -67,6 +64,4 @@ public class ServerEvent {
 			player.level().playSound(null, player, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
 		});
 	}
-
-	public record SetURLRecord(String url, int duration, boolean lock) {}
 }
