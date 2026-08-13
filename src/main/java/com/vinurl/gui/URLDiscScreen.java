@@ -4,6 +4,7 @@ import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.net.ServerEvent.MAX_DURATION;
 import static com.vinurl.net.ServerEvent.MAX_URL_LENGTH;
 import static com.vinurl.util.Constants.SIMULATE_BUTTON_DISABLED_ID;
+import static com.vinurl.util.Constants.SIMULATE_BUTTON_HOVER_ID;
 import static com.vinurl.util.Constants.SIMULATE_BUTTON_ID;
 
 import org.joml.Vector2i;
@@ -100,8 +101,8 @@ public class URLDiscScreen extends Screen {
 
 			simulateButton = new ImageButton(
 					lockButton.getX(), lockButton.getY() + lockButton.getHeight() + PADDING,
-					16, 16,
-					new WidgetSprites(SIMULATE_BUTTON_ID, SIMULATE_BUTTON_DISABLED_ID, SIMULATE_BUTTON_ID),
+					20, 20,
+					new WidgetSprites(SIMULATE_BUTTON_ID, SIMULATE_BUTTON_DISABLED_ID, SIMULATE_BUTTON_HOVER_ID),
 					btn -> {
 						durationSlider.active = false;
 						lockButton.active = false;

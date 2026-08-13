@@ -26,7 +26,7 @@ public class Constants {
 	public static final ResourceLocation STOP_SOUND_PACKET_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "stop_sound_packet");
 	public static final ResourceLocation GUI_PACKET_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "gui_packet");
 	public static final ResourceLocation SIMULATE_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button");
-	public static final ResourceLocation SIMULATE_BUTTON_HOVER_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_hovered");
+	public static final ResourceLocation SIMULATE_BUTTON_HOVER_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_highlighted");
 	public static final ResourceLocation SIMULATE_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "simulate_button_disabled");
 	public static final ResourceLocation LOCK_BUTTON_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button");
 	public static final ResourceLocation LOCK_BUTTON_DISABLED_ID = ResourceLocation.fromNamespaceAndPath(MOD_ID, "lock_button_disabled");
