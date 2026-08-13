@@ -51,19 +51,15 @@ public class URLDiscScreen extends Screen {
 		Vector2i center = new Vector2i(width / 2, height / 2);
 
 		{
-			Component urlPlaceholder = Component.translatable("gui.vinurl.textfield.placeholder");
-
 			Vector2i size = new Vector2i(240, 20);
 			urlTextbox = new EditBox(
 					font,
 					center.x - (size.x / 2), center.y,
 					size.x, size.y,
-					// no proper string for the edit box's narration atm
-					// so this'll do until then
-					urlPlaceholder);
+					Component.translatable("gui.vinurl.editbox.url.narration"));
 
 			urlTextbox.setMaxLength(MAX_URL_LENGTH);
-			urlTextbox.setHint(urlPlaceholder);
+			urlTextbox.setHint(Component.translatable("gui.vinurl.editbox.url.placeholder"));
 
 			urlTextbox.setValue(initialData.url);
 
