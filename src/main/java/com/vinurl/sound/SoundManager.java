@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -66,6 +67,35 @@ public class SoundManager {
 				setDescription(fileName);
 			})
 		.start();
+	}
+
+	public static void simulateDuration(String url, Consumer<Integer> durationConsumer, Runnable onDone) {
+		Executable.executeCommand(
+				SoundManager.getFileName(url) + "/duration",
+				Executable.YT_DLP.getCommandLine()
+						.addArguments(
+								new String[] {
+										url,
+										"--print", "DURATION: %(duration)d",
+										"--no-playlist",
+										"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
+								}, false)
+						.addArguments(VinURLClient.CONFIG.parameters))
+				.subscribe("duration")
+				.onOutput(output -> {
+					String type = output.substring(0, output.indexOf(':') + 1);
+					String message = output.substring(type.length()).trim();
+
+					switch (type) {
+						case "DURATION:" -> durationConsumer.accept(Integer.parseInt(message));
+						case "WARNING:" -> LOGGER.warn(message);
+						case "ERROR:" -> LOGGER.error(message);
+						default -> LOGGER.info(output);
+					}
+				})
+				.onError(error -> onDone.run())
+				.onComplete(() -> onDone.run())
+				.start();
 	}
 
 	public static void deleteSound(String fileName) {

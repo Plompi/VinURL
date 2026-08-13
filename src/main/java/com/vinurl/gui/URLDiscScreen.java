@@ -9,11 +9,8 @@ import static com.vinurl.util.Constants.SIMULATE_BUTTON_ID;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 
-import com.vinurl.config.ClientConfig;
-import com.vinurl.exe.Executable;
 import com.vinurl.net.packet.SetURLPacket;
 import com.vinurl.sound.SoundManager;
-import com.vinurl.util.Constants;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.components.EditBox;
@@ -109,31 +106,10 @@ public class URLDiscScreen extends Screen {
 						urlTextbox.active = false;
 						urlTextbox.setEditable(false);
 
-						String url = urlTextbox.getValue();
-						Executable.executeCommand(
-								SoundManager.getFileName(url) + "/duration",
-								Executable.YT_DLP.getCommandLine()
-										.addArguments(
-												new String[] {
-														url,
-														"--print", "DURATION: %(duration)d",
-														"--no-playlist",
-														"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
-												}, false)
-										.addArguments(ClientConfig.getConfig().parameters))
-								.subscribe("duration")
-								.onOutput((output) -> {
-									String type = output.substring(0, output.indexOf(':') + 1);
-									String message = output.substring(type.length()).trim();
-
-									switch (type) {
-										case "DURATION:" -> durationSlider.setDuration(Integer.parseInt(message));
-										case "WARNING:" -> Constants.LOGGER.warn(message);
-										case "ERROR:" -> Constants.LOGGER.error(message);
-										default -> Constants.LOGGER.info(output);
-									}
-								})
-								.onError((error) -> {
+						SoundManager.simulateDuration(
+								urlTextbox.getValue(),
+								durationSlider::setDuration,
+								() -> {
 									durationSlider.active = true;
 									lockButton.active = true;
 
@@ -142,17 +118,7 @@ public class URLDiscScreen extends Screen {
 
 									urlTextbox.active = true;
 									urlTextbox.setEditable(true);
-								})
-								.onComplete(() -> {
-									durationSlider.active = true;
-									lockButton.active = true;
-
-									simulateButton.active = true;
-									simulateButton.setTooltip(defaultTooltip);
-
-									urlTextbox.active = true;
-									urlTextbox.setEditable(true);
-								}).start();
+								});
 					});
 
 			simulateButton.setTooltip(defaultTooltip);
