@@ -12,6 +12,8 @@ base {
 
 repositories {
 	maven { url = "https://maven.wispforest.io" }
+	maven { url "https://maven.shedaniel.me/" }
+	maven { url "https://maven.terraformersmc.com/releases/" }
 }
 
 dependencies {
@@ -20,6 +22,11 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${run_fabric_loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${run_fabric_version}"
+
+	modApi("me.shedaniel.cloth:cloth-config-fabric:${run_cloth_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+	modApi "com.terraformersmc:modmenu:${run_modmenu_version}"
 
 	include (implementation "org.apache.commons:commons-exec:1.6.0")
 }

@@ -1,11 +1,12 @@
 package com.vinurl.client;
 
 import com.vinurl.cmd.Commands;
+import com.vinurl.component.AudioComponent;
+import com.vinurl.config.ClientConfig;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.ProgressOverlay;
 import com.vinurl.net.ClientEvent;
 import com.vinurl.sound.SoundManager;
-import com.vinurl.component.AudioComponent;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -21,7 +22,6 @@ import static com.vinurl.VinURL.CUSTOM_RECORD;
 import static com.vinurl.util.Constants.LOGGER;
 
 public class VinURLClient implements ClientModInitializer {
-	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();
 	public static final Minecraft CLIENT = Minecraft.getInstance();
 
 	@Override
@@ -37,6 +37,7 @@ public class VinURLClient implements ClientModInitializer {
 		KeyListener.register();
 		Commands.register();
 		ClientEvent.register();
+		ClientConfig.register();
 
 		ItemTooltipCallback.EVENT.register((stack, context, type, lines) -> {
 			if (!stack.is(CUSTOM_RECORD) || !stack.has(AUDIO_COMPONENT)) {return;}
@@ -47,7 +48,7 @@ public class VinURLClient implements ClientModInitializer {
 			lines.add(stack.getHoverName().copy().withStyle(ChatFormatting.AQUA));
 			lines.add(Component.translatable("itemGroup.tools").withStyle(ChatFormatting.BLUE));
 
-			if (CONFIG.showDescription()) {
+			if (ClientConfig.getConfig().general.showDescription) {
 				String description = SoundManager.getDescription(SoundManager.getFileName(component.url()));
 				String locked = component.lock() ? "🔒 " : "";
 				lines.add(Component.literal(locked + description).withStyle(ChatFormatting.GRAY));

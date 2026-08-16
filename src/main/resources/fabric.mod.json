@@ -20,6 +20,9 @@
     ],
     "client": [
       "com.vinurl.client.VinURLClient"
+    ],
+    "modmenu" : [
+      "com.vinurl.config.ModMenu"
     ]
   },
   "mixins": [

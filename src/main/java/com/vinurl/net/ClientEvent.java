@@ -1,6 +1,7 @@
 package com.vinurl.net;
 
 import com.vinurl.client.KeyListener;
+import com.vinurl.config.ClientConfig;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLDiscScreen;
 import com.vinurl.net.packet.GUIPacket;
@@ -14,8 +15,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-
-import static com.vinurl.client.VinURLClient.CONFIG;
 
 public class ClientEvent {
 
@@ -44,11 +43,11 @@ public class ClientEvent {
 				return;
 			}
 
-			if (CONFIG.downloadEnabled()) {
+			if (ClientConfig.getConfig().general.downloadEnabled) {
 				Url baseUrl = url.base();
 				if (baseUrl == null) {return;}
 
-				if (CONFIG.urlWhitelist().contains(baseUrl.toString())) {
+				if (ClientConfig.getConfig().general.urlWhitelist.contains(baseUrl.toString())) {
 					SoundManager.downloadSound(url.toString(), fileName);
 					SoundManager.queueSound(fileSound);
 					return;
@@ -65,8 +64,8 @@ public class ClientEvent {
 
 				KeyListener.waitForKeyPress().thenAccept((confirmed) -> {
 					if (confirmed) {
-						CONFIG.urlWhitelist().add(baseUrl.toString());
-						CONFIG.save();
+						ClientConfig.getConfig().general.urlWhitelist.add(baseUrl.toString());
+//						CONFIG.save();
 						SoundManager.downloadSound(url.toString(), fileName);
 						SoundManager.queueSound(fileSound);
 					}

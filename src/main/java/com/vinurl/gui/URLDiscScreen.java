@@ -1,7 +1,7 @@
 package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vinurl.client.VinURLClient;
+import com.vinurl.config.ClientConfig;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.packet.SetURLPacket;
 import com.vinurl.sound.SoundManager;
@@ -88,7 +88,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 				SoundManager.getFileName(url) + "/duration", Executable.YT_DLP.getCommandLine().addArguments(new String[] {
 					url, "--print", "DURATION: %(duration)d", "--no-playlist",
                     "--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
-				}, false).addArguments(VinURLClient.CONFIG.parameters())
+				}, false).addArguments(ClientConfig.getConfig().download.parameters)
 			).subscribe("duration")
 				.onOutput((output) -> {
 					String type = output.substring(0, output.indexOf(':') + 1);
