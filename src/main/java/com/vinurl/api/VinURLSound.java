@@ -16,7 +16,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.vinurl.VinURL.AUDIO_COMPONENT;
-import static com.vinurl.VinURL.CUSTOM_RECORD;
 
 @SuppressWarnings("unused")
 public class VinURLSound {
@@ -48,9 +47,9 @@ public class VinURLSound {
 	}
 
 	private static void send(ItemStack stack, Supplier<List<ServerPlayer>> players, Function<AudioComponent, CustomPacketPayload> factory) {
-		if (!stack.is(CUSTOM_RECORD)) {return;}
+		AudioComponent component = stack.get(AUDIO_COMPONENT);
+		if (component == null) {return;}
 
-		AudioComponent component = stack.getOrDefault(AUDIO_COMPONENT, AudioComponent.DEFAULT);
 		for (ServerPlayer player : players.get()) {
 			ServerPlayNetworking.send(player, factory.apply(component));
 		}

@@ -22,18 +22,20 @@ public class URLDisc extends Item {
 		super(new Item.Properties()
 			.stacksTo(1)
 			.rarity(Rarity.RARE)
-			.jukeboxPlayable(SONG_KEY));
+			.jukeboxPlayable(SONG_KEY)
+			.component(AUDIO_COMPONENT, AudioComponent.DEFAULT));
 	}
 
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
 		ItemStack stack = player.getItemInHand(hand);
-		if (!level.isClientSide()) {
-			AudioComponent component = stack.getOrDefault(AUDIO_COMPONENT, AudioComponent.DEFAULT);
-			if (!component.lock()) {
-				ServerPlayNetworking.send((ServerPlayer) player, new GUIPacket(component.url(), component.duration()));
-			} else {
+		player.startUsingItem(hand);
+		AudioComponent component = stack.get(AUDIO_COMPONENT);
+		if (!level.isClientSide() && component != null) {
+			if (component.lock()) {
 				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
+			} else {
+				ServerPlayNetworking.send((ServerPlayer) player, new GUIPacket(component.url(), component.duration()));
 			}
 		}
 		return InteractionResultHolder.success(stack);

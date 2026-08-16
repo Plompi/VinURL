@@ -7,14 +7,10 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.stream.Stream;
-
 import static com.vinurl.VinURL.AUDIO_COMPONENT;
-import static com.vinurl.VinURL.CUSTOM_RECORD;
 
 
 public class ServerEvent {
@@ -26,18 +22,14 @@ public class ServerEvent {
 		// Server event handler for setting the URL on the custom record
 		ServerPlayNetworking.registerGlobalReceiver(SetURLPacket.TYPE, (message, access) -> {
 			Player player = access.player();
-			ItemStack stack = Stream.of(InteractionHand.values())
-				.map(player::getItemInHand)
-				.filter((stackInHand) -> stackInHand.is(CUSTOM_RECORD))
-				.findFirst()
-				.orElse(ItemStack.EMPTY);
+			ItemStack stack = player.getUseItem();
 
-			if (stack.isEmpty()) {
+			AudioComponent component = stack.get(AUDIO_COMPONENT);
+			if (component == null) {
 				player.displayClientMessage(Component.translatable("message.vinurl.custom_record.missing"), true);
 				return;
 			}
 
-			AudioComponent component = stack.getOrDefault(AUDIO_COMPONENT, AudioComponent.DEFAULT);
 			if (component.lock()) {
 				player.displayClientMessage(Component.translatable("item.vinurl.custom_record.message.locked"), true);
 				return;
