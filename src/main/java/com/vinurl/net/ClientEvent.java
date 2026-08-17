@@ -1,6 +1,7 @@
 package com.vinurl.net;
 
 import com.vinurl.client.KeyListener;
+import com.vinurl.config.ClientConfig;
 import com.vinurl.exe.Executable;
 import com.vinurl.gui.URLDiscScreen;
 import com.vinurl.net.packet.GUIPacket;
@@ -44,11 +45,11 @@ public class ClientEvent {
 				return;
 			}
 
-			if (CONFIG.downloadEnabled()) {
+			if (CONFIG.downloadEnabled) {
 				Url baseUrl = url.base();
 				if (baseUrl == null) {return;}
 
-				if (CONFIG.urlWhitelist().contains(baseUrl.toString())) {
+				if (CONFIG.urlWhitelist.contains(baseUrl.toString())) {
 					SoundManager.downloadSound(url.toString(), fileName);
 					SoundManager.queueSound(fileSound);
 					return;
@@ -65,8 +66,8 @@ public class ClientEvent {
 
 				KeyListener.waitForKeyPress().thenAccept((confirmed) -> {
 					if (confirmed) {
-						CONFIG.urlWhitelist().add(baseUrl.toString());
-						CONFIG.save();
+						CONFIG.urlWhitelist.add(baseUrl.toString());
+						ClientConfig.HANDLER.save();
 						SoundManager.downloadSound(url.toString(), fileName);
 						SoundManager.queueSound(fileSound);
 					}

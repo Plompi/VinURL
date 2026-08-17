@@ -1,6 +1,5 @@
 package com.vinurl.gui;
 
-import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.net.ServerEvent.MAX_DURATION;
 import static com.vinurl.net.ServerEvent.MAX_URL_LENGTH;
 import static com.vinurl.util.Constants.SIMULATE_BUTTON_DISABLED_ID;
@@ -10,6 +9,7 @@ import static com.vinurl.util.Constants.SIMULATE_BUTTON_ID;
 import org.joml.Vector2i;
 import org.lwjgl.glfw.GLFW;
 
+import com.vinurl.config.ClientConfig;
 import com.vinurl.exe.Executable;
 import com.vinurl.net.packet.SetURLPacket;
 import com.vinurl.sound.SoundManager;
@@ -124,7 +124,7 @@ public class URLDiscScreen extends Screen {
 														"--no-playlist",
 														"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
 												}, false)
-										.addArguments(CONFIG.parameters()))
+										.addArguments(ClientConfig.getConfig().parameters))
 								.subscribe("duration")
 								.onOutput((output) -> {
 									String type = output.substring(0, output.indexOf(':') + 1);
