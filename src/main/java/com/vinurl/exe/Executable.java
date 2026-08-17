@@ -132,7 +132,7 @@ public enum Executable {
 		if (DIRECTORY.toFile().exists() || DIRECTORY.toFile().mkdirs()) {
 			if (!FILE_PATH.toFile().exists()) {
 				return downloadExecutable();
-			} else if (CONFIG.updatesOnStartup()) {
+			} else if (CONFIG.updatesOnStartup) {
 				checkForUpdates();
 			}
 			return true;

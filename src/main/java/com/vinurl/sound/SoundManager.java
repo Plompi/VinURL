@@ -39,12 +39,12 @@ public class SoundManager {
 				url, "-x", "--no-simulate", "-q", "--progress", "--add-metadata", "--no-playlist",
 				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
 				"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
-				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
+				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate.getValue(),
 				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis -t %d".formatted(MAX_DURATION),
 				"--ffmpeg-location", Executable.FFMPEG.FILE_PATH.toString(),
         		"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH),
 				"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
-			}, false).addArguments(VinURLClient.CONFIG.parameters())
+			}, false).addArguments(VinURLClient.CONFIG.parameters)
 		).subscribe("main")
 			.onOutput((output) -> {
 				String type = output.substring(0, output.indexOf(':') + 1);

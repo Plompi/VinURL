@@ -88,7 +88,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 				SoundManager.getFileName(url) + "/duration", Executable.YT_DLP.getCommandLine().addArguments(new String[] {
 					url, "--print", "DURATION: %(duration)d", "--no-playlist",
                     "--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
-				}, false).addArguments(VinURLClient.CONFIG.parameters())
+				}, false).addArguments(VinURLClient.CONFIG.parameters)
 			).subscribe("duration")
 				.onOutput((output) -> {
 					String type = output.substring(0, output.indexOf(':') + 1);
