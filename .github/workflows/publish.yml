@@ -20,7 +20,7 @@ jobs:
         run: env
 
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           submodules: true
 
@@ -39,7 +39,7 @@ jobs:
           echo "mod_version=$VERSION" >> $GITHUB_ENV
 
       - name: Setup Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: "temurin"
           java-version: "${{env.JAVA_VERSION}}"
@@ -54,7 +54,7 @@ jobs:
 
       - name: Publish Fabric
         if: ${{ steps.all.outputs.pub_fabric == 'true' }}
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: Kir-Antipov/mc-publish@v3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "VinURL ${{ env.mod_version }} for Fabric ${{ steps.all.outputs.mod_minecraft_version_end }}"
@@ -81,7 +81,7 @@ jobs:
 
       - name: Publish Neoforge
         if: ${{ steps.all.outputs.pub_neoforge == 'true' }}
-        uses: Kir-Antipov/mc-publish@v3.3
+        uses: Kir-Antipov/mc-publish@v3
         with:
           files: build/libs/!(*-@(dev|sources|javadoc)).jar
           name: "VinURL ${{ env.mod_version }} for Neoforge ${{ steps.all.outputs.mod_minecraft_version_end }}"

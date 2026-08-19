@@ -15,8 +15,8 @@ jobs:
   modrinth-desc:
     runs-on: 'ubuntu-latest'
     steps:
-      - uses: actions/checkout@v4
-      - uses: funnyboy-roks/modrinth-auto-desc@v1.5
+      - uses: actions/checkout@v7
+      - uses: funnyboy-roks/modrinth-auto-desc@v1.7
         with:
           auth-token: "${{env.MODRINTH_TOKEN}}"
           slug: 'vinurl'
