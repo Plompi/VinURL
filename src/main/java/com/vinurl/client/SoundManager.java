@@ -95,7 +95,7 @@ public class SoundManager {
 	public static void playSound(FileSound fileSound) {
 		if (fileSound == null) {return;}
 		CLIENT.getSoundManager().play(fileSound);
-		CLIENT.gui.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
+		CLIENT.gui.hud.setNowPlaying(Component.literal(getDescription(fileSound.fileName)));
 	}
 
 	public static void stopSound(FileSound fileSound) {

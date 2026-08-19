@@ -86,7 +86,7 @@ public class ClientEvent {
 			String url = message.url();
 			int duration = message.duration();
 
-			access.runtime().setScreen(new URLDiscScreen(url, duration));
+			access.runtime().gui.setScreen(new URLDiscScreen(url, duration));
 		});
 	}
 

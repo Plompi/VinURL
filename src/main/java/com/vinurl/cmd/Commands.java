@@ -57,7 +57,7 @@ public class Commands {
 	}
 
 	private static int openConfig(CommandContext<FabricClientCommandSource> ctx) {
-		ctx.getSource().getClient().schedule(() -> CLIENT.setScreen(ConfigScreen.create(VinURLClient.CONFIG, null)));
+		ctx.getSource().getClient().schedule(() -> CLIENT.gui.setScreen(ConfigScreen.create(VinURLClient.CONFIG, null)));
 		return 1;
 	}
 }
