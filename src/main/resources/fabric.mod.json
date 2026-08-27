@@ -20,6 +20,9 @@
     ],
     "client": [
       "com.vinurl.client.VinURLClient"
+    ],
+    "modmenu": [
+      "com.vinurl.config.ModMenu"
     ]
   },
   "mixins": [
@@ -29,7 +32,10 @@
     "fabricloader": ">=0.15.0",
     "minecraft": ">=${mod_minecraft_version_start} <=${mod_minecraft_version_end}",
     "java": ">=21",
-    "fabric-api": "*",
-    "owo-lib": "*"
+    "fabric-api": "*"
+  },
+  "suggets": {
+    "modmenu": "*",
+    "yet_another_config_lib_v3": "*"
   }
 }

@@ -18,6 +18,7 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
@@ -39,12 +40,12 @@ public class SoundManager {
 				url, "-x", "--no-simulate", "-q", "--progress", "--add-metadata", "--no-playlist",
 				"--progress-template", "PROGRESS: %(progress._percent)d", "--newline",
 				"--break-match-filter", "ext~=3gp|aac|flv|m4a|mov|mp3|mp4|ogg|wav|webm|opus",
-				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate().getValue(),
+				"--audio-format", "vorbis", "--audio-quality", VinURLClient.CONFIG.audioBitrate.getValue(),
 				"--postprocessor-args", "ffmpeg:-ac 1 -c:a libvorbis -t %d".formatted(MAX_DURATION),
 				"--ffmpeg-location", Executable.FFMPEG.FILE_PATH.toString(),
         		"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH),
 				"-P", AUDIO_DIRECTORY.toString(), "-o", fileName + ".%(ext)s"
-			}, false).addArguments(VinURLClient.CONFIG.parameters())
+			}, false).addArguments(VinURLClient.CONFIG.parameters)
 		).subscribe("main")
 			.onOutput((output) -> {
 				String type = output.substring(0, output.indexOf(':') + 1);
@@ -66,6 +67,35 @@ public class SoundManager {
 				setDescription(fileName);
 			})
 		.start();
+	}
+
+	public static void simulateDuration(String url, Consumer<Integer> durationConsumer, Runnable onDone) {
+		Executable.executeCommand(
+				SoundManager.getFileName(url) + "/duration",
+				Executable.YT_DLP.getCommandLine()
+						.addArguments(
+								new String[] {
+										url,
+										"--print", "DURATION: %(duration)d",
+										"--no-playlist",
+										"--js-runtimes", "deno:%s".formatted(Executable.DENO.FILE_PATH)
+								}, false)
+						.addArguments(VinURLClient.CONFIG.parameters))
+				.subscribe("duration")
+				.onOutput(output -> {
+					String type = output.substring(0, output.indexOf(':') + 1);
+					String message = output.substring(type.length()).trim();
+
+					switch (type) {
+						case "DURATION:" -> durationConsumer.accept(Integer.parseInt(message));
+						case "WARNING:" -> LOGGER.warn(message);
+						case "ERROR:" -> LOGGER.error(message);
+						default -> LOGGER.info(output);
+					}
+				})
+				.onError(error -> onDone.run())
+				.onComplete(() -> onDone.run())
+				.start();
 	}
 
 	public static void deleteSound(String fileName) {
