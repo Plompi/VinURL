@@ -17,7 +17,6 @@ import java.util.concurrent.CompletableFuture;
 import static com.vinurl.VinURL.MOD_ID;
 import static com.vinurl.client.VinURLClient.CLIENT;
 
-
 public class Commands {
 
 	public static void register() {

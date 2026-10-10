@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import static com.vinurl.VinURL.AUDIO_COMPONENT;
+import static com.vinurl.component.DataComponents.AUDIO_COMPONENT;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxMixin extends BlockEntity {

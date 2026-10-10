@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.function.Function;
 
-import static com.vinurl.VinURL.AUDIO_COMPONENT;
+import static com.vinurl.component.DataComponents.AUDIO_COMPONENT;
 
 @SuppressWarnings("unused")
 public class VinURLSound {

@@ -15,8 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
-import static com.vinurl.VinURL.AUDIO_COMPONENT;
-import static com.vinurl.VinURL.PLACEHOLDER_SOUND;
+import static com.vinurl.component.DataComponents.AUDIO_COMPONENT;
+import static com.vinurl.sound.SoundEvents.PLACEHOLDER_SOUND;
 
 public class URLDisc extends Item {
 

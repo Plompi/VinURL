@@ -10,8 +10,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import static com.vinurl.VinURL.AUDIO_COMPONENT;
-
+import static com.vinurl.component.DataComponents.AUDIO_COMPONENT;
 
 public class ServerEvent {
 	public static final int MAX_URL_LENGTH = 400;

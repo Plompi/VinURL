@@ -16,8 +16,8 @@ import net.minecraft.network.chat.Component;
 
 import java.util.concurrent.CompletableFuture;
 
-import static com.vinurl.VinURL.AUDIO_COMPONENT;
 import static com.vinurl.VinURL.LOGGER;
+import static com.vinurl.component.DataComponents.AUDIO_COMPONENT;
 
 public class VinURLClient implements ClientModInitializer {
 	public static final com.vinurl.client.VinURLConfig CONFIG = com.vinurl.client.VinURLConfig.createAndLoad();

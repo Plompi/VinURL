@@ -17,7 +17,7 @@ import java.io.InputStream;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-import static com.vinurl.VinURL.PLACEHOLDER_SOUND;
+import static com.vinurl.sound.SoundEvents.PLACEHOLDER_SOUND;
 
 public class FileSound extends AbstractTickableSoundInstance {
 	public final String fileName;
