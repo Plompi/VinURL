@@ -9,8 +9,7 @@ import io.wispforest.owo.config.annotation.SectionHeader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.vinurl.util.Constants.MOD_ID;
-
+import static com.vinurl.VinURL.MOD_ID;
 
 @SuppressWarnings("unused")
 @Modmenu(modId = MOD_ID)

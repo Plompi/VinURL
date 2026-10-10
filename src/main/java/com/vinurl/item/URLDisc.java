@@ -3,7 +3,9 @@ package com.vinurl.item;
 import com.vinurl.component.AudioComponent;
 import com.vinurl.net.packet.GUIPacket;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -14,7 +16,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 
 import static com.vinurl.VinURL.AUDIO_COMPONENT;
-import static com.vinurl.util.Constants.SONG_KEY;
+import static com.vinurl.VinURL.PLACEHOLDER_SOUND;
 
 public class URLDisc extends Item {
 
@@ -22,7 +24,7 @@ public class URLDisc extends Item {
 		super(new Item.Properties()
 			.stacksTo(1)
 			.rarity(Rarity.RARE)
-			.jukeboxPlayable(SONG_KEY)
+			.jukeboxPlayable(ResourceKey.create(Registries.JUKEBOX_SONG, PLACEHOLDER_SOUND.getLocation()))
 			.component(AUDIO_COMPONENT, AudioComponent.DEFAULT));
 	}
 

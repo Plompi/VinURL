@@ -13,7 +13,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static com.vinurl.VinURL.AUDIO_COMPONENT;
 
@@ -23,34 +22,34 @@ public class VinURLSound {
 	private static final double INFINITE_RANGE = Double.POSITIVE_INFINITY;
 
 	public static void playAt(ServerLevel level, ItemStack stack, BlockPos pos) {
-		send(stack, () -> playersInRange(level, pos, JUKEBOX_RANGE), (component) ->
+		send(stack, playersInRange(level, pos, JUKEBOX_RANGE), (component) ->
 			new PlaySoundPacket(pos, -1, component.url())
 		);
 	}
 
 	public static void playFor(ServerLevel level, ItemStack stack, Entity entity) {
-		send(stack, () -> playersInRange(level, entity, JUKEBOX_RANGE), (component) ->
+		send(stack, playersInRange(level, entity, JUKEBOX_RANGE), (component) ->
 			new PlaySoundPacket(null, entity.getId(), component.url())
 		);
 	}
 
 	public static void stopAt(ServerLevel level, ItemStack stack, BlockPos pos, boolean cancelable) {
-		send(stack, () -> playersInRange(level, pos, INFINITE_RANGE), (component) ->
+		send(stack, playersInRange(level, pos, INFINITE_RANGE), (component) ->
 			new StopSoundPacket(pos, -1, component.url(), cancelable)
 		);
 	}
 
 	public static void stopFor(ServerLevel level, ItemStack stack, Entity entity, boolean cancelable) {
-		send(stack, () -> playersInRange(level, entity, INFINITE_RANGE), (component) ->
+		send(stack, playersInRange(level, entity, INFINITE_RANGE), (component) ->
 			new StopSoundPacket(null, entity.getId(), component.url(), cancelable)
 		);
 	}
 
-	private static void send(ItemStack stack, Supplier<List<ServerPlayer>> players, Function<AudioComponent, CustomPacketPayload> factory) {
+	private static void send(ItemStack stack, List<ServerPlayer> players, Function<AudioComponent, CustomPacketPayload> factory) {
 		AudioComponent component = stack.get(AUDIO_COMPONENT);
 		if (component == null) {return;}
 
-		for (ServerPlayer player : players.get()) {
+		for (ServerPlayer player : players) {
 			ServerPlayNetworking.send(player, factory.apply(component));
 		}
 	}

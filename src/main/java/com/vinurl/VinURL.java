@@ -10,32 +10,44 @@ import com.vinurl.net.packet.StopSoundPacket;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.vinurl.util.Constants.*;
+import java.nio.file.Path;
 
 public class VinURL implements ModInitializer {
+	public static final String MOD_ID = "vinurl";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final Path VINURLPATH = FabricLoader.getInstance().getGameDir().resolve(MOD_ID);
+
+	public static ResourceLocation identifier(String id) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, id);
+	}
+
 	public static final DataComponentType<AudioComponent> AUDIO_COMPONENT = Registry.register(
 		BuiltInRegistries.DATA_COMPONENT_TYPE,
-		AUDIO_COMPONENT_ID,
+		VinURL.identifier("audio_data"),
 		DataComponentType.<AudioComponent>builder().persistent(AudioComponent.CODEC).build()
-	);
-
-	public static final Item CUSTOM_RECORD = Registry.register(
-		BuiltInRegistries.ITEM,
-		CUSTOM_RECORD_ID,
-		new URLDisc()
 	);
 
 	public static final SoundEvent PLACEHOLDER_SOUND = Registry.register(
 		BuiltInRegistries.SOUND_EVENT,
-		PLACEHOLDER_SOUND_ID,
-		SoundEvent.createVariableRangeEvent(PLACEHOLDER_SOUND_ID)
+		VinURL.identifier("placeholder_sound"),
+		SoundEvent.createVariableRangeEvent(VinURL.identifier("placeholder_sound"))
+	);
+
+	public static final Item CUSTOM_RECORD = Registry.register(
+		BuiltInRegistries.ITEM,
+		VinURL.identifier("custom_record"),
+		new URLDisc()
 	);
 
 	@Override

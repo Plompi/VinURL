@@ -20,10 +20,10 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+import static com.vinurl.VinURL.LOGGER;
+import static com.vinurl.VinURL.VINURLPATH;
 import static com.vinurl.client.VinURLClient.CLIENT;
 import static com.vinurl.net.ServerEvent.MAX_DURATION;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 public class SoundManager {
 	public static final Path AUDIO_DIRECTORY = VINURLPATH.resolve("downloads");

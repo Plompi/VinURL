@@ -17,10 +17,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static com.vinurl.VinURL.LOGGER;
+import static com.vinurl.VinURL.VINURLPATH;
 import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.exe.Platform.PLATFORM;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 public enum Executable {
 

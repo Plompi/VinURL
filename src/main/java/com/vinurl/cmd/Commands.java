@@ -14,8 +14,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
+import static com.vinurl.VinURL.MOD_ID;
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.MOD_ID;
 
 
 public class Commands {
