@@ -10,13 +10,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import static com.vinurl.component.AudioComponent.*;
 import static com.vinurl.component.DataComponents.AUDIO_COMPONENT;
 
 public class ServerEvent {
-	public static final int MAX_URL_LENGTH = 400;
-	public static final int MIN_DURATION = 0;
-	public static final int MAX_DURATION = 3600;
-
 	public static void register() {
 		// Server event handler for setting the URL on the custom record
 		ServerPlayNetworking.registerGlobalReceiver(SetURLPacket.TYPE, (message, access) -> {

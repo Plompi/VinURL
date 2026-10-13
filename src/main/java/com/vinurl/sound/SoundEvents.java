@@ -10,7 +10,6 @@ import static com.vinurl.VinURL.LOGGER;
 import static com.vinurl.VinURL.MOD_ID;
 
 public class SoundEvents {
-
 	public static final SoundEvent PLACEHOLDER_SOUND = registerSound("placeholder_sound");
 
 	private static SoundEvent registerSound(String id) {

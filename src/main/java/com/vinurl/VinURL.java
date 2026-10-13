@@ -32,7 +32,6 @@ public class VinURL implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
 		PayloadTypeRegistry.playC2S().register(SetURLPacket.TYPE, SetURLPacket.CODEC);
 		PayloadTypeRegistry.playS2C().register(GUIPacket.TYPE, GUIPacket.CODEC);
 		PayloadTypeRegistry.playS2C().register(PlaySoundPacket.TYPE, PlaySoundPacket.CODEC);

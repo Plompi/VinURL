@@ -15,7 +15,6 @@ import static com.vinurl.VinURL.MOD_ID;
 @Modmenu(modId = MOD_ID)
 @Config(name = "VinURLConfig", wrapperName = "VinURLConfig")
 public class ClientConfig {
-
 	@SectionHeader("general")
 	public boolean downloadEnabled = true;
 	public boolean updatesOnStartup = true;

@@ -23,7 +23,6 @@ import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.exe.Platform.PLATFORM;
 
 public enum Executable {
-
 	YT_DLP("yt-dlp", "yt-dlp/yt-dlp",
 		switch (PLATFORM) {
 			case WIN_X64 -> "yt-dlp.exe";
@@ -34,6 +33,7 @@ public enum Executable {
 			case NOT_SUPPORTED -> null;
 		}
 	),
+
 	FFPROBE("ffprobe", "Tyrrrz/FFmpegBin",
 		switch (PLATFORM) {
 			case WIN_X64 -> "ffmpeg-windows-x64.zip";
@@ -45,6 +45,7 @@ public enum Executable {
 			case NOT_SUPPORTED -> null;
 		}
 	),
+
 	FFMPEG("ffmpeg", "Tyrrrz/FFmpegBin",
 		switch (PLATFORM) {
 			case WIN_X64 -> "ffmpeg-windows-x64.zip";
@@ -56,6 +57,7 @@ public enum Executable {
 			case NOT_SUPPORTED -> null;
 		}
 	),
+
 	DENO("deno", "denoland/deno",
 		switch (PLATFORM) {
 			case WIN_X64 -> "deno-x86_64-pc-windows-msvc.zip";

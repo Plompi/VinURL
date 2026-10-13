@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public final class Url {
-
 	private final URL url;
 
 	private Url(URL url) {

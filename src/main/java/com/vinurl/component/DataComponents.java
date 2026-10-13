@@ -11,7 +11,6 @@ import static com.vinurl.VinURL.LOGGER;
 import static com.vinurl.VinURL.MOD_ID;
 
 public class DataComponents {
-
 	public static final DataComponentType<AudioComponent> AUDIO_COMPONENT = registerComponent("audio_data", AudioComponent.CODEC);
 
 	private static <T> DataComponentType<T> registerComponent(String id, Codec<T> codec) {
