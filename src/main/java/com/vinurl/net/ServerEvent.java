@@ -48,7 +48,6 @@ public class ServerEvent {
 			}
 
 			stack.set(AUDIO_COMPONENT, new AudioComponent(url.toString(), message.duration(), message.lock()));
-
 			player.level().playSound(null, player, SoundEvents.VILLAGER_WORK_CARTOGRAPHER, SoundSource.MASTER, 1.0f, 1.0f);
 		});
 	}

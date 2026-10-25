@@ -79,8 +79,8 @@ public class ClientEvent {
 			BlockPos pos = message.pos();
 			int entityID = message.entityID();
 			boolean cancel = message.cancel();
-
 			FileSound fileSound = pos != null ? SoundManager.getSound(pos) : SoundManager.getSound(entityID);
+
 			SoundManager.stopSound(fileSound);
 			SoundManager.unqueueSound(fileSound, cancel);
 		});
