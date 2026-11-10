@@ -108,12 +108,8 @@ public enum Executable {
 		Process process = stream.getProcess();
 		if (process != null) {
 			try {
-				process.descendants().forEach((processHandle) -> {
-					processHandle.destroyForcibly();
-					processHandle.onExit().join();
-				});
+				process.descendants().forEach(ProcessHandle::destroyForcibly);
 				process.destroyForcibly();
-				process.onExit().join();
 			} catch (Exception e) {
 				LOGGER.error("Failed to kill process with ID: {}", id, e);
 			}
