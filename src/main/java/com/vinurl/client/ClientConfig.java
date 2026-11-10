@@ -6,7 +6,6 @@ import io.wispforest.owo.config.annotation.Modmenu;
 import io.wispforest.owo.config.annotation.PredicateConstraint;
 import io.wispforest.owo.config.annotation.SectionHeader;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.vinurl.VinURL.MOD_ID;
@@ -21,7 +20,7 @@ public class ClientConfig {
 	public boolean showDescription = true;
 
 	@PredicateConstraint("urlSanitization")
-	public List<String> urlWhitelist = new ArrayList<>();
+	public List<String> urlWhitelist = List.of("https://www.example.com");
 
 	public static boolean urlSanitization(List<String> list) {
 		return list.stream().allMatch(Url::isValid);
