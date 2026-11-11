@@ -17,13 +17,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import static com.vinurl.VinURL.LOGGER;
+import static com.vinurl.VinURL.VINURLPATH;
 import static com.vinurl.client.VinURLClient.CONFIG;
 import static com.vinurl.exe.Platform.PLATFORM;
-import static com.vinurl.util.Constants.LOGGER;
-import static com.vinurl.util.Constants.VINURLPATH;
 
 public enum Executable {
-
 	YT_DLP("yt-dlp", "yt-dlp/yt-dlp",
 		switch (PLATFORM) {
 			case WIN_X64 -> "yt-dlp.exe";
@@ -34,6 +33,7 @@ public enum Executable {
 			case NOT_SUPPORTED -> null;
 		}
 	),
+
 	FFPROBE("ffprobe", "Tyrrrz/FFmpegBin",
 		switch (PLATFORM) {
 			case WIN_X64 -> "ffmpeg-windows-x64.zip";
@@ -45,6 +45,7 @@ public enum Executable {
 			case NOT_SUPPORTED -> null;
 		}
 	),
+
 	FFMPEG("ffmpeg", "Tyrrrz/FFmpegBin",
 		switch (PLATFORM) {
 			case WIN_X64 -> "ffmpeg-windows-x64.zip";
@@ -56,6 +57,7 @@ public enum Executable {
 			case NOT_SUPPORTED -> null;
 		}
 	),
+
 	DENO("deno", "denoland/deno",
 		switch (PLATFORM) {
 			case WIN_X64 -> "deno-x86_64-pc-windows-msvc.zip";
@@ -106,12 +108,8 @@ public enum Executable {
 		Process process = stream.getProcess();
 		if (process != null) {
 			try {
-				process.descendants().forEach((processHandle) -> {
-					processHandle.destroyForcibly();
-					processHandle.onExit().join();
-				});
+				process.descendants().forEach(ProcessHandle::destroyForcibly);
 				process.destroyForcibly();
-				process.onExit().join();
 			} catch (Exception e) {
 				LOGGER.error("Failed to kill process with ID: {}", id, e);
 			}

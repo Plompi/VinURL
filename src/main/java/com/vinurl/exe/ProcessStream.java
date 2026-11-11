@@ -11,7 +11,6 @@ import java.util.concurrent.Flow;
 import java.util.concurrent.SubmissionPublisher;
 import java.util.function.Consumer;
 
-import static com.vinurl.exe.Executable.killProcess;
 import static com.vinurl.exe.Executable.registerProcess;
 
 public class ProcessStream {
@@ -84,8 +83,6 @@ public class ProcessStream {
 			}
 		} catch (IOException | InterruptedException e) {
 			publisher.closeExceptionally(e);
-		} finally {
-			killProcess(id);
 		}
 	}
 

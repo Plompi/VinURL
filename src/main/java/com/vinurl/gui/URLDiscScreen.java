@@ -1,22 +1,24 @@
 package com.vinurl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.vinurl.VinURL;
 import com.vinurl.client.VinURLClient;
 import com.vinurl.exe.Executable;
-import com.vinurl.net.ServerEvent;
+import com.vinurl.net.packet.SetURLPacket;
 import com.vinurl.sound.SoundManager;
 import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.*;
 import io.wispforest.owo.ui.container.StackLayout;
 import io.wispforest.owo.ui.core.PositionedRectangle;
 import io.wispforest.owo.ui.util.NinePatchTexture;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.glfw.GLFW;
 
 import static com.vinurl.client.VinURLClient.CLIENT;
-import static com.vinurl.util.Constants.*;
+import static com.vinurl.VinURL.LOGGER;
 
 public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private String url;
@@ -28,22 +30,22 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	private final ButtonComponent.Renderer SIMULATE_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
 		ResourceLocation texture = !simulate ? (button.active && button.isHovered() ?
-			SIMULATE_BUTTON_HOVER_ID :
-			SIMULATE_BUTTON_ID) :
-			SIMULATE_BUTTON_DISABLED_ID;
+			VinURL.identifier("simulate_button_hovered") :
+			VinURL.identifier("simulate_button")) :
+			VinURL.identifier("simulate_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	private final ButtonComponent.Renderer LOCK_BUTTON_TEXTURE = (matrices, button, delta) -> {
 		RenderSystem.enableDepthTest();
 		ResourceLocation texture = lock ?
-			LOCK_BUTTON_ID :
-			LOCK_BUTTON_DISABLED_ID;
+			VinURL.identifier("lock_button") :
+			VinURL.identifier("lock_button_disabled");
 		NinePatchTexture.draw(texture, matrices, button.getX(), button.getY(), button.getWidth(), button.getHeight());
 	};
 
 	public URLDiscScreen(String defaultURL, int defaultDuration) {
-		super(StackLayout.class, DataSource.asset(URL_DISC_SCREEN_ID));
+		super(StackLayout.class, DataSource.asset(VinURL.identifier("disc_url_screen")));
 		this.url = defaultURL;
 		this.duration = defaultDuration;
 	}
@@ -114,7 +116,7 @@ public class URLDiscScreen extends BaseUIModelScreen<StackLayout> {
 	@Override
 	public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
 		if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_ENTER) {
-			NETWORK_CHANNEL.clientHandle().send(new ServerEvent.SetURLRecord(url, duration, lock));
+			ClientPlayNetworking.send(new SetURLPacket(url, duration, lock));
 			this.onClose();
 			return true;
 		}

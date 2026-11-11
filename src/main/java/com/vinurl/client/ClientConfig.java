@@ -6,24 +6,21 @@ import io.wispforest.owo.config.annotation.Modmenu;
 import io.wispforest.owo.config.annotation.PredicateConstraint;
 import io.wispforest.owo.config.annotation.SectionHeader;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.vinurl.util.Constants.MOD_ID;
-
+import static com.vinurl.VinURL.MOD_ID;
 
 @SuppressWarnings("unused")
 @Modmenu(modId = MOD_ID)
 @Config(name = "VinURLConfig", wrapperName = "VinURLConfig")
 public class ClientConfig {
-
 	@SectionHeader("general")
 	public boolean downloadEnabled = true;
 	public boolean updatesOnStartup = true;
 	public boolean showDescription = true;
 
 	@PredicateConstraint("urlSanitization")
-	public List<String> urlWhitelist = new ArrayList<>();
+	public List<String> urlWhitelist = List.of("https://www.example.com");
 
 	public static boolean urlSanitization(List<String> list) {
 		return list.stream().allMatch(Url::isValid);
