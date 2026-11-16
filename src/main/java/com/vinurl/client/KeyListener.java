@@ -42,6 +42,6 @@ public class KeyListener {
 	}
 
 	public static String getHotKey() {
-		return acceptKey.getTranslatedKeyMessage().tryCollapseToString();
+		return acceptKey.getTranslatedKeyMessage().getString();
 	}
 }
